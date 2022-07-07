@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Release Notes for X-CUBE-GNSS1 Package</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="_htmresc/mini-st_2020.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <link rel="icon" type="image/x-icon" href="_htmresc/favicon.png" />
+</head>
+<body>
+<div class="row">
+<div class="col-sm-12 col-lg-4">
+<center>
+<h1 id="release-notes-for-x-cube-gnss1">Release Notes for <mark>X-CUBE-GNSS1</mark></h1>
+<p>Copyright © 2022 STMicroelectronics<br />
+</p>
+<a href="https://www.st.com" class="logo"><img src="_htmresc/st_logo_2020.png" alt="ST logo" /></a>
+</center>
+<h1 id="purpose">Purpose</h1>
+The <mark>X-CUBE-GNSS1</mark> is an expansion software package for STM32Cube. X-CUBE-GNSS1 software features:
+<ul>
+<li>
+Complete middleware to build applications using either the Teseo-LIV3 or the Teseo-VIC3DA device for positioning
+</li>
+<li>
+Easy portability across different MCU families thanks to STM32Cube
+</li>
+<li>
+Sample applications to read data received by either the Teseo-LIV3 device mounted on the X-NUCLEO-GNSS1A1 expansion board or the Teseo-VIC3DA mounted on the X-NUCLEO-GNSS2A1 expansion board
+</li>
+<li>
+Free user-friendly license terms
+</li>
+<li>
+Example implementation available for the X-NUCLEO-GNSS1A1/X-NUCLEO-GNSS2A1 expansion board plugged on top of one NUCLEO-F401RE, NUCLEO-L476RG, NUCLEO-L073RZ or NUCLEO-U575ZI-Q
+</li>
+</ul>
+<p>The figure below shows the overall architecture.</p>
+<p><a href=""><img src="_htmresc/X-CUBE-GNSS1_components_2020.png" alt="X-CUBE-GNSS1 Block Diagram" /></a></p>
+Related information and documentation:
+<ul>
+<li>
+<a href="https://www.st.com/en/embedded-software/x-cube-gnss1.html">X-CUBE-GNSS1</a>
+</li>
+<li>
+<a href="https://www.st.com/en/ecosystems/x-nucleo-gnss1a1.html">X-NUCLEO-GNSS1A1</a>
+</li>
+<li>
+<a href="https://www.st.com/en/ecosystems/x-nucleo-gnss2a1.html">X-NUCLEO-GNSS2A1</a>
+</li>
+<li>
+<a href="http://www.st.com/stm32cube">STM32Cube</a>
+</li>
+<li>
+<a href="http://www.st.com/stm32nucleo">STM32 Nucleo boards</a>
+</li>
+<li>
+<a href="http://www.st.com/x-nucleo">STM32 Nucleo expansion boards</a>
+</li>
+</ul>
+</div>
+<section id="update-history" class="col-sm-12 col-lg-8">
+<h1>Update History</h1>
+<div class="collapse">
+<input type="checkbox" id="collapse-section12" checked aria-hidden="true"> <label for="collapse-section12" aria-hidden="true">V6.0.0 / 08-June-2022</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<h3 id="product-update">Product update</h3>
+<ul>
+<li>Align to STMicroelectronics.X-CUBE-GNSS1.6.0.0.pack for STM32CubeMX (minimum required version V6.6.0)</li>
+<li>Align to STM32CubeMX V6.6.0</li>
+<li>Introduce support to ThreadX Core (Azure RTOS)</li>
+<li>Publish code on GitHub</li>
+</ul>
+<h2 id="contents">Contents</h2>
+<p>The X-CUBE-GNSS1 expansion software package comes with a rich set of examples running on STMicroelectronics boards, organized by board and provided with preconfigured projects for the main supported toolchains.</p>
+<p>Documentation</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Document</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">X-CUBE-GNSS1 API Description</td>
+<td style="text-align: left;">V6.0.0</td>
+<td style="text-align: left;"><a href="Documentation\X-CUBE-GNSS1.chm">CHM</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Getting Started with X-CUBE-GNSS1 pack for STM32CubeMX</td>
+<td style="text-align: left;">V6.0.0</td>
+<td style="text-align: left;"><a href="Documentation\STMicroelectronics.X-CUBE-GNSS1_GettingStarted.pdf">PDF</a></td>
+</tr>
+</tbody>
+</table>
+<p>Drivers</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">STM32F4xx CMSIS</td>
+<td style="text-align: left;">V2.6.8</td>
+<td style="text-align: left;"><a href="Drivers\CMSIS\Device\ST\STM32F4xx\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32F4xx HAL</td>
+<td style="text-align: left;">V1.8.0</td>
+<td style="text-align: left;"><a href="Drivers\STM32F4xx_HAL_Driver\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP STM32F4xx_Nucleo</td>
+<td style="text-align: left;">V1.2.8</td>
+<td style="text-align: left;"><a href="Drivers\BSP\STM32F4xx-Nucleo\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32L0xx CMSIS</td>
+<td style="text-align: left;">V1.9.2</td>
+<td style="text-align: left;"><a href="Drivers\CMSIS\Device\ST\STM32L0xx\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32L0xx HAL</td>
+<td style="text-align: left;">V1.10.5</td>
+<td style="text-align: left;"><a href="Drivers\STM32L0xx_HAL_Driver\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP STM32L0xx_Nucleo</td>
+<td style="text-align: left;">V2.1.3</td>
+<td style="text-align: left;"><a href="Drivers\BSP\STM32L0xx_Nucleo\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32L4xx CMSIS</td>
+<td style="text-align: left;">V1.7.2</td>
+<td style="text-align: left;"><a href="Drivers\CMSIS\Device\ST\STM32L4xx\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32L4xx HAL</td>
+<td style="text-align: left;">V1.13.2</td>
+<td style="text-align: left;"><a href="Drivers\STM32L4xx_HAL_Driver\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP STM32L4xx_Nucleo</td>
+<td style="text-align: left;">V2.1.7</td>
+<td style="text-align: left;"><a href="Drivers\BSP\STM32L4xx_Nucleo\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP B-L475E-IOT01A</td>
+<td style="text-align: left;">V1.1.7</td>
+<td style="text-align: left;"><a href="Drivers\BSP\B-L475E-IOT01\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32U5xx CMSIS</td>
+<td style="text-align: left;">V1.1.0</td>
+<td style="text-align: left;"><a href="Drivers\CMSIS\Device\ST\STM32U5xx\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32U5xx HAL</td>
+<td style="text-align: left;">V1.1.0</td>
+<td style="text-align: left;"><a href="Drivers\STM32U5xx_HAL_Driver\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP STM32U5xx_Nucleo</td>
+<td style="text-align: left;">V1.1.0</td>
+<td style="text-align: left;"><a href="Drivers\BSP\STM32U5xx_Nucleo\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP X-NUCLEO-GNSS1A1</td>
+<td style="text-align: left;">V3.4.0</td>
+<td style="text-align: left;"><a href="Drivers\BSP\GNSS1A1\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP teseo_liv3f</td>
+<td style="text-align: left;">V5.0.0</td>
+<td style="text-align: left;"><a href="Drivers\BSP\Components\teseo_liv3f\Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<p>Middlewares</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">GNSS Library</td>
+<td style="text-align: left;">V5.0.0</td>
+<td style="text-align: left;"><a href="Middlewares\ST\lib_gnss\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ThreadX</td>
+<td style="text-align: left;">V6.1.7</td>
+<td style="text-align: left;"><a href="Middlewares\ST\threadx\st_readme.txt">readme</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FreeRTOS Library</td>
+<td style="text-align: left;">V10.3.1</td>
+<td style="text-align: left;"><a href="Middlewares\Third_Party\FreeRTOS\Source\st_readme.txt">readme</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cJSON</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><a href="Middlewares\Third_Party\cJSON\st_readme.txt">readme</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mbedTLS</td>
+<td style="text-align: left;">V2.16.2</td>
+<td style="text-align: left;"><a href="Middlewares\Third_Party\mbedTLS\st_readme.txt">readme</a></td>
+</tr>
+</tbody>
+</table>
+<p>Projects</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Projects</td>
+<td style="text-align: left;">V6.0.0</td>
+<td style="text-align: left;"><a href="Projects\Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<p>Utilities</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Firmware Updater Tool (see Notes below)</td>
+<td style="text-align: left;">V3.1.0</td>
+<td style="text-align: left;"><a href="Utilities\PC_Software\FirmwareUpdaterTool\Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>On dual-core STM32 series this expansion software can be used on both cores but exclusively</li>
+</ul>
+<h2 id="notes">Notes</h2>
+<p>Firmware Updater Tool includes the following libraries:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">URL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">JARINJARLOADER</td>
+<td style="text-align: left;">not specified</td>
+<td style="text-align: left;"><a href="https://git.eclipse.org/c/jdt/eclipse.jdt.ui.git/plain/org.eclipse.jdt.ui/jar%20in%20jar%20loader/">jarinjarloader</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">jSerialComm</td>
+<td style="text-align: left;">V2.4.0</td>
+<td style="text-align: left;"><a href="https://github.com/Fazecast/jSerialComm">jSerialComm</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="development-toolchains-and-compilers">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V9.20.1</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.32.0</li>
+<li>STM32CubeIDE V1.9.0</li>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and Boards</h2>
+<ul>
+<li>B-L475E-IOT01A1 Board</li>
+<li>STM32F401RE devices and NUCLEO-F401RE board RevC</li>
+<li>STM32L073RZ devices and NUCLEO-L073RZ board RevC</li>
+<li>STM32L476RG devices and NUCLEO-L476RG board RevC</li>
+<li>STM32U575ZI devices and NUCLEO-U575ZI-Q board</li>
+<li>Teseo-LIV3F device and X-NUCLEO-GNSS1A1 board</li>
+<li>Teseo-VIC3DA device and X-NUCLEO-GNSS2A1 board</li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section11" aria-hidden="true"> <label for="collapse-section11" aria-hidden="true">V5.2.0 / 03-Feb-2021</label>
+<div>
+<h2 id="main-changes-1">Main Changes</h2>
+<h3 id="product-update-1">Product update</h3>
+<ul>
+<li>Align to STMicroelectronics.X-CUBE-GNSS1.5.2.0.pack for STM32CubeMX (minimum required version V6.2.0)</li>
+<li>Align to STM32CubeMX v6.2.0</li>
+<li>Add support to Example Selector in STM32CubeMX</li>
+</ul>
+<h2 id="contents-1">Contents</h2>
+<p>The X-CUBE-GNSS1 expansion software package comes with a rich set of examples running on STMicroelectronics boards, organized by board and provided with preconfigured projects for the main supported toolchains.</p>
+<p>Documentation</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Document</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">X-CUBE-GNSS1 API Description</td>
+<td style="text-align: left;">V5.2.0</td>
+<td style="text-align: left;"><a href="Documentation\X-CUBE-GNSS1.chm">CHM</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Getting Started with X-CUBE-GNSS1 pack for STM32CubeMX</td>
+<td style="text-align: left;">V5.2.0</td>
+<td style="text-align: left;"><a href="Documentation\STMicroelectronics.X-CUBE-GNSS1_GettingStarted.pdf">PDF</a></td>
+</tr>
+</tbody>
+</table>
+<p>Drivers</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">STM32F4xx CMSIS</td>
+<td style="text-align: left;">V2.6.6</td>
+<td style="text-align: left;"><a href="Drivers\CMSIS\Device\ST\STM32F4xx\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32F4xx HAL</td>
+<td style="text-align: left;">V1.7.11</td>
+<td style="text-align: left;"><a href="Drivers\STM32F4xx_HAL_Driver\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP STM32F4xx_Nucleo</td>
+<td style="text-align: left;">V1.2.7</td>
+<td style="text-align: left;"><a href="Drivers\BSP\STM32F4xx-Nucleo\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32L0xx CMSIS</td>
+<td style="text-align: left;">V1.9.1</td>
+<td style="text-align: left;"><a href="Drivers\CMSIS\Device\ST\STM32L0xx\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32L0xx HAL</td>
+<td style="text-align: left;">V1.10.4</td>
+<td style="text-align: left;"><a href="Drivers\STM32L0xx_HAL_Driver\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP STM32L0xx_Nucleo</td>
+<td style="text-align: left;">V2.1.3</td>
+<td style="text-align: left;"><a href="Drivers\BSP\STM32L0xx_Nucleo\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32L4xx CMSIS</td>
+<td style="text-align: left;">V1.7.1</td>
+<td style="text-align: left;"><a href="Drivers\CMSIS\Device\ST\STM32L4xx\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32L4xx HAL</td>
+<td style="text-align: left;">V1.13.0</td>
+<td style="text-align: left;"><a href="Drivers\STM32L4xx_HAL_Driver\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP STM32L4xx_Nucleo</td>
+<td style="text-align: left;">V2.1.7</td>
+<td style="text-align: left;"><a href="Drivers\BSP\STM32L4xx_Nucleo\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP B-L475E-IOT01A</td>
+<td style="text-align: left;">V1.1.7</td>
+<td style="text-align: left;"><a href="Drivers\BSP\B-L475E-IOT01\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP X-NUCLEO-GNSS1A1</td>
+<td style="text-align: left;">V3.3.0</td>
+<td style="text-align: left;"><a href="Drivers\BSP\GNSS1A1\Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<p>Middlewares</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">GNSS Library</td>
+<td style="text-align: left;">V3.2.0</td>
+<td style="text-align: left;"><a href="Middlewares\ST\lib_gnss\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FreeRTOS Library</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><a href="Middlewares\Third_Party\FreeRTOS\Source\st_readme.txt">readme</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cJSON</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><a href="Middlewares\Third_Party\cJSON\st_readme.txt">readme</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mbedTLS</td>
+<td style="text-align: left;">V2.16.2</td>
+<td style="text-align: left;"><a href="Middlewares\Third_Party\mbedTLS\st_readme.txt">readme</a></td>
+</tr>
+</tbody>
+</table>
+<p>Projects</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Projects</td>
+<td style="text-align: left;">V5.2.0</td>
+<td style="text-align: left;"><a href="Projects\Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<p>Utilities</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Firmware Updater Tool</td>
+<td style="text-align: left;">V3.0.0</td>
+<td style="text-align: left;"><a href="Utilities\PC_Software\FirmwareUpdaterTool\Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="known-limitations-1">Known Limitations</h2>
+<ul>
+<li>On dual-core STM32 series this expansion software can be used on both cores but exclusively</li>
+</ul>
+<h2 id="development-toolchains-and-compilers-1">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V8.50.5</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.31.0</li>
+<li>STM32CubeIDE V1.5.1</li>
+</ul>
+<h2 id="supported-devices-and-boards-1">Supported Devices and Boards</h2>
+<ul>
+<li>STM32F401RE devices and STM32F401RE-Nucleo board RevC</li>
+<li>STM32L073RZ devices and STM32L073RZ-Nucleo board RevC</li>
+<li>STM32L476RG devices and STM32L476RG-Nucleo board RevC</li>
+<li>B-L475E-IOT01 Board</li>
+<li>Teseo-LIV3F device and X-NUCLEO-GNSS1A1 board</li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section10" aria-hidden="true"> <label for="collapse-section10" aria-hidden="true">V5.1.0 / 04-Nov-2020</label>
+<div>
+<h2 id="main-changes-2">Main Changes</h2>
+<ul>
+<li>Align to STMicroelectronics.X-CUBE-GNSS1.5.1.0.pack for STM32CubeMX (minimum required version V6.1.0)</li>
+<li>Align to STM32CubeMX v6.1.0</li>
+<li>Align to latest Cube HAL</li>
+<li>Other improvements</li>
+</ul>
+<h2 id="contents-2">Contents</h2>
+<p>The X-CUBE-GNSS1 expansion software package comes with a rich set of examples running on STMicroelectronics boards, organized by board and provided with preconfigured projects for the main supported toolchains.</p>
+<p>Documentation</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Document</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">X-CUBE-GNSS1 API Description</td>
+<td style="text-align: left;">V5.1.0</td>
+<td style="text-align: left;"><a href="Documentation\X-CUBE-GNSS1.chm">CHM</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Getting Started with X-CUBE-GNSS1 pack for STM32CubeMX</td>
+<td style="text-align: left;">V5.1.0</td>
+<td style="text-align: left;"><a href="Documentation\STMicroelectronics.X-CUBE-GNSS1_GettingStarted.pdf">PDF</a></td>
+</tr>
+</tbody>
+</table>
+<p>Drivers</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">STM32F4xx CMSIS</td>
+<td style="text-align: left;">V2.6.5</td>
+<td style="text-align: left;"><a href="Drivers\CMSIS\Device\ST\STM32F4xx\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32F4xx HAL</td>
+<td style="text-align: left;">V1.7.10</td>
+<td style="text-align: left;"><a href="Drivers\STM32F4xx_HAL_Driver\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP STM32F4xx_Nucleo</td>
+<td style="text-align: left;">V1.2.7</td>
+<td style="text-align: left;"><a href="Drivers\BSP\STM32F4xx-Nucleo\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32L0xx CMSIS</td>
+<td style="text-align: left;">V1.9.1</td>
+<td style="text-align: left;"><a href="Drivers\CMSIS\Device\ST\STM32L0xx\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32L0xx HAL</td>
+<td style="text-align: left;">V1.10.4</td>
+<td style="text-align: left;"><a href="Drivers\STM32L0xx_HAL_Driver\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP STM32L0xx_Nucleo</td>
+<td style="text-align: left;">V2.1.3</td>
+<td style="text-align: left;"><a href="Drivers\BSP\STM32L0xx_Nucleo\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32L4xx CMSIS</td>
+<td style="text-align: left;">V1.7.0</td>
+<td style="text-align: left;"><a href="Drivers\CMSIS\Device\ST\STM32L4xx\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32L4xx HAL</td>
+<td style="text-align: left;">V1.12.0</td>
+<td style="text-align: left;"><a href="Drivers\STM32L4xx_HAL_Driver\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP STM32L4xx_Nucleo</td>
+<td style="text-align: left;">V2.1.6</td>
+<td style="text-align: left;"><a href="Drivers\BSP\STM32L4xx_Nucleo\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP B-L475E-IOT01A</td>
+<td style="text-align: left;">V1.1.6</td>
+<td style="text-align: left;"><a href="Drivers\BSP\B-L475E-IOT01\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP X-NUCLEO-GNSS1A1</td>
+<td style="text-align: left;">V3.0.0</td>
+<td style="text-align: left;"><a href="Drivers\BSP\GNSS1A1\Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<p>Middlewares</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">GNSS Library</td>
+<td style="text-align: left;">V3.1.0</td>
+<td style="text-align: left;"><a href="Middlewares\ST\lib_gnss\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FreeRTOS Library</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><a href="Middlewares\Third_Party\FreeRTOS\Source\st_readme.txt">readme</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cJSON</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><a href="Middlewares\Third_Party\cJSON\st_readme.txt">readme</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mbedTLS</td>
+<td style="text-align: left;">V2.16.2</td>
+<td style="text-align: left;"><a href="Middlewares\Third_Party\mbedTLS\st_readme.txt">readme</a></td>
+</tr>
+</tbody>
+</table>
+<p>Projects</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Projects</td>
+<td style="text-align: left;">V5.1.0</td>
+<td style="text-align: left;"><a href="Projects\Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<p>Utilities</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Firmware Updater Tool</td>
+<td style="text-align: left;">V3.0.0</td>
+<td style="text-align: left;"><a href="Utilities\PC_Software\FirmwareUpdaterTool\Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="known-limitations-2">Known Limitations</h2>
+<ul>
+<li>On dual-core STM32 series this expansion software can be used on both cores but exclusively</li>
+</ul>
+<h2 id="development-toolchains-and-compilers-2">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V8.50.5</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.31.0</li>
+<li>STM32CubeIDE V1.4.1</li>
+</ul>
+<h2 id="supported-devices-and-boards-2">Supported Devices and Boards</h2>
+<ul>
+<li>STM32F401RE devices and STM32F401RE-Nucleo board RevC</li>
+<li>STM32L073RZ devices and STM32L073RZ-Nucleo board RevC</li>
+<li>STM32L476RG devices and STM32L476RG-Nucleo board RevC</li>
+<li>B-L475E-IOT01 Board</li>
+<li>Teseo-LIV3F device and X-NUCLEO-GNSS1A1 board</li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section9" aria-hidden="true"> <label for="collapse-section9" aria-hidden="true">V5.0.0 / 03-July-2020</label>
+<div>
+<h2 id="main-changes-3">Main Changes</h2>
+<ul>
+<li>Align to STMicroelectronics.X-CUBE-GNSS1.5.0.0.pack for STM32CubeMX (minimum required version V6.0.0)</li>
+<li>Align to STM32CubeMX v6.0.0</li>
+<li>Improve STM32CubeMX project generation for custom boards</li>
+</ul>
+<h2 id="contents-3">Contents</h2>
+<p>Documentation</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Document</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">X-CUBE-GNSS1 API Description</td>
+<td style="text-align: left;">V5.0.0</td>
+<td style="text-align: left;"><a href="Documentation\X-CUBE-GNSS1.chm">CHM</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Getting Started with X-CUBE-GNSS1 pack for STM32CubeMX</td>
+<td style="text-align: left;">V5.0.0</td>
+<td style="text-align: left;"><a href="Documentation\STMicroelectronics.X-CUBE-GNSS1_GettingStarted.pdf">PDF</a></td>
+</tr>
+</tbody>
+</table>
+<p>Drivers</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">STM32F4xx CMSIS</td>
+<td style="text-align: left;">V2.6.5</td>
+<td style="text-align: left;"><a href="Drivers\CMSIS\Device\ST\STM32F4xx\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32F4xx HAL</td>
+<td style="text-align: left;">V1.7.8</td>
+<td style="text-align: left;"><a href="Drivers\STM32F4xx_HAL_Driver\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP STM32F4xx_Nucleo</td>
+<td style="text-align: left;">V1.2.7</td>
+<td style="text-align: left;"><a href="Drivers\BSP\STM32F4xx-Nucleo\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32L0xx CMSIS</td>
+<td style="text-align: left;">V1.9.0</td>
+<td style="text-align: left;"><a href="Drivers\CMSIS\Device\ST\STM32L0xx\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32L0xx HAL</td>
+<td style="text-align: left;">V1.10.0</td>
+<td style="text-align: left;"><a href="Drivers\STM32L0xx_HAL_Driver\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP STM32L0xx_Nucleo</td>
+<td style="text-align: left;">V2.1.2</td>
+<td style="text-align: left;"><a href="Drivers\BSP\STM32L0xx_Nucleo\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32L4xx CMSIS</td>
+<td style="text-align: left;">V1.7.0</td>
+<td style="text-align: left;"><a href="Drivers\CMSIS\Device\ST\STM32L4xx\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32L4xx HAL</td>
+<td style="text-align: left;">V1.12.0</td>
+<td style="text-align: left;"><a href="Drivers\STM32L4xx_HAL_Driver\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP STM32L4xx_Nucleo</td>
+<td style="text-align: left;">V2.1.6</td>
+<td style="text-align: left;"><a href="Drivers\BSP\STM32L4xx_Nucleo\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP B-L475E-IOT01A</td>
+<td style="text-align: left;">V1.1.6</td>
+<td style="text-align: left;"><a href="Drivers\BSP\B-L475E-IOT01\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP X-NUCLEO-GNSS1A1</td>
+<td style="text-align: left;">V3.0.0</td>
+<td style="text-align: left;"><a href="Drivers\BSP\GNSS1A1\Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<p>Middlewares</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">GNSS Library</td>
+<td style="text-align: left;">V3.1.0</td>
+<td style="text-align: left;"><a href="Middlewares\ST\lib_gnss\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FreeRTOS Library</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><a href="Middlewares\Third_Party\FreeRTOS\Source\st_readme.txt">readme</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cJSON</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><a href="Middlewares\Third_Party\cJSON\st_readme.txt">readme</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mbedTLS</td>
+<td style="text-align: left;">V2.16.2</td>
+<td style="text-align: left;"><a href="Middlewares\Third_Party\mbedTLS\st_readme.txt">readme</a></td>
+</tr>
+</tbody>
+</table>
+<p>Projects</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Projects</td>
+<td style="text-align: left;">V5.0.0</td>
+<td style="text-align: left;"><a href="Projects\Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<p>Utilities</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Firmware Updater Tool</td>
+<td style="text-align: left;">V3.0.0</td>
+<td style="text-align: left;"><a href="Utilities\PC_Software\FirmwareUpdaterTool\Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="development-toolchains-and-compilers-3">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V8.32.3 + STLink/V2</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.29.0 + ST-LINK/V2</li>
+<li>STM32CubeIDE V1.3.1 + ST-LINK/V2</li>
+</ul>
+<h2 id="supported-devices-and-boards-3">Supported Devices and Boards</h2>
+<ul>
+<li>STM32F401RE devices and STM32F401RE-Nucleo board RevC</li>
+<li>STM32L073RZ devices and STM32L073RZ-Nucleo board RevC</li>
+<li>STM32L476RG devices and STM32L476RG-Nucleo board RevC</li>
+<li>B-L475E-IOT01 Board</li>
+<li>Teseo-LIV3F device and X-NUCLEO-GNSS1A1 board</li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section8" aria-hidden="true"> <label for="collapse-section8" aria-hidden="true">V4.1.0 / 07-February-2020</label>
+<div>
+<h2 id="main-changes-4">Main Changes</h2>
+<ul>
+<li>Align to STMicroelectronics.X-CUBE-GNSS1.4.1.0.pack for STM32CubeMX (minimum required version V5.6.0)</li>
+<li>Align to STM32CubeMX v5.6.0</li>
+<li>Improve STM32CubeMX project generation for custom boards</li>
+</ul>
+<h2 id="contents-4">Contents</h2>
+<p>Documentation</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Document</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">X-CUBE-GNSS1 API Description</td>
+<td style="text-align: left;">V4.1.0</td>
+<td style="text-align: left;"><a href="Documentation\X-CUBE-GNSS1.chm">CHM</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Getting Started with X-CUBE-GNSS1 pack for STM32CubeMX</td>
+<td style="text-align: left;">V4.1.0</td>
+<td style="text-align: left;"><a href="Documentation\STMicroelectronics.X-CUBE-GNSS1_GettingStarted.pdf">PDF</a></td>
+</tr>
+</tbody>
+</table>
+<p>Drivers</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">STM32F4xx CMSIS</td>
+<td style="text-align: left;">V2.6.3</td>
+<td style="text-align: left;"><a href="Drivers\CMSIS\Device\ST\STM32F4xx\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32F4xx HAL</td>
+<td style="text-align: left;">V1.7.7</td>
+<td style="text-align: left;"><a href="Drivers\STM32F4xx_HAL_Driver\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP STM32F4xx_Nucleo</td>
+<td style="text-align: left;">V1.2.7</td>
+<td style="text-align: left;"><a href="Drivers\BSP\STM32F4xx-Nucleo\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32L0xx CMSIS</td>
+<td style="text-align: left;">V1.9.0</td>
+<td style="text-align: left;"><a href="Drivers\CMSIS\Device\ST\STM32L0xx\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32L0xx HAL</td>
+<td style="text-align: left;">V1.10.2</td>
+<td style="text-align: left;"><a href="Drivers\STM32L0xx_HAL_Driver\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP STM32L0xx_Nucleo</td>
+<td style="text-align: left;">V2.1.2</td>
+<td style="text-align: left;"><a href="Drivers\BSP\STM32L0xx_Nucleo\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32L4xx CMSIS</td>
+<td style="text-align: left;">V1.6.0</td>
+<td style="text-align: left;"><a href="Drivers\CMSIS\Device\ST\STM32L4xx\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32L4xx HAL</td>
+<td style="text-align: left;">V1.11.0</td>
+<td style="text-align: left;"><a href="Drivers\STM32L4xx_HAL_Driver\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP STM32L4xx_Nucleo</td>
+<td style="text-align: left;">V2.1.6</td>
+<td style="text-align: left;"><a href="Drivers\BSP\STM32L4xx_Nucleo\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP B-L475E-IOT01A</td>
+<td style="text-align: left;">V1.1.6</td>
+<td style="text-align: left;"><a href="Drivers\BSP\B-L475E-IOT01\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP X-NUCLEO-GNSS1A1</td>
+<td style="text-align: left;">V3.0.0</td>
+<td style="text-align: left;"><a href="Drivers\BSP\GNSS1A1\Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<p>Middlewares</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">GNSS Library</td>
+<td style="text-align: left;">V3.1.0</td>
+<td style="text-align: left;"><a href="Middlewares\ST\lib_gnss\Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FreeRTOS Library</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><a href="Middlewares\Third_Party\FreeRTOS\Source\st_readme.txt">readme</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cJSON</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><a href="Middlewares\Third_Party\cJSON\st_readme.txt">readme</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mbedTLS</td>
+<td style="text-align: left;">V2.11.0</td>
+<td style="text-align: left;"><a href="Middlewares\Third_Party\mbedTLS\st_readme.txt">readme</a></td>
+</tr>
+</tbody>
+</table>
+<p>Projects</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Projects</td>
+<td style="text-align: left;">V4.0.0</td>
+<td style="text-align: left;"><a href="Projects\Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<p>Utilities</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Firmware Updater Tool</td>
+<td style="text-align: left;">V3.0.0</td>
+<td style="text-align: left;"><a href="Utilities\PC_Software\FirmwareUpdaterTool\Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="development-toolchains-and-compilers-4">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V8.32.3 + STLink/V2</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.27.1 + ST-LINK/V2</li>
+<li>STM32CubeIDE V1.2.1 + ST-LINK/V2</li>
+</ul>
+<h2 id="supported-devices-and-boards-4">Supported Devices and Boards</h2>
+<ul>
+<li>STM32F401RE devices and STM32F401RE-Nucleo board RevC</li>
+<li>STM32L053R8 devices and STM32L053R8-Nucleo board RevC</li>
+<li>STM32L476RG devices and STM32L476RG-Nucleo board RevC</li>
+<li>B-L475E-IOT01 Board</li>
+<li>Teseo-LIV3F device and X-NUCLEO-GNSS1A1 board</li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section7" aria-hidden="true"> <label for="collapse-section7" aria-hidden="true">V4.0.0 / 10-December-2019</label>
+<div>
+<h2 id="main-changes-5">Main Changes</h2>
+<ul>
+<li>Align to STM32CubeMX V5.5.0</li>
+<li>Bug fix and other improvements</li>
+<li>Update on STM32Cube HAL drivers</li>
+</ul>
+<h2 id="contents-5">Contents</h2>
+<ul>
+<li>STM32Cube HAL and Middlewares
+<ul>
+<li>STM32F4xx drivers V1.24.1</li>
+<li>STM32L4xx drivers V1.15.0</li>
+<li>STM32L0xx drivers V1.11.2</li>
+</ul></li>
+<li>Documentation
+<ul>
+<li>Doxygen documentation</li>
+</ul></li>
+<li>Drivers
+<ul>
+<li>BSP X-NUCLEO-GNSS1A1 V3.0.0</li>
+</ul></li>
+<li>Middlewares
+<ul>
+<li>NMEA Library V3.1.0</li>
+<li>FreeRTOS Library</li>
+</ul></li>
+<li>Projects
+<ul>
+<li>Sample Applications</li>
+</ul></li>
+<li>Utilities
+<ul>
+<li>Firmware Updater Tool</li>
+</ul></li>
+</ul>
+<h2 id="development-toolchains-and-compilers-5">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V8.32.3 + ST-LINK/V2</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.27.1 + ST-LINK/V2</li>
+<li>STM32CubeIDE V1.1.0 + ST-LINK/V2</li>
+</ul>
+<h2 id="supported-devices-and-boards-5">Supported Devices and Boards</h2>
+<ul>
+<li>STM32F401RE, STM32L073RZ, STM32L476RG devices</li>
+<li>NUCLEO-F401RE Board RevC</li>
+<li>NUCLEO-L073RZ Board RevC</li>
+<li>NUCLEO-L476RG Board RevC</li>
+<li>B-L475E-IOT01 Board</li>
+<li>X-NUCLEO-GNSS1A1 Board</li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section6" aria-hidden="true"> <label for="collapse-section6" aria-hidden="true">V3.1.0 / 23-September-2019</label>
+<div>
+<h2 id="main-changes-6">Main Changes</h2>
+<ul>
+<li>Add support to FreeRTOS CMSIS V2</li>
+<li>Add STM32CubeIDE projects</li>
+<li>Bug fix and other improvements</li>
+</ul>
+<h2 id="contents-6">Contents</h2>
+<ul>
+<li>STM32Cube HAL and Middlewares
+<ul>
+<li>STM32F4xx drivers V1.24.1</li>
+<li>STM32L4xx drivers V1.14.0</li>
+<li>STM32L0xx drivers V1.11.2</li>
+</ul></li>
+<li>Documentation
+<ul>
+<li>Doxygen documentation</li>
+</ul></li>
+<li>Drivers
+<ul>
+<li>BSP X-NUCLEO-GNSS1A1 V3.0.0</li>
+</ul></li>
+<li>Middlewares
+<ul>
+<li>NMEA Library V3.1.0</li>
+<li>FreeRTOS Library</li>
+</ul></li>
+<li>Projects
+<ul>
+<li>Sample Applications</li>
+</ul></li>
+<li>Utilities
+<ul>
+<li>Firmware Updater Tool</li>
+</ul></li>
+</ul>
+<h2 id="development-toolchains-and-compilers-6">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V8.32.3 + ST-LINK/V2</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.27.1 + ST-LINK/V2</li>
+<li>STM32CubeIDE V1.0.2 + ST-LINK/V2</li>
+</ul>
+<h2 id="supported-devices-and-boards-6">Supported Devices and Boards</h2>
+<ul>
+<li>STM32F401RE, STM32L073RZ, STM32L476RG devices</li>
+<li>NUCLEO-F401RE Board RevC</li>
+<li>NUCLEO-L073RZ Board RevC</li>
+<li>NUCLEO-L476RG Board RevC</li>
+<li>B-L475E-IOT01 Board</li>
+<li>X-NUCLEO-GNSS1A1 Board</li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section5" aria-hidden="true"> <label for="collapse-section5" aria-hidden="true">V3.0.0 / 19-April-2019</label>
+<div>
+<h2 id="main-changes-7">Main Changes</h2>
+<ul>
+<li>Rework Applications, Middlewares and Driver sections</li>
+<li>Update MISRA-C 2012 compliance for Drivers and Middlewares</li>
+<li>Bug fix and other improvement</li>
+</ul>
+<h2 id="contents-7">Contents</h2>
+<ul>
+<li>STM32Cube HAL and Middlewares
+<ul>
+<li>STM32F4xx drivers V1.24.1</li>
+<li>STM32L4xx drivers V1.14.0</li>
+<li>STM32L0xx drivers V1.11.2</li>
+</ul></li>
+<li>Documentation
+<ul>
+<li>Doxygen documentation</li>
+</ul></li>
+<li>Drivers
+<ul>
+<li>BSP X-NUCLEO-GNSS1A1 V3.0.0</li>
+</ul></li>
+<li>Middlewares
+<ul>
+<li>NMEA Library V3.0.0</li>
+<li>FreeRTOS Library</li>
+</ul></li>
+<li>Utilities
+<ul>
+<li>Firmware Updater Tool</li>
+</ul></li>
+</ul>
+<h2 id="development-toolchains-and-compilers-7">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V8.20 + ST-LINK/V2</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.24 + ST-LINK/V2</li>
+<li>Ac6 System Workbench for STM32 V2.3.1 + ST-LINK/V2</li>
+</ul>
+<h2 id="supported-devices-and-boards-7">Supported Devices and Boards</h2>
+<ul>
+<li>STM32F401RE, STM32L073RZ, STM32L476RG devices</li>
+<li>NUCLEO-F401RE Board RevC</li>
+<li>NUCLEO-L073RZ Board RevC</li>
+<li>NUCLEO-L476RG Board RevC</li>
+<li>B-L475E-IOT01 Board</li>
+<li>X-NUCLEO-GNSS1A1 Board</li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section4" aria-hidden="true"> <label for="collapse-section4" aria-hidden="true">V2.1.0 / 09-November-2018</label>
+<div>
+<h2 id="main-changes-8">Main Changes</h2>
+<ul>
+<li>Add Assisted GNSS support</li>
+<li>Rework Middlewares section</li>
+<li>Provide MISRA-C 2012 compliant Drivers and Middlewares</li>
+<li>Add A_GetPos sample application tailored for B-L475E-IOT01 (including Assisted GNSS support)</li>
+<li>Bug fix and other improvement</li>
+</ul>
+<h2 id="contents-8">Contents</h2>
+<ul>
+<li>STM32Cube HAL and Middlewares
+<ul>
+<li>STM32F4xx drivers V1.7.4</li>
+<li>STM32L4xx drivers V1.9.0</li>
+<li>STM32L0xx drivers V1.8.2</li>
+</ul></li>
+<li>Documentation
+<ul>
+<li>Doxygen documentation</li>
+</ul></li>
+<li>Drivers
+<ul>
+<li>BSP X-NUCLEO-GNSS1A1 V2.0.0</li>
+</ul></li>
+<li>Middlewares
+<ul>
+<li>NMEA Library V2.1.0</li>
+<li>FreeRTOS Library</li>
+</ul></li>
+<li>Utilities
+<ul>
+<li>Firmware Updater Tool</li>
+</ul></li>
+</ul>
+<h2 id="development-toolchains-and-compilers-8">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V7.80.4 + ST-LINK/V2</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.24 + ST-LINK/V2</li>
+<li>Ac6 System Workbench for STM32 V2.3.1 + ST-LINK/V2</li>
+</ul>
+<h2 id="supported-devices-and-boards-8">Supported Devices and Boards</h2>
+<ul>
+<li>STM32F401RE, STM32L073RZ, STM32L476RG devices</li>
+<li>NUCLEO-F401RE Board RevC</li>
+<li>NUCLEO-L073RZ Board RevC</li>
+<li>NUCLEO-L476RG Board RevC</li>
+<li>B-L475E-IOT01 Board</li>
+<li>X-NUCLEO-GNSS1A1 Board</li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section3" aria-hidden="true"> <label for="collapse-section3" aria-hidden="true">V2.0.0 / 18-May-2018</label>
+<div>
+<h2 id="main-changes-9">Main Changes</h2>
+<ul>
+<li>Add I2C support</li>
+<li>Rework Drivers and Middlewares sections</li>
+<li>Provide MISRA-C 2012 compliant Drivers and Middlewares</li>
+<li>Add SimOSGetPos sample application tailored for Nucleo-L073RZ (excluding FreeRTOS support)</li>
+</ul>
+<h2 id="contents-9">Contents</h2>
+<ul>
+<li>STM32Cube HAL and Middlewares drivers
+<ul>
+<li>STM32F4xx drivers aligned to STM32CubeF4 V1.21.0</li>
+<li>STM32L4xx drivers aligned to STM32CubeL4 V1.11.0</li>
+<li>STM32L0xx drivers aligned to STM32CubeL0 V1.10.0</li>
+</ul></li>
+<li>Documentation
+<ul>
+<li>Doxygen documentation</li>
+</ul></li>
+<li>Drivers
+<ul>
+<li>BSP X-NUCLEO-GNSS1A1 V2.0.0</li>
+</ul></li>
+<li>Middlewares
+<ul>
+<li>NMEA Library V2.0.0</li>
+<li>FreeRTOS Library</li>
+</ul></li>
+<li>Utilities
+<ul>
+<li>Firmware Updater Tool</li>
+</ul></li>
+</ul>
+<h2 id="development-toolchains-and-compilers-9">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V7.80.4 + ST-LINK/V2</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.24 + ST-LINK/V2</li>
+<li>Ac6 System Workbench for STM32 V2.3.1 + ST-LINK/V2</li>
+</ul>
+<h2 id="supported-devices-and-boards-9">Supported Devices and Boards</h2>
+<ul>
+<li>STM32F401RE, STM32L073RZ, STM32L476RG devices</li>
+<li>NUCLEO-F401RE Board RevC</li>
+<li>NUCLEO-L073RZ Board RevC</li>
+<li>NUCLEO-L476RG Board RevC</li>
+<li>X-NUCLEO-GNSS1A1 Board</li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section2" aria-hidden="true"> <label for="collapse-section2" aria-hidden="true">V1.1.0 / 26-January-2018</label>
+<div>
+<h2 id="main-changes-10">Main Changes</h2>
+<ul>
+<li>Introduce FreeRTOS for improving performances</li>
+<li>Add Geofencing, Odometer and Data Logging features to GetPos sample application</li>
+<li>Rename Virtual_COM_Port sample application to FW_Updater</li>
+<li>Add Virtual_COM_Port sample application for the ST Teseo-Suite PC tool</li>
+</ul>
+<h2 id="contents-10">Contents</h2>
+<ul>
+<li>STM32Cube HAL and Middlewares drivers
+<ul>
+<li>STM32F4xx drivers aligned to STM32CubeF4 V1.16.0</li>
+</ul></li>
+<li>Documentation
+<ul>
+<li>Doxygen documentation</li>
+</ul></li>
+<li>Drivers
+<ul>
+<li>BSP X-NUCLEO-GNSS1A1 V1.1.0</li>
+</ul></li>
+<li>Middlewares
+<ul>
+<li>NMEA Library</li>
+<li>FreeRTOS Library</li>
+</ul></li>
+<li>Utilities
+<ul>
+<li>Firmware Updater Tool</li>
+</ul></li>
+</ul>
+<h2 id="development-toolchains-and-compilers-10">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V7.80.4 + ST-LINK/V2</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.24 + ST-LINK/V2</li>
+<li>Ac6 System Workbench for STM32 V2.3.1 + ST-LINK/V2</li>
+</ul>
+<h2 id="supported-devices-and-boards-10">Supported Devices and Boards</h2>
+<ul>
+<li>STM32F401RE device</li>
+<li>NUCLEO-F401RE Board RevC</li>
+<li>X-NUCLEO-GNSS1A1 Board</li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section1" aria-hidden="true"> <label for="collapse-section1" aria-hidden="true">V1.0.0 / 13-October-2017</label>
+<div>
+<h2 id="main-changes-11">Main Changes</h2>
+<ul>
+<li>First official release</li>
+</ul>
+<h2 id="contents-11">Contents</h2>
+<ul>
+<li>STM32Cube HAL and Middlewares drivers
+<ul>
+<li>STM32F4xx drivers aligned to STM32CubeF4 V1.16.0</li>
+</ul></li>
+<li>Documentation
+<ul>
+<li>Doxygen documentation</li>
+</ul></li>
+<li>Drivers
+<ul>
+<li>BSP X-NUCLEO-GNSS1A1 V1.0.0</li>
+</ul></li>
+<li>Middlewares
+<ul>
+<li>NMEA Library V1.0.0</li>
+</ul></li>
+<li>Utilities
+<ul>
+<li>Firmware Updater Tool</li>
+</ul></li>
+</ul>
+<h2 id="development-toolchains-and-compilers-11">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V7.80.4 + ST-LINK/V2</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.22 + ST-LINK/V2</li>
+<li>Ac6 System Workbench for STM32 V1.15.0 + ST-LINK/V2</li>
+</ul>
+<h2 id="supported-devices-and-boards-11">Supported Devices and Boards</h2>
+<ul>
+<li>STM32F401RE device</li>
+<li>NUCLEO-F401RE Board RevC</li>
+<li>X-NUCLEO-GNSS1A1 Board</li>
+</ul>
+</div>
+</div>
+</section>
+</div>
+<footer class="sticky">
+<div class="columns">
+<div class="column" style="width:95%;">
+<p>For complete documentation on <strong>X-CUBE-GNSS1</strong>, visit: <a href="https://my.st.com/content/my_st_com/en/products/embedded-software/mcu-mpu-embedded-software/stm32-embedded-software/stm32cube-expansion-packages/x-cube-GNSS1.html">www.st.com</a></p>
+</div><div class="column" style="width:5%;">
+<p><abbr title="Based on template cx566953 version 2.0">Info</abbr></p>
+</div>
+</div>
+</footer>
+</body>
+</html>
