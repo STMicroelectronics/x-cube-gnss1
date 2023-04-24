@@ -50,7 +50,6 @@
 									<listOptionValue builtIn="false" value="USE_MBED_TLS"/>
 									<listOptionValue builtIn="false" value="HTTPCLIENT"/>
 									<listOptionValue builtIn="false" value="USE_WIFI"/>
-									<listOptionValue builtIn="false" value="USE_CLEAR_TIMEDATE"/>
 									<listOptionValue builtIn="false" value="USE_HAL_UART_REGISTER_CALLBACKS=1"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.includepaths.115624135" name="Include paths (-I)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.includepaths" useByScannerDiscovery="false" valueType="includePath">
@@ -158,7 +157,6 @@
 									<listOptionValue builtIn="false" value="USE_MBED_TLS"/>
 									<listOptionValue builtIn="false" value="HTTPCLIENT"/>
 									<listOptionValue builtIn="false" value="USE_WIFI"/>
-									<listOptionValue builtIn="false" value="USE_CLEAR_TIMEDATE"/>
 									<listOptionValue builtIn="false" value="USE_HAL_UART_REGISTER_CALLBACKS=1"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.includepaths.1080398054" name="Include paths (-I)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.includepaths" useByScannerDiscovery="false" valueType="includePath">

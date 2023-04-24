@@ -39,7 +39,11 @@ This A_GetPos sample application is able to:
  - enable the Assisted-GNSS feature (both Predictive and Real-Time).
 
  - allow the user to select among different options for getting in a human readable format information related 
-   to the acquired GNSS position, the satellites in view, the active satellites, and more.		
+   to the acquired GNSS position, the satellites in view, the active satellites, and more.
+
+ - NOTE: The A_GetPos Application for B-L475E-IOT01A1 board includes a RTC initialization mechanism which 
+   relies on the usage of an external web server. The availability of this server is not guaranteed over time. 
+   That example server name #defined in TIME_SOURCE_HTTP_POST shall therfore not be used in production.   
 	
 This A_GetPos sample application allows also the user to run commands enabling three advanced features:
 

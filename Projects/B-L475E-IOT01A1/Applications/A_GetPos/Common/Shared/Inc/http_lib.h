@@ -178,7 +178,7 @@ int http_sock_setopt(http_handle_t Hnd, const char * optname, const uint8_t * op
  * @brief   Send an HTTP GET request.
  * @param   In:   hnd             Handle created by http_create_session().
  * @param   In:       query           HTTP query string ( "/path/to/request.html" ).
- *                                    Must beging with '/'.
+ *                                    Must begin with '/'.
  * @param   In:   additional_headers  HTTP headers (each line ending with CRLF)
  * @param   In:   readbuffer      pointer to read buffer filled with server response to GET request (with header and body).
  * @param   In:   size            size of read buffer.
@@ -191,7 +191,7 @@ int http_get(const http_handle_t hnd, const char * query, const char * additiona
  * @brief   Send an HTTP POST request.
  * @param   In:       hnd             HTTP Handle created by http_open().
  * @param   In:       query           HTTP query string ( "/path/to/request.html" ).
- *                                    Must beging with '/'.
+ *                                    Must begin with '/'.
  * @param   In:       additional_headers  HTTP headers ("name: value", each line ending with \r\n)
  * @param   In:       postbuffer          pointer to data to be sent with POST request
  * @param   In:       postbuffer_size     length of data of POST request.
@@ -207,7 +207,7 @@ int http_post(const http_handle_t hnd, const char * query, const char * addition
  * @brief   Send an HTTP PUT request.
  * @param   In:       hnd             HTTP Handle created by http_open().
  * @param   In:       resource        HTTP resource string ( "/path/to/resource.html" ).
- *                                    Must beging with '/'.
+ *                                    Must begin with '/'.
  * @param   In:       additional_headers  HTTP headers (each line ending with \r\n)
  * @param   In:       putbuffer          pointer to data to be sent with PUT request
  * @param   In:       putbuffer_size     length of data of PUT request.
@@ -223,7 +223,7 @@ int http_put(const http_handle_t hnd, const char * query, const char * additiona
  * @brief   Send an HTTP DELETE request.
  * @param   In:       hnd             HTTP Handle created by http_open().
  * @param   In:       query           HTTP resource path ( "/path/to/resource.html" ).
- *                                    Must beging with '/'.
+ *                                    Must begin with '/'.
  * @param   In:       additional_headers  HTTP headers (each line ending with \r\n)
  * @param   In:       responsebuffer        pointer to buffer for POST response
  * @param   In:       responsebuffer_size   max size of data of POST response.

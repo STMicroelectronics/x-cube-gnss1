@@ -155,7 +155,7 @@ int8_t SPI_WIFI_Init(uint16_t mode)
     hspi.Init.CLKPolarity       = SPI_POLARITY_LOW;
     hspi.Init.CLKPhase          = SPI_PHASE_1EDGE;
     hspi.Init.NSS               = SPI_NSS_SOFT;
-    hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8; /* 80/8= 10MHz (Inventek WIFI module supportes up to 20MHz)*/
+    hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8; /* 80/8= 10MHz (Inventek WIFI module supports up to 20MHz)*/
     hspi.Init.FirstBit          = SPI_FIRSTBIT_MSB;
     hspi.Init.TIMode            = SPI_TIMODE_DISABLE;
     hspi.Init.CRCCalculation    = SPI_CRCCALCULATION_DISABLE;

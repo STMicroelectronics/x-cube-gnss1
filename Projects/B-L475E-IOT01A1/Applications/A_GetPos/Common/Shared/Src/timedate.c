@@ -25,7 +25,7 @@
 
 /** Host from which the time/date will be retrieved.*/
 #ifdef USE_CLEAR_TIMEDATE
-#define TIME_SOURCE_HTTP_HOST   "www.st.com"
+#define TIME_SOURCE_HTTP_HOST   ""
 #define TIME_SOURCE_HTTP_PORT   80
 #define TIME_SOURCE_HTTP_PROTO  NET_PROTO_TCP
 #else
