@@ -70,6 +70,15 @@ In order to make the program work, you must do the following:
  - Alternatively, you can download the pre-built binaries in "Binary" 
    folder included in the distributed package.
 
+   
+### <b>Keil v5.38 Changes </b>
+
+In order to make the project build for Keil v5.38 , follow the below steps:
+
+- Change the include path from ../../../../../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F to ../../../../../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
+- Change the path of port.c include in the Middlewares/Third_Party/FreeRTOS from ..\..\..\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\port.c
+ to ..\..\..\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F\port.c
+
 ### <b>Author</b>
 
 SRA Application Team

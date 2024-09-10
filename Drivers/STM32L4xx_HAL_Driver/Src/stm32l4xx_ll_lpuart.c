@@ -44,6 +44,9 @@
   * @{
   */
 
+/* Definition of default baudrate value used for LPUART initialisation */
+#define LPUART_DEFAULT_BAUDRATE          (9600U)
+
 /**
   * @}
   */
@@ -128,7 +131,7 @@
   *          - SUCCESS: LPUART registers are de-initialized
   *          - ERROR: not applicable
   */
-ErrorStatus LL_LPUART_DeInit(USART_TypeDef *LPUARTx)
+ErrorStatus LL_LPUART_DeInit(const USART_TypeDef *LPUARTx)
 {
   ErrorStatus status = SUCCESS;
 
@@ -166,7 +169,7 @@ ErrorStatus LL_LPUART_DeInit(USART_TypeDef *LPUARTx)
   *          - SUCCESS: LPUART registers are initialized according to LPUART_InitStruct content
   *          - ERROR: Problem occurred during LPUART Registers initialization
   */
-ErrorStatus LL_LPUART_Init(USART_TypeDef *LPUARTx, LL_LPUART_InitTypeDef *LPUART_InitStruct)
+ErrorStatus LL_LPUART_Init(USART_TypeDef *LPUARTx, const LL_LPUART_InitTypeDef *LPUART_InitStruct)
 {
   ErrorStatus status = ERROR;
   uint32_t periphclk;
@@ -216,9 +219,9 @@ ErrorStatus LL_LPUART_Init(USART_TypeDef *LPUARTx, LL_LPUART_InitTypeDef *LPUART
     periphclk = LL_RCC_GetLPUARTClockFreq(LL_RCC_LPUART1_CLKSOURCE);
 
     /* Configure the LPUART Baud Rate :
-#if defined(USART_PRESC_PRESCALER)
+    #if defined(USART_PRESC_PRESCALER)
        - prescaler value is required
-#endif
+    #endif
        - valid baud rate value (different from 0) is required
        - Peripheral clock as returned by RCC service, should be valid (different from 0).
     */
@@ -265,7 +268,7 @@ void LL_LPUART_StructInit(LL_LPUART_InitTypeDef *LPUART_InitStruct)
 #if defined(USART_PRESC_PRESCALER)
   LPUART_InitStruct->PrescalerValue      = LL_LPUART_PRESCALER_DIV1;
 #endif /* USART_PRESC_PRESCALER */
-  LPUART_InitStruct->BaudRate            = 9600U;
+  LPUART_InitStruct->BaudRate            = LPUART_DEFAULT_BAUDRATE;
   LPUART_InitStruct->DataWidth           = LL_LPUART_DATAWIDTH_8B;
   LPUART_InitStruct->StopBits            = LL_LPUART_STOPBITS_1;
   LPUART_InitStruct->Parity              = LL_LPUART_PARITY_NONE ;

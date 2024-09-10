@@ -13,13 +13,13 @@
               + Interrupts and flags management
               + DMA channel configuration for indirect functional mode
               + Errors management and abort functionality
-              + IO manager configuration
+              + IO manager configuration (if available)
               + Delay block configuration
               + HIGH-SPEED INTERFACE configuration
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -53,7 +53,7 @@
      and the CS boundary using the HAL_XSPI_Init() function.
     [..]
      When using Hyperbus, configure the RW recovery time, the access time,
-     the write latency and the latency mode unsing the HAL_XSPI_HyperbusCfg()
+     the write latency and the latency mode using the HAL_XSPI_HyperbusCfg()
      function.
 
     *** Indirect functional mode ***
@@ -157,12 +157,18 @@
     [..]
      HAL_XSPI_SetFifoThreshold() function configures the threshold on the Fifo of the OctoSPI/HSPI Peripheral.
     [..]
+     HAL_XSPI_SetMemoryType() function configures the type of the external memory.
+    [..]
+     HAL_XSPI_SetDeviceSize() function configures the size of the external memory.
+    [..]
+     HAL_XSPI_SetClockPrescaler() function configures the clock prescaler of the OctoSPI/HSPI Peripheral.
+    [..]
      HAL_XSPI_GetFifoThreshold() function gives the current of the Fifo's threshold
 
-    *** IO manager configuration functions ***
+    *** IO manager configuration functions (if available) ***
     ==========================================
     [..]
-     HAL_XSPIM_Config() function configures the IO manager for the XSPI instance.
+     HAL_XSPIM_Config() function configures the IO manager (if available) for the XSPI instance.
 
     *** Delay Block functions ***
     ==========================================
@@ -214,7 +220,7 @@
 
     [..]
      Use function HAL_XSPI_UnRegisterCallback() to reset a callback to the default
-     weak (surcharged) function. It allows to reset following callbacks:
+     weak (overridden) function. It allows to reset following callbacks:
      (+) ErrorCallback : callback when error occurs.
      (+) AbortCpltCallback : callback when abort is completed.
      (+) FifoThresholdCallback : callback when the fifo threshold is reached.
@@ -232,9 +238,9 @@
 
     [..]
      By default, after the HAL_XSPI_Init() and if the state is HAL_XSPI_STATE_RESET
-     all callbacks are reset to the corresponding legacy weak (surcharged) functions.
+     all callbacks are reset to the corresponding legacy weak (overridden) functions.
      Exception done for MspInit and MspDeInit callbacks that are respectively
-     reset to the legacy weak (surcharged) functions in the HAL_XSPI_Init()
+     reset to the legacy weak (overridden) functions in the HAL_XSPI_Init()
      and HAL_XSPI_DeInit() only when these callbacks are null (not registered beforehand).
      If not, MspInit or MspDeInit are not null, the HAL_XSPI_Init() and HAL_XSPI_DeInit()
      keep and use the user MspInit/MspDeInit callbacks (registered beforehand)
@@ -251,7 +257,7 @@
     [..]
      When The compilation define USE_HAL_XSPI_REGISTER_CALLBACKS is set to 0 or
      not defined, the callback registering feature is not available
-     and weak (surcharged) callbacks are used.
+     and weak (overridden) callbacks are used.
 
   @endverbatim
   ******************************************************************************
@@ -287,10 +293,12 @@
 #define XSPI_CFG_STATE_MASK  0x00000004U
 #define XSPI_BUSY_STATE_MASK 0x00000008U
 
+#if defined(OCTOSPIM)
 #define OSPI_NB_INSTANCE   2U
 #define OSPI_IOM_NB_PORTS  2U
 #define OSPI_IOM_PORT_MASK 0x1U
 
+#endif /* OCTOSPIM */
 /* Private macro -------------------------------------------------------------*/
 #define IS_XSPI_FUNCTIONAL_MODE(MODE) (((MODE) == XSPI_FUNCTIONAL_MODE_INDIRECT_WRITE) || \
                                        ((MODE) == XSPI_FUNCTIONAL_MODE_INDIRECT_READ)  || \
@@ -307,7 +315,9 @@ static void              XSPI_DMAAbortCplt(DMA_HandleTypeDef *hdma);
 static HAL_StatusTypeDef XSPI_WaitFlagStateUntilTimeout(XSPI_HandleTypeDef *hxspi, uint32_t Flag, FlagStatus State,
                                                         uint32_t Tickstart, uint32_t Timeout);
 static HAL_StatusTypeDef XSPI_ConfigCmd(XSPI_HandleTypeDef *hxspi, XSPI_RegularCmdTypeDef *const pCmd);
+#if defined(OCTOSPIM)
 static void XSPIM_GetConfig(uint8_t instance_nb, XSPIM_CfgTypeDef *const pCfg);
+#endif /* OCTOSPIM */
 /**
   @endcond
   */
@@ -369,10 +379,12 @@ HAL_StatusTypeDef HAL_XSPI_Init(XSPI_HandleTypeDef *hxspi)
     {
       assert_param(IS_OCTOSPI_FIFO_THRESHOLD_BYTE(hxspi->Init.FifoThresholdByte));
     }
+#if defined(HSPI1)
     if (IS_HSPI_ALL_INSTANCE(hxspi->Instance))
     {
       assert_param(IS_HSPI_FIFO_THRESHOLD_BYTE(hxspi->Init.FifoThresholdByte));
     }
+#endif /* HSPI1 */
     if (IS_OSPI_ALL_INSTANCE(hxspi->Instance))
     {
       assert_param(IS_XSPI_DLYB_BYPASS(hxspi->Init.DelayBlockBypass));
@@ -436,9 +448,9 @@ HAL_StatusTypeDef HAL_XSPI_Init(XSPI_HandleTypeDef *hxspi)
       /* Configure maximum transfer */
       if (IS_OSPI_ALL_INSTANCE(hxspi->Instance))
       {
-        MODIFY_REG(hxspi->Instance->DCR3, OCTOSPI_DCR3_MAXTRAN, (hxspi->Init.MaxTran << OCTOSPI_DCR3_MAXTRAN_Pos));
+        MODIFY_REG(hxspi->Instance->DCR3, OCTOSPI_DCR3_MAXTRAN, \
+                   (hxspi->Init.MaxTran << OCTOSPI_DCR3_MAXTRAN_Pos));
       }
-
 
       /* Configure refresh */
       hxspi->Instance->DCR4 = hxspi->Init.Refresh;
@@ -455,6 +467,7 @@ HAL_StatusTypeDef HAL_XSPI_Init(XSPI_HandleTypeDef *hxspi)
         MODIFY_REG(hxspi->Instance->DCR2, XSPI_DCR2_PRESCALER,
                    ((hxspi->Init.ClockPrescaler) << XSPI_DCR2_PRESCALER_Pos));
 
+#if defined(HSPI_CALFCR_FINE)
         if (IS_HSPI_ALL_INSTANCE(hxspi->Instance))
         {
           /* The configuration of clock prescaler trigger automatically a calibration process.
@@ -465,6 +478,7 @@ HAL_StatusTypeDef HAL_XSPI_Init(XSPI_HandleTypeDef *hxspi)
             return status;
           }
         }
+#endif /* HSPI_CALFCR_FINE */
         /* Configure Dual Memory mode */
         MODIFY_REG(hxspi->Instance->CR, XSPI_CR_DMM, hxspi->Init.MemoryMode);
 
@@ -480,6 +494,7 @@ HAL_StatusTypeDef HAL_XSPI_Init(XSPI_HandleTypeDef *hxspi)
         {
           SET_BIT(hxspi->Instance->DCR1, XSPI_DCR1_FRCK);
         }
+
         /* Initialize the XSPI state */
         if (hxspi->Init.MemoryType == HAL_XSPI_MEMTYPE_HYPERBUS)
         {
@@ -852,10 +867,12 @@ HAL_StatusTypeDef HAL_XSPI_Command(XSPI_HandleTypeDef *hxspi, XSPI_RegularCmdTyp
     {
       assert_param(IS_OCTOSPI_IO_SELECT(pCmd->IOSelect));
     }
+#if defined(HSPI1)
     else if (IS_HSPI_ALL_INSTANCE(hxspi->Instance))
     {
       assert_param(IS_HSPI_IO_SELECT(pCmd->IOSelect));
     }
+#endif /* HSPI1 */
     else
     {
       hxspi->ErrorCode |= HAL_XSPI_ERROR_INVALID_PARAM;
@@ -888,10 +905,12 @@ HAL_StatusTypeDef HAL_XSPI_Command(XSPI_HandleTypeDef *hxspi, XSPI_RegularCmdTyp
   {
     assert_param(IS_OCTOSPI_DATA_MODE(pCmd->DataMode));
   }
+#if defined(HSPI1)
   else if (IS_HSPI_ALL_INSTANCE(hxspi->Instance))
   {
-    assert_param(IS_HSPI_DATA_MODE(pCmd->DataMode));
+    assert_param(IS_HSPI_DATA_MODE(hxspi->Init.MemoryType, pCmd->DataMode));
   }
+#endif /* HSPI1 */
   else
   {
     hxspi->ErrorCode |= HAL_XSPI_ERROR_INVALID_PARAM;
@@ -977,6 +996,10 @@ HAL_StatusTypeDef HAL_XSPI_Command(XSPI_HandleTypeDef *hxspi, XSPI_RegularCmdTyp
         }
       }
     }
+    else
+    {
+      status = HAL_BUSY;
+    }
   }
   else
   {
@@ -1009,6 +1032,7 @@ HAL_StatusTypeDef HAL_XSPI_Command_IT(XSPI_HandleTypeDef *hxspi, XSPI_RegularCmd
       assert_param(IS_OCTOSPI_IO_SELECT(pCmd->IOSelect));
     }
   }
+#if defined(HSPI1)
   else if (IS_HSPI_ALL_INSTANCE(hxspi->Instance))
   {
     if (hxspi->Init.MemoryMode == HAL_XSPI_SINGLE_MEM)
@@ -1016,12 +1040,12 @@ HAL_StatusTypeDef HAL_XSPI_Command_IT(XSPI_HandleTypeDef *hxspi, XSPI_RegularCmd
       assert_param(IS_HSPI_IO_SELECT(pCmd->IOSelect));
     }
   }
+#endif /* HSPI */
   else
   {
     hxspi->ErrorCode |= HAL_XSPI_ERROR_INVALID_PARAM;
     return HAL_ERROR;
   }
-
 
   assert_param(IS_XSPI_INSTRUCTION_MODE(pCmd->InstructionMode));
   if (pCmd->InstructionMode != HAL_XSPI_INSTRUCTION_NONE)
@@ -1048,10 +1072,12 @@ HAL_StatusTypeDef HAL_XSPI_Command_IT(XSPI_HandleTypeDef *hxspi, XSPI_RegularCmd
   {
     assert_param(IS_OCTOSPI_DATA_MODE(pCmd->DataMode));
   }
+#if defined(HSPI1)
   else if (IS_HSPI_ALL_INSTANCE(hxspi->Instance))
   {
-    assert_param(IS_HSPI_DATA_MODE(pCmd->DataMode));
+    assert_param(IS_HSPI_DATA_MODE(hxspi->Init.MemoryType, pCmd->DataMode));
   }
+#endif /* HSPI1 */
   else
   {
     hxspi->ErrorCode |= HAL_XSPI_ERROR_INVALID_PARAM;
@@ -1142,6 +1168,10 @@ HAL_StatusTypeDef HAL_XSPI_HyperbusCfg(XSPI_HandleTypeDef *hxspi, XSPI_HyperbusC
       /* Update the state */
       hxspi->State = HAL_XSPI_STATE_READY;
     }
+    else
+    {
+      status = HAL_BUSY;
+    }
   }
   else
   {
@@ -1170,6 +1200,16 @@ HAL_StatusTypeDef HAL_XSPI_HyperbusCmd(XSPI_HandleTypeDef *hxspi, XSPI_HyperbusC
   assert_param(IS_XSPI_ADDRESS_WIDTH(pCmd->AddressWidth));
   assert_param(IS_XSPI_DATA_LENGTH(pCmd->DataLength));
   assert_param(IS_XSPI_DQS_MODE(pCmd->DQSMode));
+#if defined(HSPI1)
+  if (IS_HSPI_ALL_INSTANCE(hxspi->Instance))
+  {
+    assert_param(IS_HSPI_DATA_MODE(hxspi->Init.MemoryType, pCmd->DataMode));
+  }
+  else
+  {
+    /* Nothing to do */
+  }
+#endif /* HSPI1 */
 
   /* Check the state of the driver */
   if ((hxspi->State == HAL_XSPI_STATE_READY) && (hxspi->Init.MemoryType == HAL_XSPI_MEMTYPE_HYPERBUS))
@@ -1187,12 +1227,29 @@ HAL_StatusTypeDef HAL_XSPI_HyperbusCmd(XSPI_HandleTypeDef *hxspi, XSPI_HyperbusC
 
       /* Configure the CCR and WCCR registers with the address size and the following configuration :
          - DQS signal enabled (used as RWDS)
-         - DTR mode enabled on address and data
-         - address and data on 8 lines */
-      WRITE_REG(hxspi->Instance->CCR, (pCmd->DQSMode | XSPI_CCR_DDTR | XSPI_CCR_DMODE_2 |
-                                       pCmd->AddressWidth | XSPI_CCR_ADDTR | XSPI_CCR_ADMODE_2));
-      WRITE_REG(hxspi->Instance->WCCR, (pCmd->DQSMode | XSPI_WCCR_DDTR | XSPI_WCCR_DMODE_2 |
-                                        pCmd->AddressWidth | XSPI_WCCR_ADDTR | XSPI_WCCR_ADMODE_2));
+         - DTR mode enabled on address and data */
+      if (IS_OSPI_ALL_INSTANCE(hxspi->Instance))
+      {
+        /* - address and data on 8 lines */
+        WRITE_REG(hxspi->Instance->CCR, (pCmd->DQSMode | XSPI_CCR_DDTR | XSPI_CCR_DMODE_2 |
+                                         pCmd->AddressWidth | XSPI_CCR_ADDTR | XSPI_CCR_ADMODE_2));
+        WRITE_REG(hxspi->Instance->WCCR, (pCmd->DQSMode | XSPI_WCCR_DDTR | XSPI_WCCR_DMODE_2 |
+                                          pCmd->AddressWidth | XSPI_WCCR_ADDTR | XSPI_WCCR_ADMODE_2));
+      }
+#if defined(HSPI1)
+      else if (IS_HSPI_ALL_INSTANCE(hxspi->Instance))
+      {
+        /* - address and data on 8 or 16 lines */
+        WRITE_REG(hxspi->Instance->CCR, (pCmd->DQSMode | XSPI_CCR_DDTR | pCmd->DataMode |
+                                         pCmd->AddressWidth | XSPI_CCR_ADDTR | XSPI_CCR_ADMODE_2));
+        WRITE_REG(hxspi->Instance->WCCR, (pCmd->DQSMode | XSPI_WCCR_DDTR | pCmd->DataMode |
+                                          pCmd->AddressWidth | XSPI_WCCR_ADDTR | XSPI_WCCR_ADMODE_2));
+      }
+#endif /* HSPI1 */
+      else
+      {
+        /* Nothing to do */
+      }
 
       /* Configure the DLR register with the number of data */
       WRITE_REG(hxspi->Instance->DLR, (pCmd->DataLength - 1U));
@@ -1202,6 +1259,10 @@ HAL_StatusTypeDef HAL_XSPI_HyperbusCmd(XSPI_HandleTypeDef *hxspi, XSPI_HyperbusC
 
       /* Update the state */
       hxspi->State = HAL_XSPI_STATE_CMD_CFG;
+    }
+    else
+    {
+      status = HAL_BUSY;
     }
   }
   else
@@ -1947,6 +2008,10 @@ HAL_StatusTypeDef HAL_XSPI_AutoPolling(XSPI_HandleTypeDef *hxspi, XSPI_AutoPolli
         hxspi->State = HAL_XSPI_STATE_READY;
       }
     }
+    else
+    {
+      status = HAL_BUSY;
+    }
   }
   else
   {
@@ -2236,7 +2301,7 @@ __weak void HAL_XSPI_TimeOutCallback(XSPI_HandleTypeDef *hxspi)
 #if defined (USE_HAL_XSPI_REGISTER_CALLBACKS) && (USE_HAL_XSPI_REGISTER_CALLBACKS == 1U)
 /**
   * @brief  Register a User XSPI Callback
-  *         To be used instead of the weak (surcharged) predefined callback
+  *         To be used to override the weak predefined callback
   * @param hxspi : XSPI handle
   * @param CallbackID : ID of the callback to be registered
   *        This parameter can be one of the following values:
@@ -2346,7 +2411,7 @@ HAL_StatusTypeDef HAL_XSPI_RegisterCallback(XSPI_HandleTypeDef *hxspi, HAL_XSPI_
 
 /**
   * @brief  Unregister a User XSPI Callback
-  *         XSPI Callback is redirected to the weak (surcharged) predefined callback
+  *         XSPI Callback is redirected to the weak predefined callback
   * @param hxspi : XSPI handle
   * @param CallbackID : ID of the callback to be unregistered
   *        This parameter can be one of the following values:
@@ -2470,7 +2535,7 @@ HAL_StatusTypeDef HAL_XSPI_UnRegisterCallback(XSPI_HandleTypeDef *hxspi, HAL_XSP
   */
 
 /**
-  * @brief  Abort the current transmission.
+  * @brief  Abort the current operation, return to the indirect mode.
   * @param  hxspi : XSPI handle
   * @retval HAL status
   */
@@ -2523,12 +2588,18 @@ HAL_StatusTypeDef HAL_XSPI_Abort(XSPI_HandleTypeDef *hxspi)
 
         if (status == HAL_OK)
         {
+          /* Return to indirect mode */
+          CLEAR_BIT(hxspi->Instance->CR, XSPI_CR_FMODE);
+
           hxspi->State = HAL_XSPI_STATE_READY;
         }
       }
     }
     else
     {
+      /* Return to indirect mode */
+      CLEAR_BIT(hxspi->Instance->CR, XSPI_CR_FMODE);
+
       hxspi->State = HAL_XSPI_STATE_READY;
     }
   }
@@ -2542,7 +2613,7 @@ HAL_StatusTypeDef HAL_XSPI_Abort(XSPI_HandleTypeDef *hxspi)
 }
 
 /**
-  * @brief  Abort the current transmission (non-blocking function)
+  * @brief  Abort the current operation, return to the indirect mode. (non-blocking function)
   * @param  hxspi : XSPI handle
   * @retval HAL status
   */
@@ -2606,9 +2677,15 @@ HAL_StatusTypeDef HAL_XSPI_Abort_IT(XSPI_HandleTypeDef *hxspi)
 
         /* Perform an abort of the XSPI */
         SET_BIT(hxspi->Instance->CR, XSPI_CR_ABORT);
+
+        /* Return to indirect mode */
+        CLEAR_BIT(hxspi->Instance->CR, XSPI_CR_FMODE);
       }
       else
       {
+        /* Return to indirect mode */
+        CLEAR_BIT(hxspi->Instance->CR, XSPI_CR_FMODE);
+
         hxspi->State = HAL_XSPI_STATE_READY;
 
         /* Abort callback */
@@ -2640,12 +2717,14 @@ HAL_StatusTypeDef HAL_XSPI_SetFifoThreshold(XSPI_HandleTypeDef *hxspi, uint32_t 
 
   if (IS_OSPI_ALL_INSTANCE(hxspi->Instance))
   {
-    assert_param(IS_OCTOSPI_FIFO_THRESHOLD_BYTE(hxspi->Init.FifoThresholdByte));
+    assert_param(IS_OCTOSPI_FIFO_THRESHOLD_BYTE(Threshold));
   }
+#if defined(HSPI1)
   else if (IS_HSPI_ALL_INSTANCE(hxspi->Instance))
   {
-    assert_param(IS_HSPI_FIFO_THRESHOLD_BYTE(hxspi->Init.FifoThresholdByte));
+    assert_param(IS_HSPI_FIFO_THRESHOLD_BYTE(Threshold));
   }
+#endif /* HSPI1 */
   else
   {
     hxspi->ErrorCode |= HAL_XSPI_ERROR_INVALID_PARAM;
@@ -2675,9 +2754,97 @@ HAL_StatusTypeDef HAL_XSPI_SetFifoThreshold(XSPI_HandleTypeDef *hxspi, uint32_t 
   * @param  hxspi : XSPI handle.
   * @retval Fifo threshold
   */
-uint32_t HAL_XSPI_GetFifoThreshold(XSPI_HandleTypeDef *hxspi)
+uint32_t HAL_XSPI_GetFifoThreshold(const XSPI_HandleTypeDef *hxspi)
 {
   return ((READ_BIT(hxspi->Instance->CR, XSPI_CR_FTHRES) >> XSPI_CR_FTHRES_Pos) + 1U);
+}
+
+/** @brief  Set XSPI Memory Type.
+  * @param  hxspi     : XSPI handle.
+  * @param  Type : Memory Type.
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_XSPI_SetMemoryType(XSPI_HandleTypeDef *hxspi, uint32_t Type)
+{
+  HAL_StatusTypeDef status = HAL_OK;
+
+  assert_param(IS_XSPI_MEMORY_TYPE(Type));
+
+  /* Check the state */
+  if ((hxspi->State & XSPI_BUSY_STATE_MASK) == 0U)
+  {
+    /* Synchronize initialization structure with the new memory type value */
+    hxspi->Init.MemoryType = Type;
+
+    /* Configure new memory type */
+    MODIFY_REG(hxspi->Instance->DCR1, XSPI_DCR1_MTYP, hxspi->Init.MemoryType);
+  }
+  else
+  {
+    status = HAL_ERROR;
+    hxspi->ErrorCode = HAL_XSPI_ERROR_INVALID_SEQUENCE;
+  }
+
+  return status;
+}
+
+/** @brief  Set XSPI Device Size.
+  * @param  hxspi     : XSPI handle.
+  * @param  Size : Device Size.
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_XSPI_SetDeviceSize(XSPI_HandleTypeDef *hxspi, uint32_t Size)
+{
+  HAL_StatusTypeDef status = HAL_OK;
+
+  assert_param(IS_XSPI_MEMORY_SIZE(Size));
+
+  /* Check the state */
+  if ((hxspi->State & XSPI_BUSY_STATE_MASK) == 0U)
+  {
+    /* Synchronize initialization structure with the new device size value */
+    hxspi->Init.MemorySize = Size;
+
+    /* Configure new device size */
+    MODIFY_REG(hxspi->Instance->DCR1, XSPI_DCR1_DEVSIZE,
+               (hxspi->Init.MemorySize << XSPI_DCR1_DEVSIZE_Pos));
+  }
+  else
+  {
+    status = HAL_ERROR;
+    hxspi->ErrorCode = HAL_XSPI_ERROR_INVALID_SEQUENCE;
+  }
+
+  return status;
+}
+
+/** @brief  Set XSPI Clock prescaler.
+  * @param  hxspi     : XSPI handle.
+  * @param  Prescaler : Clock prescaler.
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_XSPI_SetClockPrescaler(XSPI_HandleTypeDef *hxspi, uint32_t Prescaler)
+{
+  HAL_StatusTypeDef status = HAL_OK;
+  assert_param(IS_XSPI_CLK_PRESCALER(Prescaler));
+
+  /* Check the state */
+  if ((hxspi->State & XSPI_BUSY_STATE_MASK) == 0U)
+  {
+    /* Synchronize initialization structure with the new clock prescaler value */
+    hxspi->Init.ClockPrescaler = Prescaler;
+
+    /* Configure clock prescaler */
+    MODIFY_REG(hxspi->Instance->DCR2, XSPI_DCR2_PRESCALER,
+               ((hxspi->Init.ClockPrescaler) << XSPI_DCR2_PRESCALER_Pos));
+  }
+  else
+  {
+    status = HAL_ERROR;
+    hxspi->ErrorCode = HAL_XSPI_ERROR_INVALID_SEQUENCE;
+  }
+
+  return status;
 }
 
 /** @brief Set XSPI timeout.
@@ -2696,7 +2863,7 @@ HAL_StatusTypeDef HAL_XSPI_SetTimeout(XSPI_HandleTypeDef *hxspi, uint32_t Timeou
   * @param  hxspi : XSPI handle
   * @retval XSPI Error Code
   */
-uint32_t HAL_XSPI_GetError(XSPI_HandleTypeDef *hxspi)
+uint32_t HAL_XSPI_GetError(const XSPI_HandleTypeDef *hxspi)
 {
   return hxspi->ErrorCode;
 }
@@ -2706,7 +2873,7 @@ uint32_t HAL_XSPI_GetError(XSPI_HandleTypeDef *hxspi)
   * @param  hxspi : XSPI handle
   * @retval HAL state
   */
-uint32_t HAL_XSPI_GetState(XSPI_HandleTypeDef *hxspi)
+uint32_t HAL_XSPI_GetState(const XSPI_HandleTypeDef *hxspi)
 {
   /* Return XSPI handle state */
   return hxspi->State;
@@ -2716,6 +2883,7 @@ uint32_t HAL_XSPI_GetState(XSPI_HandleTypeDef *hxspi)
   * @}
   */
 
+#if defined(OCTOSPIM)
 /** @defgroup XSPI_Exported_Functions_Group4 IO Manager configuration function
   *  @brief   XSPI IO Manager configuration function
   *
@@ -2738,7 +2906,7 @@ uint32_t HAL_XSPI_GetState(XSPI_HandleTypeDef *hxspi)
   * @param  Timeout : Timeout duration
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_XSPIM_Config(XSPI_HandleTypeDef *hxspi, XSPIM_CfgTypeDef *const pCfg, uint32_t Timeout)
+HAL_StatusTypeDef HAL_XSPIM_Config(XSPI_HandleTypeDef *const hxspi, XSPIM_CfgTypeDef *const pCfg, uint32_t Timeout)
 {
   HAL_StatusTypeDef status = HAL_OK;
   uint32_t instance;
@@ -2780,199 +2948,196 @@ HAL_StatusTypeDef HAL_XSPIM_Config(XSPI_HandleTypeDef *hxspi, XSPIM_CfgTypeDef *
     XSPIM_GetConfig(index + 1U, &(IOM_cfg[index]));
   }
 
-  if (status == HAL_OK)
+  /********** Disable both XSPI to configure XSPI IO Manager **********/
+  if ((OCTOSPI1->CR & XSPI_CR_EN) != 0U)
   {
-    /********** Disable both XSPI to configure XSPI IO Manager **********/
-    if ((OCTOSPI1->CR & XSPI_CR_EN) != 0U)
-    {
-      CLEAR_BIT(OCTOSPI1->CR, XSPI_CR_EN);
-      xspi_enabled |= 0x1U;
-    }
-    if ((OCTOSPI2->CR & XSPI_CR_EN) != 0U)
-    {
-      CLEAR_BIT(OCTOSPI2->CR, XSPI_CR_EN);
-      xspi_enabled |= 0x2U;
-    }
+    CLEAR_BIT(OCTOSPI1->CR, XSPI_CR_EN);
+    xspi_enabled |= 0x1U;
+  }
+  if ((OCTOSPI2->CR & XSPI_CR_EN) != 0U)
+  {
+    CLEAR_BIT(OCTOSPI2->CR, XSPI_CR_EN);
+    xspi_enabled |= 0x2U;
+  }
 
-    /***************** Deactivation of previous configuration *****************/
-    CLEAR_BIT(OCTOSPIM->PCR[(IOM_cfg[instance].NCSPort - 1U)], OCTOSPIM_PCR_NCSEN);
-    if ((OCTOSPIM->CR & OCTOSPIM_CR_MUXEN) != 0U)
-    {
-      /* De-multiplexing should be performed */
-      CLEAR_BIT(OCTOSPIM->CR, OCTOSPIM_CR_MUXEN);
+  /***************** Deactivation of previous configuration *****************/
+  CLEAR_BIT(OCTOSPIM->PCR[(IOM_cfg[instance].NCSPort - 1U)], OCTOSPIM_PCR_NCSEN);
+  if ((OCTOSPIM->CR & OCTOSPIM_CR_MUXEN) != 0U)
+  {
+    /* De-multiplexing should be performed */
+    CLEAR_BIT(OCTOSPIM->CR, OCTOSPIM_CR_MUXEN);
 
-      if (other_instance == 1U)
+    if (other_instance == 1U)
+    {
+      SET_BIT(OCTOSPIM->PCR[(IOM_cfg[other_instance].ClkPort - 1U)], OCTOSPIM_PCR_CLKSRC);
+      if (IOM_cfg[other_instance].DQSPort != 0U)
       {
-        SET_BIT(OCTOSPIM->PCR[(IOM_cfg[other_instance].ClkPort - 1U)], OCTOSPIM_PCR_CLKSRC);
-        if (IOM_cfg[other_instance].DQSPort != 0U)
-        {
-          SET_BIT(OCTOSPIM->PCR[(IOM_cfg[other_instance].DQSPort - 1U)], OCTOSPIM_PCR_DQSSRC);
-        }
-        if (IOM_cfg[other_instance].IOLowPort != HAL_XSPIM_IOPORT_NONE)
-        {
-          SET_BIT(OCTOSPIM->PCR[((IOM_cfg[other_instance].IOLowPort - 1U)& OSPI_IOM_PORT_MASK)],
-                  OCTOSPIM_PCR_IOLSRC_1);
-        }
-        if (IOM_cfg[other_instance].IOHighPort != HAL_XSPIM_IOPORT_NONE)
-        {
-          SET_BIT(OCTOSPIM->PCR[((IOM_cfg[other_instance].IOHighPort - 1U)& OSPI_IOM_PORT_MASK)],
-                  OCTOSPIM_PCR_IOHSRC_1);
-        }
+        SET_BIT(OCTOSPIM->PCR[(IOM_cfg[other_instance].DQSPort - 1U)], OCTOSPIM_PCR_DQSSRC);
+      }
+      if (IOM_cfg[other_instance].IOLowPort != HAL_XSPIM_IOPORT_NONE)
+      {
+        SET_BIT(OCTOSPIM->PCR[((IOM_cfg[other_instance].IOLowPort - 1U)& OSPI_IOM_PORT_MASK)],
+                OCTOSPIM_PCR_IOLSRC_1);
+      }
+      if (IOM_cfg[other_instance].IOHighPort != HAL_XSPIM_IOPORT_NONE)
+      {
+        SET_BIT(OCTOSPIM->PCR[((IOM_cfg[other_instance].IOHighPort - 1U)& OSPI_IOM_PORT_MASK)],
+                OCTOSPIM_PCR_IOHSRC_1);
       }
     }
-    else
+  }
+  else
+  {
+    if (IOM_cfg[instance].ClkPort != 0U)
     {
-      if (IOM_cfg[instance].ClkPort != 0U)
+      CLEAR_BIT(OCTOSPIM->PCR[(IOM_cfg[instance].ClkPort - 1U)], OCTOSPIM_PCR_CLKEN);
+      if (IOM_cfg[instance].DQSPort != 0U)
       {
-        CLEAR_BIT(OCTOSPIM->PCR[(IOM_cfg[instance].ClkPort - 1U)], OCTOSPIM_PCR_CLKEN);
-        if (IOM_cfg[instance].DQSPort != 0U)
-        {
-          CLEAR_BIT(OCTOSPIM->PCR[(IOM_cfg[instance].DQSPort - 1U)], OCTOSPIM_PCR_DQSEN);
-        }
-        if (IOM_cfg[instance].IOLowPort != HAL_XSPIM_IOPORT_NONE)
-        {
-          CLEAR_BIT(OCTOSPIM->PCR[((IOM_cfg[instance].IOLowPort - 1U)& OSPI_IOM_PORT_MASK)], OCTOSPIM_PCR_IOLEN);
-        }
-        if (IOM_cfg[instance].IOHighPort != HAL_XSPIM_IOPORT_NONE)
-        {
-          CLEAR_BIT(OCTOSPIM->PCR[((IOM_cfg[instance].IOHighPort - 1U)& OSPI_IOM_PORT_MASK)], OCTOSPIM_PCR_IOHEN);
-        }
+        CLEAR_BIT(OCTOSPIM->PCR[(IOM_cfg[instance].DQSPort - 1U)], OCTOSPIM_PCR_DQSEN);
+      }
+      if (IOM_cfg[instance].IOLowPort != HAL_XSPIM_IOPORT_NONE)
+      {
+        CLEAR_BIT(OCTOSPIM->PCR[((IOM_cfg[instance].IOLowPort - 1U)& OSPI_IOM_PORT_MASK)], OCTOSPIM_PCR_IOLEN);
+      }
+      if (IOM_cfg[instance].IOHighPort != HAL_XSPIM_IOPORT_NONE)
+      {
+        CLEAR_BIT(OCTOSPIM->PCR[((IOM_cfg[instance].IOHighPort - 1U)& OSPI_IOM_PORT_MASK)], OCTOSPIM_PCR_IOHEN);
       }
     }
+  }
 
-    /********************* Deactivation of other instance *********************/
-    if ((pCfg->ClkPort == IOM_cfg[other_instance].ClkPort) || (pCfg->DQSPort == IOM_cfg[other_instance].DQSPort)     ||
-        (pCfg->NCSPort == IOM_cfg[other_instance].NCSPort) || (pCfg->IOLowPort == IOM_cfg[other_instance].IOLowPort) ||
+  /********************* Deactivation of other instance *********************/
+  if ((pCfg->ClkPort == IOM_cfg[other_instance].ClkPort) || (pCfg->DQSPort == IOM_cfg[other_instance].DQSPort)     ||
+      (pCfg->NCSPort == IOM_cfg[other_instance].NCSPort) || (pCfg->IOLowPort == IOM_cfg[other_instance].IOLowPort) ||
+      (pCfg->IOHighPort == IOM_cfg[other_instance].IOHighPort))
+  {
+    if ((pCfg->ClkPort   == IOM_cfg[other_instance].ClkPort)   &&
+        (pCfg->DQSPort    == IOM_cfg[other_instance].DQSPort)  &&
+        (pCfg->IOLowPort == IOM_cfg[other_instance].IOLowPort) &&
         (pCfg->IOHighPort == IOM_cfg[other_instance].IOHighPort))
     {
-      if ((pCfg->ClkPort   == IOM_cfg[other_instance].ClkPort)   &&
-          (pCfg->DQSPort    == IOM_cfg[other_instance].DQSPort)  &&
-          (pCfg->IOLowPort == IOM_cfg[other_instance].IOLowPort) &&
-          (pCfg->IOHighPort == IOM_cfg[other_instance].IOHighPort))
-      {
-        /* Multiplexing should be performed */
-        SET_BIT(OCTOSPIM->CR, OCTOSPIM_CR_MUXEN);
-      }
-      else
-      {
-        CLEAR_BIT(OCTOSPIM->PCR[(IOM_cfg[other_instance].ClkPort - 1U)], OCTOSPIM_PCR_CLKEN);
-        if (IOM_cfg[other_instance].DQSPort != 0U)
-        {
-          CLEAR_BIT(OCTOSPIM->PCR[(IOM_cfg[other_instance].DQSPort - 1U)], OCTOSPIM_PCR_DQSEN);
-        }
-        CLEAR_BIT(OCTOSPIM->PCR[(IOM_cfg[other_instance].NCSPort - 1U)], OCTOSPIM_PCR_NCSEN);
-        if (IOM_cfg[other_instance].IOLowPort != HAL_XSPIM_IOPORT_NONE)
-        {
-          CLEAR_BIT(OCTOSPIM->PCR[((IOM_cfg[other_instance].IOLowPort - 1U)& OSPI_IOM_PORT_MASK)], OCTOSPIM_PCR_IOLEN);
-        }
-        if (IOM_cfg[other_instance].IOHighPort != HAL_XSPIM_IOPORT_NONE)
-        {
-          CLEAR_BIT(OCTOSPIM->PCR[((IOM_cfg[other_instance].IOHighPort - 1U)& OSPI_IOM_PORT_MASK)], OCTOSPIM_PCR_IOHEN);
-        }
-      }
-    }
-
-    /******************** Activation of new configuration *********************/
-    MODIFY_REG(OCTOSPIM->PCR[(pCfg->NCSPort - 1U)], (OCTOSPIM_PCR_NCSEN | OCTOSPIM_PCR_NCSSRC),
-               (OCTOSPIM_PCR_NCSEN | (instance << OCTOSPIM_PCR_NCSSRC_Pos)));
-
-    if ((pCfg->Req2AckTime - 1U) > ((OCTOSPIM->CR & OCTOSPIM_CR_REQ2ACK_TIME) >> OCTOSPIM_CR_REQ2ACK_TIME_Pos))
-    {
-      MODIFY_REG(OCTOSPIM->CR, OCTOSPIM_CR_REQ2ACK_TIME, ((pCfg->Req2AckTime - 1U) << OCTOSPIM_CR_REQ2ACK_TIME_Pos));
-    }
-
-    if ((OCTOSPIM->CR & OCTOSPIM_CR_MUXEN) != 0U)
-    {
-      MODIFY_REG(OCTOSPIM->PCR[(pCfg->ClkPort - 1U)], (OCTOSPIM_PCR_CLKEN | OCTOSPIM_PCR_CLKSRC), OCTOSPIM_PCR_CLKEN);
-      if (pCfg->DQSPort != 0U)
-      {
-        MODIFY_REG(OCTOSPIM->PCR[(pCfg->DQSPort - 1U)], (OCTOSPIM_PCR_DQSEN | OCTOSPIM_PCR_DQSSRC), OCTOSPIM_PCR_DQSEN);
-      }
-
-      if ((pCfg->IOLowPort & OCTOSPIM_PCR_IOLEN) != 0U)
-      {
-        MODIFY_REG(OCTOSPIM->PCR[((pCfg->IOLowPort - 1U)& OSPI_IOM_PORT_MASK)],
-                   (OCTOSPIM_PCR_IOLEN | OCTOSPIM_PCR_IOLSRC), OCTOSPIM_PCR_IOLEN);
-      }
-      else if (pCfg->IOLowPort != HAL_XSPIM_IOPORT_NONE)
-      {
-        MODIFY_REG(OCTOSPIM->PCR[((pCfg->IOLowPort - 1U)& OSPI_IOM_PORT_MASK)],
-                   (OCTOSPIM_PCR_IOHEN | OCTOSPIM_PCR_IOHSRC), OCTOSPIM_PCR_IOHEN);
-      }
-      else
-      {
-        /* Nothing to do */
-      }
-
-      if ((pCfg->IOHighPort & OCTOSPIM_PCR_IOLEN) != 0U)
-      {
-        MODIFY_REG(OCTOSPIM->PCR[((pCfg->IOHighPort - 1U)& OSPI_IOM_PORT_MASK)],
-                   (OCTOSPIM_PCR_IOLEN | OCTOSPIM_PCR_IOLSRC), (OCTOSPIM_PCR_IOLEN | OCTOSPIM_PCR_IOLSRC_0));
-      }
-      else if (pCfg->IOHighPort != HAL_XSPIM_IOPORT_NONE)
-      {
-        MODIFY_REG(OCTOSPIM->PCR[((pCfg->IOHighPort - 1U)& OSPI_IOM_PORT_MASK)],
-                   (OCTOSPIM_PCR_IOHEN | OCTOSPIM_PCR_IOHSRC), (OCTOSPIM_PCR_IOHEN | OCTOSPIM_PCR_IOHSRC_0));
-      }
-      else
-      {
-        /* Nothing to do */
-      }
+      /* Multiplexing should be performed */
+      SET_BIT(OCTOSPIM->CR, OCTOSPIM_CR_MUXEN);
     }
     else
     {
-      MODIFY_REG(OCTOSPIM->PCR[(pCfg->ClkPort - 1U)], (OCTOSPIM_PCR_CLKEN | OCTOSPIM_PCR_CLKSRC),
-                 (OCTOSPIM_PCR_CLKEN | (instance << OCTOSPIM_PCR_CLKSRC_Pos)));
-      if (pCfg->DQSPort != 0U)
+      CLEAR_BIT(OCTOSPIM->PCR[(IOM_cfg[other_instance].ClkPort - 1U)], OCTOSPIM_PCR_CLKEN);
+      if (IOM_cfg[other_instance].DQSPort != 0U)
       {
-        MODIFY_REG(OCTOSPIM->PCR[(pCfg->DQSPort - 1U)], (OCTOSPIM_PCR_DQSEN | OCTOSPIM_PCR_DQSSRC),
-                   (OCTOSPIM_PCR_DQSEN | (instance << OCTOSPIM_PCR_DQSSRC_Pos)));
+        CLEAR_BIT(OCTOSPIM->PCR[(IOM_cfg[other_instance].DQSPort - 1U)], OCTOSPIM_PCR_DQSEN);
       }
-
-      if ((pCfg->IOLowPort & OCTOSPIM_PCR_IOLEN) != 0U)
+      CLEAR_BIT(OCTOSPIM->PCR[(IOM_cfg[other_instance].NCSPort - 1U)], OCTOSPIM_PCR_NCSEN);
+      if (IOM_cfg[other_instance].IOLowPort != HAL_XSPIM_IOPORT_NONE)
       {
-        MODIFY_REG(OCTOSPIM->PCR[((pCfg->IOLowPort - 1U)& OSPI_IOM_PORT_MASK)],
-                   (OCTOSPIM_PCR_IOLEN | OCTOSPIM_PCR_IOLSRC),
-                   (OCTOSPIM_PCR_IOLEN | (instance << (OCTOSPIM_PCR_IOLSRC_Pos + 1U))));
+        CLEAR_BIT(OCTOSPIM->PCR[((IOM_cfg[other_instance].IOLowPort - 1U)& OSPI_IOM_PORT_MASK)], OCTOSPIM_PCR_IOLEN);
       }
-      else if (pCfg->IOLowPort != HAL_XSPIM_IOPORT_NONE)
+      if (IOM_cfg[other_instance].IOHighPort != HAL_XSPIM_IOPORT_NONE)
       {
-        MODIFY_REG(OCTOSPIM->PCR[((pCfg->IOLowPort - 1U)& OSPI_IOM_PORT_MASK)],
-                   (OCTOSPIM_PCR_IOHEN | OCTOSPIM_PCR_IOHSRC),
-                   (OCTOSPIM_PCR_IOHEN | (instance << (OCTOSPIM_PCR_IOHSRC_Pos + 1U))));
-      }
-      else
-      {
-        /* Nothing to do */
-      }
-
-      if ((pCfg->IOHighPort & OCTOSPIM_PCR_IOLEN) != 0U)
-      {
-        MODIFY_REG(OCTOSPIM->PCR[((pCfg->IOHighPort - 1U)& OSPI_IOM_PORT_MASK)],
-                   (OCTOSPIM_PCR_IOLEN | OCTOSPIM_PCR_IOLSRC),
-                   (OCTOSPIM_PCR_IOLEN | OCTOSPIM_PCR_IOLSRC_0 | (instance << (OCTOSPIM_PCR_IOLSRC_Pos + 1U))));
-      }
-      else if (pCfg->IOHighPort != HAL_XSPIM_IOPORT_NONE)
-      {
-        MODIFY_REG(OCTOSPIM->PCR[((pCfg->IOHighPort - 1U)& OSPI_IOM_PORT_MASK)],
-                   (OCTOSPIM_PCR_IOHEN | OCTOSPIM_PCR_IOHSRC),
-                   (OCTOSPIM_PCR_IOHEN | OCTOSPIM_PCR_IOHSRC_0 | (instance << (OCTOSPIM_PCR_IOHSRC_Pos + 1U))));
-      }
-      else
-      {
-        /* Nothing to do */
+        CLEAR_BIT(OCTOSPIM->PCR[((IOM_cfg[other_instance].IOHighPort - 1U)& OSPI_IOM_PORT_MASK)], OCTOSPIM_PCR_IOHEN);
       }
     }
+  }
 
-    /******* Re-enable both XSPI after configure XSPI IO Manager ********/
-    if ((xspi_enabled & 0x1U) != 0U)
+  /******************** Activation of new configuration *********************/
+  MODIFY_REG(OCTOSPIM->PCR[(pCfg->NCSPort - 1U)], (OCTOSPIM_PCR_NCSEN | OCTOSPIM_PCR_NCSSRC),
+             (OCTOSPIM_PCR_NCSEN | (instance << OCTOSPIM_PCR_NCSSRC_Pos)));
+
+  if ((pCfg->Req2AckTime - 1U) > ((OCTOSPIM->CR & OCTOSPIM_CR_REQ2ACK_TIME) >> OCTOSPIM_CR_REQ2ACK_TIME_Pos))
+  {
+    MODIFY_REG(OCTOSPIM->CR, OCTOSPIM_CR_REQ2ACK_TIME, ((pCfg->Req2AckTime - 1U) << OCTOSPIM_CR_REQ2ACK_TIME_Pos));
+  }
+
+  if ((OCTOSPIM->CR & OCTOSPIM_CR_MUXEN) != 0U)
+  {
+    MODIFY_REG(OCTOSPIM->PCR[(pCfg->ClkPort - 1U)], (OCTOSPIM_PCR_CLKEN | OCTOSPIM_PCR_CLKSRC), OCTOSPIM_PCR_CLKEN);
+    if (pCfg->DQSPort != 0U)
     {
-      SET_BIT(OCTOSPI1->CR, XSPI_CR_EN);
+      MODIFY_REG(OCTOSPIM->PCR[(pCfg->DQSPort - 1U)], (OCTOSPIM_PCR_DQSEN | OCTOSPIM_PCR_DQSSRC), OCTOSPIM_PCR_DQSEN);
     }
-    if ((xspi_enabled & 0x2U) != 0U)
+
+    if ((pCfg->IOLowPort & OCTOSPIM_PCR_IOLEN) != 0U)
     {
-      SET_BIT(OCTOSPI2->CR, XSPI_CR_EN);
+      MODIFY_REG(OCTOSPIM->PCR[((pCfg->IOLowPort - 1U)& OSPI_IOM_PORT_MASK)],
+                 (OCTOSPIM_PCR_IOLEN | OCTOSPIM_PCR_IOLSRC), OCTOSPIM_PCR_IOLEN);
     }
+    else if (pCfg->IOLowPort != HAL_XSPIM_IOPORT_NONE)
+    {
+      MODIFY_REG(OCTOSPIM->PCR[((pCfg->IOLowPort - 1U)& OSPI_IOM_PORT_MASK)],
+                 (OCTOSPIM_PCR_IOHEN | OCTOSPIM_PCR_IOHSRC), OCTOSPIM_PCR_IOHEN);
+    }
+    else
+    {
+      /* Nothing to do */
+    }
+
+    if ((pCfg->IOHighPort & OCTOSPIM_PCR_IOLEN) != 0U)
+    {
+      MODIFY_REG(OCTOSPIM->PCR[((pCfg->IOHighPort - 1U)& OSPI_IOM_PORT_MASK)],
+                 (OCTOSPIM_PCR_IOLEN | OCTOSPIM_PCR_IOLSRC), (OCTOSPIM_PCR_IOLEN | OCTOSPIM_PCR_IOLSRC_0));
+    }
+    else if (pCfg->IOHighPort != HAL_XSPIM_IOPORT_NONE)
+    {
+      MODIFY_REG(OCTOSPIM->PCR[((pCfg->IOHighPort - 1U)& OSPI_IOM_PORT_MASK)],
+                 (OCTOSPIM_PCR_IOHEN | OCTOSPIM_PCR_IOHSRC), (OCTOSPIM_PCR_IOHEN | OCTOSPIM_PCR_IOHSRC_0));
+    }
+    else
+    {
+      /* Nothing to do */
+    }
+  }
+  else
+  {
+    MODIFY_REG(OCTOSPIM->PCR[(pCfg->ClkPort - 1U)], (OCTOSPIM_PCR_CLKEN | OCTOSPIM_PCR_CLKSRC),
+               (OCTOSPIM_PCR_CLKEN | (instance << OCTOSPIM_PCR_CLKSRC_Pos)));
+    if (pCfg->DQSPort != 0U)
+    {
+      MODIFY_REG(OCTOSPIM->PCR[(pCfg->DQSPort - 1U)], (OCTOSPIM_PCR_DQSEN | OCTOSPIM_PCR_DQSSRC),
+                 (OCTOSPIM_PCR_DQSEN | (instance << OCTOSPIM_PCR_DQSSRC_Pos)));
+    }
+
+    if ((pCfg->IOLowPort & OCTOSPIM_PCR_IOLEN) != 0U)
+    {
+      MODIFY_REG(OCTOSPIM->PCR[((pCfg->IOLowPort - 1U)& OSPI_IOM_PORT_MASK)],
+                 (OCTOSPIM_PCR_IOLEN | OCTOSPIM_PCR_IOLSRC),
+                 (OCTOSPIM_PCR_IOLEN | (instance << (OCTOSPIM_PCR_IOLSRC_Pos + 1U))));
+    }
+    else if (pCfg->IOLowPort != HAL_XSPIM_IOPORT_NONE)
+    {
+      MODIFY_REG(OCTOSPIM->PCR[((pCfg->IOLowPort - 1U)& OSPI_IOM_PORT_MASK)],
+                 (OCTOSPIM_PCR_IOHEN | OCTOSPIM_PCR_IOHSRC),
+                 (OCTOSPIM_PCR_IOHEN | (instance << (OCTOSPIM_PCR_IOHSRC_Pos + 1U))));
+    }
+    else
+    {
+      /* Nothing to do */
+    }
+
+    if ((pCfg->IOHighPort & OCTOSPIM_PCR_IOLEN) != 0U)
+    {
+      MODIFY_REG(OCTOSPIM->PCR[((pCfg->IOHighPort - 1U)& OSPI_IOM_PORT_MASK)],
+                 (OCTOSPIM_PCR_IOLEN | OCTOSPIM_PCR_IOLSRC),
+                 (OCTOSPIM_PCR_IOLEN | OCTOSPIM_PCR_IOLSRC_0 | (instance << (OCTOSPIM_PCR_IOLSRC_Pos + 1U))));
+    }
+    else if (pCfg->IOHighPort != HAL_XSPIM_IOPORT_NONE)
+    {
+      MODIFY_REG(OCTOSPIM->PCR[((pCfg->IOHighPort - 1U)& OSPI_IOM_PORT_MASK)],
+                 (OCTOSPIM_PCR_IOHEN | OCTOSPIM_PCR_IOHSRC),
+                 (OCTOSPIM_PCR_IOHEN | OCTOSPIM_PCR_IOHSRC_0 | (instance << (OCTOSPIM_PCR_IOHSRC_Pos + 1U))));
+    }
+    else
+    {
+      /* Nothing to do */
+    }
+  }
+
+  /******* Re-enable both XSPI after configure XSPI IO Manager ********/
+  if ((xspi_enabled & 0x1U) != 0U)
+  {
+    SET_BIT(OCTOSPI1->CR, XSPI_CR_EN);
+  }
+  if ((xspi_enabled & 0x2U) != 0U)
+  {
+    SET_BIT(OCTOSPI2->CR, XSPI_CR_EN);
   }
 
   return status;
@@ -2982,6 +3147,7 @@ HAL_StatusTypeDef HAL_XSPIM_Config(XSPI_HandleTypeDef *hxspi, XSPIM_CfgTypeDef *
   * @}
   */
 
+#endif /* OCTOSPIM */
 /** @defgroup XSPI_Exported_Functions_Group5 Delay Block function
   *  @brief   Delay block function
   *
@@ -3022,7 +3188,7 @@ HAL_StatusTypeDef HAL_XSPI_DLYB_SetConfig(XSPI_HandleTypeDef *hxspi, HAL_XSPI_DL
     LL_DLYB_SetDelay(DLYB_OCTOSPI1, pdlyb_cfg);
     status = HAL_OK;
   }
-
+#if defined(OCTOSPI2)
   else if (hxspi->Instance == OCTOSPI2)
   {
     /* Enable the DelayBlock */
@@ -3032,7 +3198,7 @@ HAL_StatusTypeDef HAL_XSPI_DLYB_SetConfig(XSPI_HandleTypeDef *hxspi, HAL_XSPI_DL
     LL_DLYB_SetDelay(DLYB_OCTOSPI2, pdlyb_cfg);
     status = HAL_OK;
   }
-
+#endif /* OCTOSPI2 */
   else
   {
     hxspi->ErrorCode |= HAL_XSPI_ERROR_INVALID_PARAM;
@@ -3062,13 +3228,13 @@ HAL_StatusTypeDef HAL_XSPI_DLYB_GetConfig(XSPI_HandleTypeDef *hxspi, HAL_XSPI_DL
     LL_DLYB_GetDelay(DLYB_OCTOSPI1, pdlyb_cfg);
     status = HAL_OK;
   }
-
+#if defined(OCTOSPI2)
   else if (hxspi->Instance == OCTOSPI2)
   {
     LL_DLYB_GetDelay(DLYB_OCTOSPI2, pdlyb_cfg);
     status = HAL_OK;
   }
-
+#endif /* OCTOSPI2 */
   else
   {
     hxspi->ErrorCode |= HAL_XSPI_ERROR_INVALID_PARAM;
@@ -3107,7 +3273,7 @@ HAL_StatusTypeDef HAL_XSPI_DLYB_GetClockPeriod(XSPI_HandleTypeDef *hxspi, HAL_XS
     /* Disable the DelayBlock */
     LL_DLYB_Disable(DLYB_OCTOSPI1);
   }
-
+#if defined(OCTOSPI2)
   else if (hxspi->Instance == OCTOSPI2)
   {
     /* Enable the DelayBlock */
@@ -3122,7 +3288,7 @@ HAL_StatusTypeDef HAL_XSPI_DLYB_GetClockPeriod(XSPI_HandleTypeDef *hxspi, HAL_XS
     /* Disable the DelayBlock */
     LL_DLYB_Disable(DLYB_OCTOSPI2);
   }
-
+#endif /* OCTOSPI2 */
   else
   {
     hxspi->ErrorCode |= HAL_XSPI_ERROR_INVALID_PARAM;
@@ -3156,6 +3322,7 @@ HAL_StatusTypeDef HAL_XSPI_DLYB_GetClockPeriod(XSPI_HandleTypeDef *hxspi, HAL_XS
 @endverbatim
   * @{
   */
+#if defined(HSPI1)
 
 /**
   * @brief  Get the delay values of the high-speed interface DLLs.
@@ -3264,6 +3431,7 @@ HAL_StatusTypeDef HAL_XSPI_SetDelayValue(XSPI_HandleTypeDef *hxspi, XSPI_HSCalTy
   return status;
 }
 
+#endif /* HSPI1 */
 /**
   * @}
   */
@@ -3283,9 +3451,6 @@ static void XSPI_DMACplt(DMA_HandleTypeDef *hdma)
 
   /* Disable the DMA transfer on the XSPI side */
   CLEAR_BIT(hxspi->Instance->CR, XSPI_CR_DMAEN);
-
-  /* Disable the DMA channel */
-  __HAL_DMA_DISABLE(hdma);
 
   /* Enable the XSPI transfer complete Interrupt */
   HAL_XSPI_ENABLE_IT(hxspi, HAL_XSPI_IT_TC);
@@ -3424,7 +3589,7 @@ static HAL_StatusTypeDef XSPI_WaitFlagStateUntilTimeout(XSPI_HandleTypeDef *hxsp
         hxspi->State     = HAL_XSPI_STATE_ERROR;
         hxspi->ErrorCode |= HAL_XSPI_ERROR_TIMEOUT;
 
-        return HAL_ERROR;
+        return HAL_TIMEOUT;
       }
     }
   }
@@ -3456,6 +3621,7 @@ static HAL_StatusTypeDef XSPI_ConfigCmd(XSPI_HandleTypeDef *hxspi, XSPI_RegularC
       MODIFY_REG(hxspi->Instance->CR, OCTOSPI_CR_MSEL, pCmd->IOSelect);
     }
   }
+#if defined(HSPI1)
   else if (IS_HSPI_ALL_INSTANCE(hxspi->Instance))
   {
     if (hxspi->Init.MemoryMode == HAL_XSPI_SINGLE_MEM)
@@ -3464,12 +3630,12 @@ static HAL_StatusTypeDef XSPI_ConfigCmd(XSPI_HandleTypeDef *hxspi, XSPI_RegularC
       MODIFY_REG(hxspi->Instance->CR, HSPI_CR_MSEL, pCmd->IOSelect);
     }
   }
+#endif /* HSPI1 */
   else
   {
     hxspi->ErrorCode |= HAL_XSPI_ERROR_INVALID_PARAM;
     return HAL_ERROR;
   }
-
 
   if (pCmd->OperationType == HAL_XSPI_OPTYPE_WRITE_CFG)
   {
@@ -3627,6 +3793,7 @@ static HAL_StatusTypeDef XSPI_ConfigCmd(XSPI_HandleTypeDef *hxspi, XSPI_RegularC
   return status;
 }
 
+#if defined(OCTOSPIM)
 /**
   * @brief  Get the current IOM configuration for an XSPI instance.
   * @param  instance_nb : number of the instance
@@ -3729,7 +3896,7 @@ static void XSPIM_GetConfig(uint8_t instance_nb, XSPIM_CfgTypeDef *const pCfg)
     }
   }
 }
-
+#endif /* OCTOSPIM */
 /**
   @endcond
   */

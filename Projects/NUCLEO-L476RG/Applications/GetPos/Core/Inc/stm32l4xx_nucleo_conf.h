@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -51,7 +51,7 @@
 /* IRQ priorities */
 #define BSP_BUTTON_USER_IT_PRIORITY         14U
 
-/* I2C1 Frequeny in Hz  */
+/* I2C1 Frequency in Hz  */
 #define BUS_I2C1_FREQUENCY                  100000U /* Frequency of I2C1 = 100 KHz*/
 
 /* SPI1 Baud rate in bps  */

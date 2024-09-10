@@ -1,7 +1,7 @@
 
 ## <b>Virtual_COM_Port Application Description</b>
 
-Application for the GNSS Teseo-LIV3 mounted on an X-NUCLEO-GNSS1A1 
+Application for the GNSS Teseo mounted on an X-NUCLEO-GNSS1A1,X-NUCLEO-GNSS2A1 or X-NUCLEO-LIV4A1
 expansion board to be used along with the Teseo-Suite tool.
  
 Example Description:
@@ -66,14 +66,31 @@ GNSS, I2C, UART, VCOM, RTOS
   
 ### <b>Hardware and Software environment</b>
 
-  - This example runs on STM32 Nucleo devices equipped with a X-NUCLEO-GNSS1A1 (or a X-NUCLEO-GNSS2A1) expansion board
+  - This example runs on STM32 Nucleo devices equipped with a X-NUCLEO-GNSS1A1 (or a X-NUCLEO-GNSS2A1 or X-NUCLEO-LIV4A1) expansion board
   - This example has been tested with STMicroelectronics:
     - NUCLEO-F401RE RevC board
     - NUCLEO-U575ZI-Q board
     and can be easily tailored to any other supported device and development board.
 
 ADDITIONAL_BOARD : X-NUCLEO-GNSS1A1 https://www.st.com/en/ecosystems/x-nucleo-gnss1a1.html
+ADDITIONAL_BOARD : X-NUCLEO-GNSS2A1 https://www.st.com/en/ecosystems/x-nucleo-gnss2a1.html
+ADDITIONAL_BOARD : X-NUCLEO-LIV4A1 https://www.st.com/en/ecosystems/x-nucleo-liv4a1.html
+
 ADDITIONAL_COMP : Teseo-LIV3F https://www.st.com/en/positioning/teseo-liv3f.html
+ADDITIONAL_COMP : Teseo-VIC3DA https://www.st.com/en/positioning/teseo-vic3da.html
+ADDITIONAL_COMP : Teseo-LIV4F https://www.st.com/en/positioning/teseo-liv4f.html
+
+
+- To use UART channel, modify the Jumper configuration on X-NUCLEO-GNSS1A1 as follows:
+    -	J3 close, J2 open
+
+ - To use UART channel, modify the Jumper configuration on X-NUCLEO-GNSS2A1 as follows:
+    -	J28 in position 2-3
+    -	J27 in position 2-3
+    
+ - To use UART channel, modify the Jumper configuration on X-NUCLEO-LIV4A1 as follows:
+    -	J11 in position 2-3
+    -	J8 in position 2-3
   
 ### <b>How to use it?</b>
 
@@ -83,9 +100,9 @@ In order to make the program work, you must do the following:
    installation path is not too in-depth since the toolchain may report errors
    after building.
    
- - Open STM32CubeIDE (this firmware has been successfully tested with Version 1.9.0).
+ - Open STM32CubeIDE (this firmware has been successfully tested with Version 1.15.1).
    Alternatively you can use the Keil uVision toolchain (this firmware
-   has been successfully tested with V5.32.0) or the IAR toolchain (this firmware has 
+   has been successfully tested with V5.37.0) or the IAR toolchain (this firmware has 
    been successfully tested with Embedded Workbench V9.20.1).
    
  - Rebuild all files and load your image into target memory.

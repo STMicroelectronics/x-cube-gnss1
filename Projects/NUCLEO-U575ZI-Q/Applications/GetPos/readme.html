@@ -20,7 +20,7 @@
 <div class="row">
 <div class="col-sm-12 col-lg-8">
 <h2 id="getpos-application-description"><b>GetPos Application Description</b></h2>
-<p>Application showing, through a serial connection and a serial terminal on a PC, real time GNSS data received by the GNSS Teseo-LIV3F device.</p>
+<p>Application showing, through a serial connection and a serial terminal on a PC, real time GNSS data received by the GNSS Teseo-LIVx(Teseo-LIV3F, Teseo-LIV4F) and Teseo-VIC3DA devices.</p>
 <p>Example Description:</p>
 <p>This application shows how real time GNSS data received by the Teseo-LIV3F device can be displayed, through a serial connection and a serial terminal, on a PC.</p>
 <p>The GetPos application is built on top of the FreeRTOS support, introducing:</p>
@@ -57,7 +57,11 @@
 <li><p>transmit delay: 5msec/char, 5msec/line</p></li>
 </ul>
 <p>Reset the STM32 Nucleo board and select an option from the main menu appearing on Serial Terminal.</p>
-<p>This application can run also on a STM32 Nucleo board equipped with a X-NUCLEO-GNSS2A1 expansion board (mounting the Teseo-VIC3DA device). If the UART is used as communication bus between the STM32 MCU and the Teseo-VIC3DA the baud rate must be set to 115200 (it is 9600 between the STM32 MCU and the Teseo-LIV3F). For this application it is suggested also to set, in file teseo_liv3f_conf.h, the following #define according to the targeting device: #define TESEO_LIV3F_DEVICE /* ST GNSS device: can be TESEO_LIV3F_DEVICE or TESEO_VIC3DA_DEVICE */</p>
+<p>This application can run also on a STM32 Nucleo board equipped with a X-NUCLEO-GNSS2A1 expansion board (mounting the Teseo-VIC3DA device).
+This application can run also on a STM32 Nucleo board equipped with a X-NUCLEO-LIV4A1 expansion board (mounting the Teseo-LIV4F device)
+If the UART is used as communication bus between the STM32 MCU and the Teseo-VIC3DA or Teseo-LIV4F the baud rate must be set to 115200 (it is 9600 between the STM32 MCU and the Teseo-LIV3F).
+For this application it is suggested also to set, in file teseo_liv3f_conf.h,the following #define according to the targeting device:</p>
+
 <h3 id="keywords"><b>Keywords</b></h3>
 <p>GNSS, I2C, UART, RTOS</p>
 <h3 id="directory-contents"><b>Directory contents</b></h3>
@@ -80,19 +84,38 @@
 </ul>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
-<li>This example runs on STM32 Nucleo devices equipped with a X-NUCLEO-GNSS1A1 (or a X-NUCLEO-GNSS2A1) expansion board</li>
+<li>This example runs on STM32 Nucleo devices equipped with a X-NUCLEO-GNSS1A1 (or a X-NUCLEO-GNSS2A1 or X-NUCLEO-LIV4A1) expansion board</li>
 <li>This example has been tested with STMicroelectronics:
 <ul>
-<li>NUCLEO-L476RG RevC board</li>
-<li>NUCLEO-U575ZI-Q board and can be easily tailored to any other supported device and development board.</li>
+<li>J2 closed</li>
+<li>J3 open</li>
+<li>J4 open</li>
+<li>J5 closed</li>
+</ul></li>
+<li>To use UART channel, modify the Jumper configuration on X-NUCLEO-GNSS2A1 as follows:
+<ul>
+<li>J28 in position 1-2</li>
+<li>J27 in position 2-3</li>
+</ul></li>
+<li>To use UART channel, modify the Jumper configuration on X-NUCLEO-LIV4A1 as follows:
+<ul>
+<li>J11 in position 1-2</li>
+<li>J8 in position 2-3</li>
 </ul></li>
 </ul>
-<p>ADDITIONAL_BOARD : X-NUCLEO-GNSS1A1 https://www.st.com/en/ecosystems/x-nucleo-gnss1a1.html ADDITIONAL_COMP : Teseo-LIV3F https://www.st.com/en/positioning/teseo-liv3f.html</p>
-<h3 id="how-to-use-it"><b>How to use it?</b></h3>
+<p>ADDITIONAL_BOARD : <a href="https://www.st.com/en/ecosystems/x-nucleo-gnss1a1.html"> X-NUCLEO-GNSS1A1</a></p>
+<p>ADDITIONAL_BOARD : <a href="https://www.st.com/en/ecosystems/x-nucleo-gnss2a1.html"> X-NUCLEO-GNSS2A1</a></p>
+<p>ADDITIONAL_BOARD : <a href="https://www.st.com/en/ecosystems/x-nucleo-liv4a1.html"> X-NUCLEO-LIV4AA1</a></p>
+<p>ADDITIONAL_BOARD : <a href="https://www.st.com/en/positioning/teseo-liv3f.html"> Teseo-LIV3F</a></p>
+<p>ADDITIONAL_BOARD : <a href="https://www.st.com/en/positioning/teseo-vic3da.html"> Teseo-VIC3DA</a></p>
+<p>ADDITIONAL_BOARD : <a href="https://www.st.com/en/positioning/teseo-liv4f.html"> Teseo-LIV4F</a></p>
+
+<h3 id="how-to-use-it">
+<b>How to use it?</b></h3>
 <p>In order to make the program work, you must do the following:</p>
 <ul>
 <li><p>WARNING: before opening the project with any toolchain be sure your folder installation path is not too in-depth since the toolchain may report errors after building.</p></li>
-<li><p>Open STM32CubeIDE (this firmware has been successfully tested with Version 1.9.0). Alternatively you can use the Keil uVision toolchain (this firmware has been successfully tested with V5.32.0) or the IAR toolchain (this firmware has been successfully tested with Embedded Workbench V9.20.1).</p></li>
+<li><p>Open STM32CubeIDE (this firmware has been successfully tested with Version 1.15.1). Alternatively you can use the Keil uVision toolchain (this firmware has been successfully tested with V5.37.0) or the IAR toolchain (this firmware has been successfully tested with Embedded Workbench V9.20.1).</p></li>
 <li><p>Rebuild all files and load your image into target memory.</p></li>
 <li><p>Run the example.</p></li>
 <li><p>Alternatively, you can download the pre-built binaries in “Binary” folder included in the distributed package.</p></li>

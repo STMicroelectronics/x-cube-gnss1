@@ -7,7 +7,7 @@
   ******************************************************************************
    * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -27,9 +27,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 
+#include "app_threadx.h"
 #include "stm32u5xx_hal.h"
 #include "app_azure_rtos_config.h"
-#include "app_threadx.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */

@@ -78,7 +78,7 @@
       (++) Enable instance by writing Start keyword in IWDG_KEY register. LSI
            clock is forced ON and IWDG counter starts counting down.
       (++) Enable write access to configuration registers:
-          IWDG_PR, IWDG_RLR, IWDG_WINR and EWCR.
+          IWDG_PR, IWDG_RLR, IWDG_WINR, IWDG_EWCR.
       (++) Configure the IWDG prescaler and counter reload value. This reload
            value will be loaded in the IWDG counter each time the watchdog is
            reloaded, then the IWDG will start counting down from this value.
@@ -216,7 +216,7 @@ HAL_StatusTypeDef HAL_IWDG_Init(IWDG_HandleTypeDef *hiwdg)
   /* Enable IWDG. LSI is turned on automatically */
   __HAL_IWDG_START(hiwdg);
 
-  /* Enable write access to IWDG_PR, IWDG_RLR, IWDG_WINR and EWCR registers by writing
+  /* Enable write access to IWDG_PR, IWDG_RLR, IWDG_WINR, IWDG_EWCR registers by writing
   0x5555 in KR */
   IWDG_ENABLE_WRITE_ACCESS(hiwdg);
 
@@ -226,20 +226,16 @@ HAL_StatusTypeDef HAL_IWDG_Init(IWDG_HandleTypeDef *hiwdg)
 
   if (hiwdg->Init.EWI == IWDG_EWI_DISABLE)
   {
-    /* EWI comparator value different from 0,
-     * Disable the early wakeup interrupt
+    /* EWI comparator value equal 0, disable the early wakeup interrupt
      * acknowledge the early wakeup interrupt in any cases. it clears the EWIF flag in SR register
-     * Set Watchdog Early Wakeup Comparator to 0x00
-     */
+     * Set Watchdog Early Wakeup Comparator to 0x00 */
     hiwdg->Instance->EWCR = IWDG_EWCR_EWIC;
   }
   else
   {
-    /* EWI comparator value different from 0,
-     * Enable the early wakeup interrupt
+    /* EWI comparator value different from 0, enable the early wakeup interrupt,
      * acknowledge the early wakeup interrupt in any cases. it clears the EWIF flag in SR register
-     * Set Watchdog Early Wakeup Comparator value
-     */
+     * Set Watchdog Early Wakeup Comparator value */
     hiwdg->Instance->EWCR = IWDG_EWCR_EWIE | IWDG_EWCR_EWIC | hiwdg->Init.EWI;
   }
 

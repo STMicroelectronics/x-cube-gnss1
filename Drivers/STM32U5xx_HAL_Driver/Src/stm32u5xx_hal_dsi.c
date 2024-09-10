@@ -12,7 +12,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -130,7 +130,7 @@
     all callbacks are set to the corresponding weak functions:
     examples HAL_DSI_TearingEffectCallback(), HAL_DSI_EndOfRefreshCallback().
     Exception done for MspInit and MspDeInit functions that are respectively
-    reset to the legacy weak (surcharged) functions in the HAL_DSI_Init()
+    reset to the legacy weak (overridden) functions in the HAL_DSI_Init()
     and HAL_DSI_DeInit() only when these callbacks are null (not registered beforehand).
     If not, MspInit or MspDeInit are not null, the HAL_DSI_Init() and HAL_DSI_DeInit()
     keep and use the user MspInit/MspDeInit callbacks (registered beforehand).
@@ -463,13 +463,6 @@ HAL_StatusTypeDef HAL_DSI_Init(DSI_HandleTypeDef *hdsi, DSI_PLLInitTypeDef *PLLI
                             ((PLLInit->PLLIDF) << DSI_WRPCR_PLL_IDF_Pos) | \
                             ((PLLInit->PLLODF) << DSI_WRPCR_PLL_ODF_Pos));
 
-  /************************ Set D-PHY Band Control registers ******************************/
-  /* Set Band Control Frequency and LPX Offset */
-  DSI_ConfigBandControl(hdsi);
-
-  /* Set PLL Tuning */
-  DSI_SetWrapperPLLTuning(hdsi, PLLInit);
-
   /* Enable the DSI PLL */
   __HAL_DSI_PLL_ENABLE(hdsi);
 
@@ -490,24 +483,60 @@ HAL_StatusTypeDef HAL_DSI_Init(DSI_HandleTypeDef *hdsi, DSI_PLLInitTypeDef *PLLI
     }
   }
 
+  __HAL_DSI_ENABLE(hdsi);
+
+  /************************ Set the DSI clock parameters ************************/
+  /* Set the TX escape clock division factor */
+  hdsi->Instance->CCR &= ~DSI_CCR_TXECKDIV;
+  hdsi->Instance->CCR |= hdsi->Init.TXEscapeCkdiv;
+
   /*************************** Set the PHY parameters ***************************/
-
   /* D-PHY clock and digital enable*/
-  hdsi->Instance->PCTLR |= (DSI_PCTLR_CKE | DSI_PCTLR_DEN);
+  hdsi->Instance->PCTLR |= DSI_PCTLR_DEN;
 
-  /* Clock lane configuration */
-  hdsi->Instance->CLCR &= ~(DSI_CLCR_DPCC | DSI_CLCR_ACR);
-  hdsi->Instance->CLCR |= (DSI_CLCR_DPCC | hdsi->Init.AutomaticClockLaneControl);
+  /************************ Set D-PHY Band Control registers ******************************/
+  /* Set Band Control Frequency and LPX Offset */
+  DSI_ConfigBandControl(hdsi);
+
+  /* Set PLL Tuning */
+  DSI_SetWrapperPLLTuning(hdsi, PLLInit);
+
+  hdsi->Instance->PCTLR |= DSI_PCTLR_CKE;
+
 
   /* Configure the number of active data lanes */
   hdsi->Instance->PCONFR &= ~DSI_PCONFR_NL;
   hdsi->Instance->PCONFR |= hdsi->Init.NumberOfLanes;
 
-  /************************ Set the DSI clock parameters ************************/
+  /* Get tick */
+  tickstart = HAL_GetTick();
+  if ((hdsi->Instance->PCONFR & DSI_PCONFR_NL) == DSI_ONE_DATA_LANE)
+  {
+    while ((hdsi->Instance->PSR & (DSI_PSR_PSS0 | DSI_PSR_PSSC)) != (DSI_PSR_PSS0 | DSI_PSR_PSSC))
+    {
+      if ((HAL_GetTick() - tickstart) > DSI_TIMEOUT_VALUE)
+      {
+        /* Process Unlocked */
+        __HAL_UNLOCK(hdsi);
 
-  /* Set the TX escape clock division factor */
-  hdsi->Instance->CCR &= ~DSI_CCR_TXECKDIV;
-  hdsi->Instance->CCR |= hdsi->Init.TXEscapeCkdiv;
+        return HAL_TIMEOUT;
+      }
+    }
+  }
+  else
+  {
+    while ((hdsi->Instance->PSR & (DSI_PSR_PSS0 | DSI_PSR_PSS1 | DSI_PSR_PSSC)) != (DSI_PSR_PSS0 | \
+                                                                                    DSI_PSR_PSS1 | DSI_PSR_PSSC))
+    {
+      if ((HAL_GetTick() - tickstart) > DSI_TIMEOUT_VALUE)
+      {
+        /* Process Unlocked */
+        __HAL_UNLOCK(hdsi);
+
+        return HAL_TIMEOUT;
+      }
+    }
+  }
 
 
   /****************************** Error management *****************************/
@@ -516,6 +545,12 @@ HAL_StatusTypeDef HAL_DSI_Init(DSI_HandleTypeDef *hdsi, DSI_PLLInitTypeDef *PLLI
   hdsi->Instance->IER[0U] = 0U;
   hdsi->Instance->IER[1U] = 0U;
   hdsi->ErrorMsk = 0U;
+
+  __HAL_DSI_DISABLE(hdsi);
+
+  /* Clock lane configuration */
+  hdsi->Instance->CLCR &= ~(DSI_CLCR_DPCC | DSI_CLCR_ACR);
+  hdsi->Instance->CLCR |= (DSI_CLCR_DPCC | hdsi->Init.AutomaticClockLaneControl);
 
   /* Initialize the error code */
   hdsi->ErrorCode = HAL_DSI_ERROR_NONE;
@@ -1980,6 +2015,95 @@ HAL_StatusTypeDef HAL_DSI_EnterULPMData(DSI_HandleTypeDef *hdsi)
   /* Process locked */
   __HAL_LOCK(hdsi);
 
+  /* Verify the initial status of the DSI Host */
+
+  /* Verify that the clock lane and the digital section of the D-PHY are enabled */
+  if ((hdsi->Instance->PCTLR & (DSI_PCTLR_CKE | DSI_PCTLR_DEN)) != (DSI_PCTLR_CKE | DSI_PCTLR_DEN))
+  {
+    /* Process Unlocked */
+    __HAL_UNLOCK(hdsi);
+    return HAL_ERROR;
+  }
+
+  /* Verify that the D-PHY PLL and the reference bias are enabled */
+  if ((hdsi->Instance->WRPCR & DSI_WRPCR_PLLEN) != DSI_WRPCR_PLLEN)
+  {
+    /* Process Unlocked */
+    __HAL_UNLOCK(hdsi);
+    return HAL_ERROR;
+  }
+  else if ((hdsi->Instance->BCFGR  & DSI_BCFGR_PWRUP) != DSI_BCFGR_PWRUP)
+  {
+    /* Process Unlocked */
+    __HAL_UNLOCK(hdsi);
+    return HAL_ERROR;
+  }
+  else
+  {
+    /* Nothing to do */
+  }
+
+  /* Verify that there are no ULPS exit or request on data lanes */
+  if ((hdsi->Instance->PUCR & (DSI_PUCR_UEDL | DSI_PUCR_URDL)) != 0U)
+  {
+    /* Process Unlocked */
+    __HAL_UNLOCK(hdsi);
+    return HAL_ERROR;
+  }
+
+  /* Verify that there are no Transmission trigger */
+  if ((hdsi->Instance->PTTCR & DSI_PTTCR_TX_TRIG) != 0U)
+  {
+    /* Process Unlocked */
+    __HAL_UNLOCK(hdsi);
+    return HAL_ERROR;
+  }
+
+  /* Requires min of 400us delay before reading the PLLLS flag */
+  /* 1ms delay is inserted that is the minimum HAL delay granularity */
+  HAL_Delay(1);
+
+  /* Verify that D-PHY PLL is locked */
+  tickstart = HAL_GetTick();
+
+  while ((__HAL_DSI_GET_FLAG(hdsi, DSI_FLAG_PLLLS) == 0U))
+  {
+    /* Check for the Timeout */
+    if ((HAL_GetTick() - tickstart) > DSI_TIMEOUT_VALUE)
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+
+      return HAL_TIMEOUT;
+    }
+  }
+
+  /* Verify that all active lanes are in Stop state */
+  if ((hdsi->Instance->PCONFR & DSI_PCONFR_NL) == DSI_ONE_DATA_LANE)
+  {
+    if ((hdsi->Instance->PSR & DSI_PSR_UAN0) != DSI_PSR_UAN0)
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+      return HAL_ERROR;
+    }
+  }
+  else if ((hdsi->Instance->PCONFR & DSI_PCONFR_NL) == DSI_TWO_DATA_LANES)
+  {
+    if ((hdsi->Instance->PSR & (DSI_PSR_UAN0 | DSI_PSR_UAN1)) != (DSI_PSR_UAN0 | DSI_PSR_UAN1))
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+      return HAL_ERROR;
+    }
+  }
+  else
+  {
+    /* Process unlocked */
+    __HAL_UNLOCK(hdsi);
+    return HAL_ERROR;
+  }
+
   /* ULPS Request on Data Lanes */
   hdsi->Instance->PUCR |= DSI_PUCR_URDL;
 
@@ -2043,6 +2167,58 @@ HAL_StatusTypeDef HAL_DSI_ExitULPMData(DSI_HandleTypeDef *hdsi)
   /* Process locked */
   __HAL_LOCK(hdsi);
 
+  /* Verify that all active lanes are in ULPM */
+  if ((hdsi->Instance->PCONFR & DSI_PCONFR_NL) == DSI_ONE_DATA_LANE)
+  {
+    if ((hdsi->Instance->PSR &  DSI_PSR_UAN0) != 0U)
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+
+      return HAL_ERROR;
+    }
+  }
+  else if ((hdsi->Instance->PCONFR & DSI_PCONFR_NL) == DSI_TWO_DATA_LANES)
+  {
+    if ((hdsi->Instance->PSR & (DSI_PSR_UAN0  | DSI_PSR_UAN1)) != 0U)
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+
+      return HAL_ERROR;
+    }
+  }
+  else
+  {
+    /* Process unlocked */
+    __HAL_UNLOCK(hdsi);
+
+    return HAL_ERROR;
+  }
+
+  /* Turn on the DSI PLL */
+  __HAL_DSI_PLL_ENABLE(hdsi);
+
+  /* Requires min of 400us delay before reading the PLLLS flag */
+  /* 1ms delay is inserted that is the minimum HAL delay granularity */
+  HAL_Delay(1);
+
+  /* Get tick */
+  tickstart = HAL_GetTick();
+
+  /* Wait for the lock of the PLL */
+  while (__HAL_DSI_GET_FLAG(hdsi, DSI_FLAG_PLLLS) == 0U)
+  {
+    /* Check for the Timeout */
+    if ((HAL_GetTick() - tickstart) > DSI_TIMEOUT_VALUE)
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+
+      return HAL_TIMEOUT;
+    }
+  }
+
   /* Exit ULPS on Data Lanes */
   hdsi->Instance->PUCR |= DSI_PUCR_UEDL;
 
@@ -2092,6 +2268,61 @@ HAL_StatusTypeDef HAL_DSI_ExitULPMData(DSI_HandleTypeDef *hdsi)
   /* De-assert the ULPM requests and the ULPM exit bits */
   hdsi->Instance->PUCR = 0U;
 
+  /* Verify that D-PHY PLL is enabled */
+  if ((hdsi->Instance->WRPCR & DSI_WRPCR_PLLEN) != DSI_WRPCR_PLLEN)
+  {
+    /* Process Unlocked */
+    __HAL_UNLOCK(hdsi);
+    return HAL_ERROR;
+  }
+
+  /* Verify that all active lanes are in Stop state */
+  if ((hdsi->Instance->PCONFR & DSI_PCONFR_NL) == DSI_ONE_DATA_LANE)
+  {
+    if ((hdsi->Instance->PSR & DSI_PSR_UAN0) != DSI_PSR_UAN0)
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+      return HAL_ERROR;
+    }
+  }
+  else if ((hdsi->Instance->PCONFR & DSI_PCONFR_NL) == DSI_TWO_DATA_LANES)
+  {
+    if ((hdsi->Instance->PSR & (DSI_PSR_UAN0  |  DSI_PSR_UAN1)) != (DSI_PSR_UAN0 | DSI_PSR_UAN1))
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+      return HAL_ERROR;
+    }
+  }
+  else
+  {
+    /* Process unlocked */
+    __HAL_UNLOCK(hdsi);
+    return HAL_ERROR;
+  }
+
+  /* Verify that D-PHY PLL is locked */
+  /* Requires min of 400us delay before reading the PLLLS flag */
+  /* 1ms delay is inserted that is the minimum HAL delay granularity */
+  HAL_Delay(1);
+
+  /* Get tick */
+  tickstart = HAL_GetTick();
+
+  /* Wait for the lock of the PLL */
+  while (__HAL_DSI_GET_FLAG(hdsi, DSI_FLAG_PLLLS) == 0U)
+  {
+    /* Check for the Timeout */
+    if ((HAL_GetTick() - tickstart) > DSI_TIMEOUT_VALUE)
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+
+      return HAL_TIMEOUT;
+    }
+  }
+
   /* Process unlocked */
   __HAL_UNLOCK(hdsi);
 
@@ -2112,6 +2343,96 @@ HAL_StatusTypeDef HAL_DSI_EnterULPM(DSI_HandleTypeDef *hdsi)
   /* Process locked */
   __HAL_LOCK(hdsi);
 
+  /* Verify the initial status of the DSI Host */
+
+  /* Verify that the clock lane and the digital section of the D-PHY are enabled */
+  if ((hdsi->Instance->PCTLR & (DSI_PCTLR_CKE | DSI_PCTLR_DEN)) != (DSI_PCTLR_CKE | DSI_PCTLR_DEN))
+  {
+    /* Process Unlocked */
+    __HAL_UNLOCK(hdsi);
+    return HAL_ERROR;
+  }
+
+  /* Verify that the D-PHY PLL and the reference bias are enabled */
+  if ((hdsi->Instance->WRPCR & DSI_WRPCR_PLLEN) != DSI_WRPCR_PLLEN)
+  {
+    /* Process Unlocked */
+    __HAL_UNLOCK(hdsi);
+    return HAL_ERROR;
+  }
+  else if ((hdsi->Instance->BCFGR  & DSI_BCFGR_PWRUP) != DSI_BCFGR_PWRUP)
+  {
+    /* Process Unlocked */
+    __HAL_UNLOCK(hdsi);
+    return HAL_ERROR;
+  }
+  else
+  {
+    /* Nothing to do */
+  }
+
+  /* Verify that there are no ULPS exit or request on both data and clock lanes */
+  if ((hdsi->Instance->PUCR & (DSI_PUCR_UEDL | DSI_PUCR_URDL | DSI_PUCR_UECL | DSI_PUCR_URCL)) != 0U)
+  {
+    /* Process Unlocked */
+    __HAL_UNLOCK(hdsi);
+    return HAL_ERROR;
+  }
+
+  /* Verify that there are no Transmission trigger */
+  if ((hdsi->Instance->PTTCR & DSI_PTTCR_TX_TRIG) != 0U)
+  {
+    /* Process Unlocked */
+    __HAL_UNLOCK(hdsi);
+    return HAL_ERROR;
+  }
+
+  /* Requires min of 400us delay before reading the PLLLS flag */
+  /* 1ms delay is inserted that is the minimum HAL delay granularity */
+  HAL_Delay(1);
+
+  /* Verify that D-PHY PLL is locked */
+  tickstart = HAL_GetTick();
+
+  while ((__HAL_DSI_GET_FLAG(hdsi, DSI_FLAG_PLLLS) == 0U))
+  {
+    /* Check for the Timeout */
+    if ((HAL_GetTick() - tickstart) > DSI_TIMEOUT_VALUE)
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+
+      return HAL_TIMEOUT;
+    }
+  }
+
+  /* Verify that all active lanes are in Stop state */
+  if ((hdsi->Instance->PCONFR & DSI_PCONFR_NL) == DSI_ONE_DATA_LANE)
+  {
+    if ((hdsi->Instance->PSR & (DSI_PSR_UAN0 | DSI_PSR_PSS0)) != (DSI_PSR_UAN0 | DSI_PSR_PSS0))
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+      return HAL_ERROR;
+    }
+  }
+  else if ((hdsi->Instance->PCONFR & DSI_PCONFR_NL) == DSI_TWO_DATA_LANES)
+  {
+    if ((hdsi->Instance->PSR & (DSI_PSR_UAN0 | DSI_PSR_PSS0 | DSI_PSR_PSS1 | \
+                                DSI_PSR_UAN1)) != (DSI_PSR_UAN0 | DSI_PSR_PSS0 | DSI_PSR_PSS1 | DSI_PSR_UAN1))
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+      return HAL_ERROR;
+    }
+  }
+  else
+  {
+    /* Process unlocked */
+    __HAL_UNLOCK(hdsi);
+    return HAL_ERROR;
+  }
+
   /* Clock lane configuration: no more HS request */
   hdsi->Instance->CLCR &= ~DSI_CLCR_DPCC;
 
@@ -2124,7 +2445,7 @@ HAL_StatusTypeDef HAL_DSI_EnterULPM(DSI_HandleTypeDef *hdsi)
   /* Get tick */
   tickstart = HAL_GetTick();
 
-  /* Wait until all active lanes exit ULPM */
+  /* Wait until all active lanes enter ULPM */
   if ((hdsi->Instance->PCONFR & DSI_PCONFR_NL) == DSI_ONE_DATA_LANE)
   {
     while ((hdsi->Instance->PSR & (DSI_PSR_UAN0 | DSI_PSR_UANC)) != 0U)
@@ -2184,8 +2505,43 @@ HAL_StatusTypeDef HAL_DSI_ExitULPM(DSI_HandleTypeDef *hdsi)
   /* Process locked */
   __HAL_LOCK(hdsi);
 
+  /* Verify that all active lanes are in ULPM */
+  if ((hdsi->Instance->PCONFR & DSI_PCONFR_NL) == DSI_ONE_DATA_LANE)
+  {
+    if ((hdsi->Instance->PSR & (DSI_PSR_RUE0 | DSI_PSR_UAN0 | DSI_PSR_PSS0 | \
+                                DSI_PSR_UANC | DSI_PSR_PSSC | DSI_PSR_PD)) != 0U)
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+
+      return HAL_ERROR;
+    }
+  }
+  else if ((hdsi->Instance->PCONFR & DSI_PCONFR_NL) == DSI_TWO_DATA_LANES)
+  {
+    if ((hdsi->Instance->PSR & (DSI_PSR_RUE0 | DSI_PSR_UAN0 | DSI_PSR_PSS0 | DSI_PSR_UAN1 | \
+                                DSI_PSR_PSS1 | DSI_PSR_UANC | DSI_PSR_PSSC | DSI_PSR_PD)) != 0U)
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+
+      return HAL_ERROR;
+    }
+  }
+  else
+  {
+    /* Process unlocked */
+    __HAL_UNLOCK(hdsi);
+
+    return HAL_ERROR;
+  }
+
   /* Turn on the DSI PLL */
   __HAL_DSI_PLL_ENABLE(hdsi);
+
+  /* Requires min of 400us delay before reading the PLLLS flag */
+  /* 1ms delay is inserted that is the minimum HAL delay granularity */
+  HAL_Delay(1);
 
   /* Get tick */
   tickstart = HAL_GetTick();
@@ -2258,6 +2614,62 @@ HAL_StatusTypeDef HAL_DSI_ExitULPM(DSI_HandleTypeDef *hdsi)
 
   /* Restore clock lane configuration to HS */
   hdsi->Instance->CLCR |= DSI_CLCR_DPCC;
+
+  /* Verify that D-PHY PLL is enabled */
+  if ((hdsi->Instance->WRPCR & DSI_WRPCR_PLLEN) != DSI_WRPCR_PLLEN)
+  {
+    /* Process Unlocked */
+    __HAL_UNLOCK(hdsi);
+    return HAL_ERROR;
+  }
+
+  /* Verify that all active lanes are in Stop state */
+  if ((hdsi->Instance->PCONFR & DSI_PCONFR_NL) == DSI_ONE_DATA_LANE)
+  {
+    if ((hdsi->Instance->PSR & (DSI_PSR_UAN0 | DSI_PSR_PSS0)) != (DSI_PSR_UAN0 | DSI_PSR_PSS0))
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+      return HAL_ERROR;
+    }
+  }
+  else if ((hdsi->Instance->PCONFR & DSI_PCONFR_NL) == DSI_TWO_DATA_LANES)
+  {
+    if ((hdsi->Instance->PSR & (DSI_PSR_UAN0 | DSI_PSR_PSS0 | DSI_PSR_PSS1 | \
+                                DSI_PSR_UAN1)) != (DSI_PSR_UAN0 | DSI_PSR_PSS0 | DSI_PSR_PSS1 | DSI_PSR_UAN1))
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+      return HAL_ERROR;
+    }
+  }
+  else
+  {
+    /* Process unlocked */
+    __HAL_UNLOCK(hdsi);
+    return HAL_ERROR;
+  }
+
+  /* Verify that D-PHY PLL is locked */
+  /* Requires min of 400us delay before reading the PLLLS flag */
+  /* 1ms delay is inserted that is the minimum HAL delay granularity */
+  HAL_Delay(1);
+
+  /* Get tick */
+  tickstart = HAL_GetTick();
+
+  /* Wait for the lock of the PLL */
+  while (__HAL_DSI_GET_FLAG(hdsi, DSI_FLAG_PLLLS) == 0U)
+  {
+    /* Check for the Timeout */
+    if ((HAL_GetTick() - tickstart) > DSI_TIMEOUT_VALUE)
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdsi);
+
+      return HAL_TIMEOUT;
+    }
+  }
 
   /* Process unlocked */
   __HAL_UNLOCK(hdsi);

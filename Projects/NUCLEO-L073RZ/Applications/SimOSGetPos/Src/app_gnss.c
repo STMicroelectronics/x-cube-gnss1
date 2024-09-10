@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -130,11 +130,11 @@ static void MX_SimOSGetPos_Process(void)
       int highMask = GEOFENCE;
       PRINT_OUT("\n\rConfigure Message List\n\r");
       AppCfgMsgList(lowMask, highMask);
-      HAL_Delay(1000);  //Allows to catch the reply from Teseo
+      HAL_Delay(1000);  /*Allows to catch the reply from Teseo */
 
       PRINT_OUT("\n\rEnable Geofence\r");
       AppEnFeature("GEOFENCE,1");
-      HAL_Delay(500);  //Allows to catch the reply from Teseo
+      HAL_Delay(500);  /* Allows to catch the reply from Teseo */
 
       PRINT_OUT("\n\rConfigure Geofence Circle\n\r");
       AppGeofenceCfg("Geofence-Lecce");

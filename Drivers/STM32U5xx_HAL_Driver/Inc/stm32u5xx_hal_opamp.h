@@ -182,7 +182,6 @@ typedef void (*pOPAMP_CallbackTypeDef)(OPAMP_HandleTypeDef *hopamp);
 
 #define OPAMP_NONINVERTINGINPUT_IO0         0x00000000U             /*!< OPAMP non-inverting input connected to dedicated IO pin       */
 #define OPAMP_NONINVERTINGINPUT_DAC_CH      OPAMP_CSR_VP_SEL        /*!< OPAMP non-inverting input connected internally to DAC channel */
-
 /**
   * @}
   */
@@ -190,11 +189,9 @@ typedef void (*pOPAMP_CallbackTypeDef)(OPAMP_HandleTypeDef *hopamp);
 /** @defgroup OPAMP_InvertingInput OPAMP Inverting Input
   * @{
   */
-
 #define OPAMP_INVERTINGINPUT_IO0              0x00000000U            /*!< OPAMP inverting input connected to dedicated IO pin low-leakage                         */
 #define OPAMP_INVERTINGINPUT_IO1              OPAMP_CSR_VM_SEL_0     /*!< OPAMP inverting input connected to alternative IO pin available on some device packages */
 #define OPAMP_INVERTINGINPUT_CONNECT_NO       OPAMP_CSR_VM_SEL_1     /*!< OPAMP inverting input not connected externally (PGA mode only)                          */
-
 /**
   * @}
   */
@@ -216,8 +213,8 @@ typedef void (*pOPAMP_CallbackTypeDef)(OPAMP_HandleTypeDef *hopamp);
   * @{
   */
 #define OPAMP_POWERMODE_NORMALPOWER_NORMALSPEED        0x00000000U                         /*!< OPAMP power mode normal speed normal    */
-#define OPAMP_POWERMODE_NORMALPOWER_HIGHSPEED          OPAMP_CSR_HSM                       /*!< OPAMP power mode normal speed high      */
 #define OPAMP_POWERMODE_LOWPOWER_NORMALSPEED           OPAMP_CSR_OPALPM                    /*!< OPAMP power mode low-power speed normal */
+#define OPAMP_POWERMODE_NORMALPOWER_HIGHSPEED          OPAMP_CSR_HSM                       /*!< OPAMP power mode normal speed high      */
 #define OPAMP_POWERMODE_LOWPOWER_HIGHSPEED            (OPAMP_CSR_OPALPM | OPAMP_CSR_HSM)   /*!< OPAMP power mode low-power speed high   */
 
 /**
@@ -296,7 +293,6 @@ typedef void (*pOPAMP_CallbackTypeDef)(OPAMP_HandleTypeDef *hopamp);
 #else
 #define __HAL_OPAMP_RESET_HANDLE_STATE(__HANDLE__) ((__HANDLE__)->State = HAL_OPAMP_STATE_RESET)
 #endif /* USE_HAL_OPAMP_REGISTER_CALLBACKS */
-
 
 
 /**
@@ -386,7 +382,7 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp);
 
 /* Peripheral Control functions  ************************************************/
 HAL_StatusTypeDef HAL_OPAMP_Lock(OPAMP_HandleTypeDef *hopamp);
-HAL_OPAMP_TrimmingValueTypeDef HAL_OPAMP_GetTrimOffset(OPAMP_HandleTypeDef *hopamp, uint32_t trimmingoffset);
+HAL_OPAMP_TrimmingValueTypeDef HAL_OPAMP_GetTrimOffset(const OPAMP_HandleTypeDef *hopamp, uint32_t trimmingoffset);
 
 /**
   * @}
@@ -397,7 +393,7 @@ HAL_OPAMP_TrimmingValueTypeDef HAL_OPAMP_GetTrimOffset(OPAMP_HandleTypeDef *hopa
   */
 
 /* Peripheral State functions  **************************************************/
-HAL_OPAMP_StateTypeDef HAL_OPAMP_GetState(OPAMP_HandleTypeDef *hopamp);
+HAL_OPAMP_StateTypeDef HAL_OPAMP_GetState(const OPAMP_HandleTypeDef *hopamp);
 
 /**
   * @}

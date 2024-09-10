@@ -532,7 +532,7 @@ ParseStatus_t NMEA_ParseGPGGA(GPGGA_Info_t *pGPGGAInfo, uint8_t NMEA[])
         app[j][k] = (uint8_t)'\0';
         new_field = 1;
 
-        if (strcmp((char *)app[0], "$GPGGA") == 0) {
+        if (strcmp((char *)app[0], "$GPGGA") == 0 || strcmp((char *)app[0], "$GNGGA") == 0) {
           j++;
           k = 0;
           valid_msg = TRUE;
@@ -669,7 +669,7 @@ ParseStatus_t NMEA_ParseGPGST(GPGST_Info_t *pGPGSTInfo, uint8_t NMEA[])
         app[j][k] = (uint8_t)'\0';
         new_field = 1;
         
-        if (strcmp((char *)app[0], "$GPGST") == 0)
+        if (strcmp((char *)app[0], "$GPGST") == 0 || strcmp((char *)app[0], "$GNGST"))
         {
           j++;
           k = 0;
@@ -731,7 +731,7 @@ ParseStatus_t NMEA_ParseGPRMC(GPRMC_Info_t *pGPRMCInfo, uint8_t NMEA[])
         app[j][k] = (uint8_t)'\0';
         new_field = 1;
         
-        if (strcmp((char *)app[0], "$GPRMC") == 0)
+        if (strcmp((char *)app[0], "$GPRMC") == 0 | strcmp((char *)app[0], "$GNRMC") == 0)
         {
           j++;
           k = 0;

@@ -199,8 +199,8 @@ __vector_table
         DCD     MDF1_FLT5_IRQHandler             ; MDF1 Filter 5 global interrupt
         DCD     CORDIC_IRQHandler                ; CORDIC global interrupt
         DCD     FMAC_IRQHandler                  ; FMAC global interrupt
-        DCD     0                                ; Reserved
-        DCD     USART6_IRQHandler                ; USART6 global interrupt      
+        DCD     LSECSSD_IRQHandler               ; LSECSSD global interrupt
+        DCD     USART6_IRQHandler                ; USART6 global interrupt
         DCD     I2C5_ER_IRQHandler               ; I2C5 error interrupt
         DCD     I2C5_EV_IRQHandler               ; I2C5 event interrupt
         DCD     I2C6_ER_IRQHandler               ; I2C6 error interrupt
@@ -882,6 +882,11 @@ CORDIC_IRQHandler
 FMAC_IRQHandler
         B FMAC_IRQHandler
 
+        PUBWEAK LSECSSD_IRQHandler
+        SECTION .text:CODE:NOROOT:REORDER(1)
+LSECSSD_IRQHandler
+        B LSECSSD_IRQHandler
+
         PUBWEAK USART6_IRQHandler
         SECTION .text:CODE:NOROOT:REORDER(1)
 USART6_IRQHandler
@@ -940,7 +945,7 @@ LTDC_ER_IRQHandler
         PUBWEAK DSI_IRQHandler
         SECTION .text:CODE:NOROOT:REORDER(1)
 DSI_IRQHandler
-        B DSI_IRQHandler      
+        B DSI_IRQHandler
 
         PUBWEAK DCACHE2_IRQHandler
         SECTION .text:CODE:NOROOT:REORDER(1)

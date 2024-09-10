@@ -1,12 +1,12 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    stm32u5xx_hal_timebase_TIM.c
+  * @file    stm32u5xx_hal_timebase_tim.c
   * @brief   HAL time base based on the hardware TIM.
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -54,6 +54,7 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 
   /* Compute TIM1 clock */
   uwTimclock = HAL_RCC_GetPCLK2Freq();
+
   /* Compute the prescaler value to have TIM1 counter clock equal to 1MHz */
   uwPrescalerValue = (uint32_t) ((uwTimclock / 1000000U) - 1U);
 
@@ -61,6 +62,7 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
   htim1.Instance = TIM1;
 
   /* Initialize TIMx peripheral as follow:
+
   + Period = [(TIM1CLK/1000) - 1]. to have a (1/1000) s time base.
   + Prescaler = (uwTimclock/1000000 - 1) to have a 1MHz counter clock.
   + ClockDivision = 0
@@ -90,6 +92,7 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
       }
     }
   }
+
   /* Enable the TIM1 global Interrupt */
   HAL_NVIC_EnableIRQ(TIM1_UP_IRQn);
 
@@ -120,3 +123,4 @@ void HAL_ResumeTick(void)
   /* Enable TIM1 Update interrupt */
   __HAL_TIM_ENABLE_IT(&htim1, TIM_IT_UPDATE);
 }
+

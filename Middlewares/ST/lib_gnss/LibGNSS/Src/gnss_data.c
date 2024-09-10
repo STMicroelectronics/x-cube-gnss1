@@ -42,7 +42,16 @@ static uint8_t gnssCmd[CMD_SZ];
 /* Private functions ---------------------------------------------------------*/
 
 /* Public functions ----------------------------------------------------------*/
-
+int16_t minute_part(float64_t mod){
+	int16_t minute_whole_part;
+	minute_whole_part = (int16_t) mod;
+	return minute_whole_part;
+}
+float64_t seconds(float64_t mod, int16_t minute){
+	float64_t seconds;
+	seconds = (mod-minute)*60.0;
+	return seconds;
+}
 /* Sends a command to the GNSS module. */
 void GNSS_DATA_SendCommand(uint8_t *pCommand)
 {
@@ -78,15 +87,17 @@ void GNSS_DATA_GetValidInfo(GNSSParser_Data_t *pGNSSParser_Data)
                    pGNSSParser_Data->gpgga_data.utc.ss);
     PRINT_INFO((char *)msg);
 
-    (void)snprintf((char *)msg, MSG_SZ, "Latitude:\t\t[ %.0f' %d'' %c ]\n\r",
+    (void)snprintf((char *)msg, MSG_SZ, "Latitude:\t\t[ %.0f' %d'' %f\" %c ]\n\r",
                    (pGNSSParser_Data->gpgga_data.xyz.lat - lat_mod) / 100.0,
-                   (int16_t)lat_mod,
+                   minute_part(lat_mod),
+				   seconds(lat_mod,minute_part(lat_mod)),
                    pGNSSParser_Data->gpgga_data.xyz.ns);
     PRINT_INFO((char *)msg);
 
-    (void)snprintf((char *)msg, MSG_SZ, "Longitude:\t\t[ %.0f' %d'' %c ]\n\r",
+    (void)snprintf((char *)msg, MSG_SZ, "Longitude:\t\t[ %.0f' %d'' %f\" %c ]\n\r",
                    (pGNSSParser_Data->gpgga_data.xyz.lon - lon_mod) / 100.0,
-                   (int16_t)lon_mod,
+				   minute_part(lon_mod),
+				   seconds(lon_mod,minute_part(lon_mod)),
                    pGNSSParser_Data->gpgga_data.xyz.ew);
     PRINT_INFO((char *)msg);
 
@@ -94,9 +105,10 @@ void GNSS_DATA_GetValidInfo(GNSSParser_Data_t *pGNSSParser_Data)
                    pGNSSParser_Data->gpgga_data.sats);
     PRINT_INFO((char *)msg);
 
-    (void)snprintf((char *)msg, MSG_SZ, "Position accuracy:\t[ %.1f ]\n\r",
+    (void)snprintf((char *)msg, MSG_SZ, "HDOP:\t\t\t[ %.1f ]\n\r",
                    pGNSSParser_Data->gpgga_data.acc);
     PRINT_INFO((char *)msg);
+    
 
     (void)snprintf((char *)msg, MSG_SZ, "Altitude:\t\t[ %.2f%c ]\n\r",
                    pGNSSParser_Data->gpgga_data.xyz.alt,
@@ -167,7 +179,7 @@ int32_t GNSS_DATA_TrackGotPos(GNSSParser_Data_t *pGNSSParser_Data, uint32_t how_
                      pGNSSParser_Data->gpgga_data.sats);
       PRINT_INFO((char *)msg);
 
-      (void)snprintf((char *)msg, MSG_SZ, "Position accuracy:\t[ %.1f ]\n\r",
+      (void)snprintf((char *)msg, MSG_SZ, "HDOP:\t\t\t[ %.1f ]\n\r",
                      pGNSSParser_Data->gpgga_data.acc);
       PRINT_INFO((char *)msg);
 
@@ -227,7 +239,7 @@ void GNSS_DATA_PrintTrackedPositions(uint32_t how_many)
                    stored_positions[i].sats);
     PRINT_INFO((char *)msg);
 
-    (void)snprintf((char *)msg, MSG_SZ,  "Position accuracy:\t[ %.1f ]\n\r",
+    (void)snprintf((char *)msg, MSG_SZ,  "HDOP:\t\t\t[ %.1f ]\n\r",
                    stored_positions[i].acc);
     PRINT_INFO((char *)msg);
 
@@ -289,22 +301,22 @@ void GNSS_DATA_GetGNSInfo(GNSSParser_Data_t *pGNSSParser_Data)
 
   float64_t lat_mod = fmod(pGNSSParser_Data->gns_data.xyz.lat, 100.0);
   float64_t lon_mod = fmod(pGNSSParser_Data->gns_data.xyz.lon, 100.0);
-
   (void)snprintf((char *)msg, MSG_SZ,  "UTC:\t\t\t[ %02d:%02d:%02d ]\n\r",
                  pGNSSParser_Data->gns_data.utc.hh,
                  pGNSSParser_Data->gns_data.utc.mm,
                  pGNSSParser_Data->gns_data.utc.ss);
   PRINT_INFO((char *)msg);
-
-  (void)snprintf((char *)msg, MSG_SZ, "Latitude:\t\t[ %.0f' %d'' %c ]\n\r",
+  (void)snprintf((char *)msg, MSG_SZ, "Latitude:\t\t[ %.0f' %d'' %f\" %c ]\n\r",
                  (pGNSSParser_Data->gns_data.xyz.lat - lat_mod) / 100.0,
-                 (int16_t)lat_mod,
+                 minute_part(lat_mod),
+				 seconds(lat_mod,minute_part(lat_mod)),
                  pGNSSParser_Data->gns_data.xyz.ns);
-  PRINT_INFO((char *)msg);
 
-  (void)snprintf((char *)msg, MSG_SZ, "Longitude:\t\t[ %.0f' %d'' %c ]\n\r",
+  PRINT_INFO((char *)msg);
+  (void)snprintf((char *)msg, MSG_SZ, "Longitude:\t\t[ %.0f' %d'' %f\" %c ]\n\r",
                  (pGNSSParser_Data->gns_data.xyz.lon - lon_mod) / 100.0,
-                 (int16_t)lon_mod,
+                 minute_part(lon_mod),
+				 seconds(lon_mod,minute_part(lon_mod)),
                  pGNSSParser_Data->gns_data.xyz.ew);
   PRINT_INFO((char *)msg);
 
@@ -326,6 +338,7 @@ void GNSS_DATA_GetGNSInfo(GNSSParser_Data_t *pGNSSParser_Data)
     
   PRINT_INFO("\n\n\r>");
 }
+
 
 /* Puts to console the info about GPS Pseudorange Noise Statistics */
 void GNSS_DATA_GetGPGSTInfo(GNSSParser_Data_t *pGNSSParser_Data)
@@ -401,15 +414,17 @@ void GNSS_DATA_GetGPRMCInfo(GNSSParser_Data_t *pGNSSParser_Data)
   float64_t lat_mod = fmod(pGNSSParser_Data->gprmc_data.xyz.lat, 100.0);
   float64_t lon_mod = fmod(pGNSSParser_Data->gprmc_data.xyz.lon, 100.0);
 
-  (void)snprintf((char *)msg, MSG_SZ, "Latitude:\t\t\t[ %.0f' %02d'' %c ]\n\r",
+  (void)snprintf((char *)msg, MSG_SZ, "Latitude:\t\t\t[ %.0f' %02d'' %f\" %c ]\n\r",
                  (pGNSSParser_Data->gprmc_data.xyz.lat - lat_mod) / 100.0,
-                 (int16_t)lat_mod,
+                 minute_part(lat_mod),
+				 seconds(lat_mod,minute_part(lat_mod)),
                  pGNSSParser_Data->gprmc_data.xyz.ns);
   PRINT_INFO((char *)msg);
 
-  (void)snprintf((char *)msg, MSG_SZ, "Longitude:\t\t\t[ %.0f' %02d'' %c ]\n\r",
+  (void)snprintf((char *)msg, MSG_SZ, "Longitude:\t\t\t[ %.0f' %02d'' %f\" %c ]\n\r",
                  (pGNSSParser_Data->gprmc_data.xyz.lon - lon_mod) / 100.0,
-                 (int16_t)lon_mod,
+                 minute_part(lon_mod),
+				 seconds(lon_mod,minute_part(lon_mod)),
                  pGNSSParser_Data->gprmc_data.xyz.ew);
   PRINT_INFO((char *)msg);
 

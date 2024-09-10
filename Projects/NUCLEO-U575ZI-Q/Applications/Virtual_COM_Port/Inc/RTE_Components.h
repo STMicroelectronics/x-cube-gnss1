@@ -7,7 +7,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -22,7 +22,7 @@
 #define  __RTE_COMPONENTS_H__
 
 /* Defines ------------------------------------------------------------------*/
-/* STMicroelectronics.X-CUBE-GNSS1.6.0.0 */
+/* STMicroelectronics.X-CUBE-GNSS1.7.0.0 */
 #define TESEO_LIV3F
 #define USE_THREADX_NATIVE_API
 #define LIB_GNSS

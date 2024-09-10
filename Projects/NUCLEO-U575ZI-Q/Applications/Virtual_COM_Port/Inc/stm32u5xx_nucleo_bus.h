@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -60,7 +60,7 @@
 #ifndef BUS_I2C1_POLL_TIMEOUT
    #define BUS_I2C1_POLL_TIMEOUT                0x1000U
 #endif
-/* I2C1 Frequeny in Hz  */
+/* I2C1 Frequency in Hz  */
 #ifndef BUS_I2C1_FREQUENCY
    #define BUS_I2C1_FREQUENCY  1000000U /* Frequency of I2Cn = 100 KHz*/
 #endif

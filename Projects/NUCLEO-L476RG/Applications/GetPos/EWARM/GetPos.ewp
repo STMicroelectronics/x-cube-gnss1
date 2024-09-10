@@ -341,8 +341,6 @@
         <option>
           <name>CCIncludePath2</name>
           <state>$PROJ_DIR$/../Core/Inc</state>
-          <state>$PROJ_DIR$/../GNSS/App</state>
-          <state>$PROJ_DIR$/../GNSS/Target</state>
           <state>$PROJ_DIR$/../../../../../Drivers/STM32L4xx_HAL_Driver/Inc</state>
           <state>$PROJ_DIR$/../../../../../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy</state>
           <state>$PROJ_DIR$/../../../../../Middlewares/Third_Party/FreeRTOS/Source/include</state>
@@ -350,6 +348,8 @@
           <state>$PROJ_DIR$/../../../../../Middlewares/Third_Party/FreeRTOS/Source/portable/IAR/ARM_CM4F</state>
           <state>$PROJ_DIR$/../../../../../Drivers/CMSIS/Device/ST/STM32L4xx/Include</state>
           <state>$PROJ_DIR$/../../../../../Drivers/CMSIS/Include</state>
+          <state>$PROJ_DIR$/../GNSS/App</state>
+          <state>$PROJ_DIR$/../GNSS/Target</state>
           <state>$PROJ_DIR$/../../../../../Middlewares/ST/lib_gnss/LibGNSS/Inc</state>
           <state>$PROJ_DIR$/../../../../../Middlewares/ST/lib_gnss/LibNMEA/Inc</state>
           <state>$PROJ_DIR$/../../../../../Drivers/BSP/Components/teseo_liv3f</state>
@@ -613,7 +613,7 @@
         </option>
         <option>
           <name>AUserIncludes</name>
-          <state>$PROJ_DIR$\..\Core\Inc</state>
+          <state>$PROJ_DIR$/../Core/Inc</state>
         </option>
         <option>
           <name>AExtraOptionsCheckV2</name>
@@ -1093,10 +1093,10 @@
           <name>$PROJ_DIR$\..\Core\Src\freertos.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\Core\Src\stm32l4xx_nucleo_bus.c</name>
+          <name>$PROJ_DIR$/../Core/Src/stm32l4xx_nucleo_bus.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\Core\Src\stm32l4xx_nucleo.c</name>
+          <name>$PROJ_DIR$/../Core/Src/stm32l4xx_nucleo.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\Core\Src\stm32l4xx_it.c</name>
@@ -1113,19 +1113,19 @@
         <group>
           <name>App</name>
           <file>
-            <name>$PROJ_DIR$\..\GNSS\App\gnss_utils.c</name>
+            <name>$PROJ_DIR$/../GNSS/App/gnss_utils.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\GNSS\App\app_gnss.c</name>
+            <name>$PROJ_DIR$/../GNSS/App/app_gnss.c</name>
           </file>
         </group>
         <group>
           <name>Target</name>
           <file>
-            <name>$PROJ_DIR$\..\GNSS\Target\stm32_bus_ex.c</name>
+            <name>$PROJ_DIR$/../GNSS/Target/stm32_bus_ex.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\GNSS\Target\gnss_lib_config.c</name>
+            <name>$PROJ_DIR$/../GNSS/Target/gnss_lib_config.c</name>
           </file>
         </group>
       </group>

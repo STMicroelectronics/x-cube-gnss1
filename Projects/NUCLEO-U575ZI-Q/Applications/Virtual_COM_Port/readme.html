@@ -54,19 +54,36 @@ For all info on how to use the Teseo-Suite, please, refer to the related documen
 </ul>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
-<li>This example runs on STM32 Nucleo devices equipped with a X-NUCLEO-GNSS1A1 (or a X-NUCLEO-GNSS2A1) expansion board</li>
-<li>This example has been tested with STMicroelectronics:
+<li><p>This example runs STM32 Nucleo board equipped with a X-NUCLEO-GNSS1A1 (or X-NUCLEO-GNSS2A1 or X-NUCLEO-LIV4A1) expansion board</p></li>
+<li>To use UART channel, modify the Jumper configuration on X-NUCLEO-GNSS1A1 as follows:
 <ul>
-<li>NUCLEO-F401RE RevC board</li>
-<li>NUCLEO-U575ZI-Q board and can be easily tailored to any other supported device and development board.</li>
+<li>J2 closed</li>
+<li>J3 open</li>
+<li>J4 open</li>
+<li>J5 closed</li>
+</ul></li>
+<li>To use UART channel, modify the Jumper configuration on X-NUCLEO-GNSS2A1 as follows:
+<ul>
+<li>J28 in position 1-2</li>
+<li>J27 in position 2-3</li>
+</ul></li>
+<li>To use UART channel, modify the Jumper configuration on X-NUCLEO-LIV4A1 as follows:
+<ul>
+<li>J11 in position 1-2</li>
+<li>J8 in position 2-3</li>
 </ul></li>
 </ul>
-<p>ADDITIONAL_BOARD : X-NUCLEO-GNSS1A1 https://www.st.com/en/ecosystems/x-nucleo-gnss1a1.html ADDITIONAL_COMP : Teseo-LIV3F https://www.st.com/en/positioning/teseo-liv3f.html</p>
+<p>ADDITIONAL_BOARD : <a href="https://www.st.com/en/ecosystems/x-nucleo-gnss1a1.html"> X-NUCLEO-GNSS1A1</a></p>
+<p>ADDITIONAL_BOARD : <a href="https://www.st.com/en/ecosystems/x-nucleo-gnss2a1.html"> X-NUCLEO-GNSS2A1</a></p>
+<p>ADDITIONAL_BOARD : <a href="https://www.st.com/en/ecosystems/x-nucleo-liv4a1.html"> X-NUCLEO-LIV4AA1</a></p>
+<p>ADDITIONAL_BOARD : <a href="https://www.st.com/en/positioning/teseo-liv3f.html"> Teseo-LIV3F</a></p>
+<p>ADDITIONAL_BOARD : <a href="https://www.st.com/en/positioning/teseo-vic3da.html"> Teseo-VIC3DA</a></p>
+<p>ADDITIONAL_BOARD : <a href="https://www.st.com/en/positioning/teseo-liv4f.html"> Teseo-LIV4F</a></p>
 <h3 id="how-to-use-it"><b>How to use it?</b></h3>
 <p>In order to make the program work, you must do the following:</p>
 <ul>
 <li><p>WARNING: before opening the project with any toolchain be sure your folder installation path is not too in-depth since the toolchain may report errors after building.</p></li>
-<li><p>Open STM32CubeIDE (this firmware has been successfully tested with Version 1.9.0). Alternatively you can use the Keil uVision toolchain (this firmware has been successfully tested with V5.32.0) or the IAR toolchain (this firmware has been successfully tested with Embedded Workbench V9.20.1).</p></li>
+<li><p>Open STM32CubeIDE (this firmware has been successfully tested with Version 1.15.1). Alternatively you can use the Keil uVision toolchain (this firmware has been successfully tested with V5.37.0) or the IAR toolchain (this firmware has been successfully tested with Embedded Workbench V9.20.1).</p></li>
 <li><p>Rebuild all files and load your image into target memory.</p></li>
 <li><p>Run the example.</p></li>
 <li><p>Alternatively, you can download the pre-built binaries in “Binary” folder included in the distributed package.</p></li>

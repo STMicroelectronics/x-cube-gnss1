@@ -1083,19 +1083,19 @@
         <name>$PROJ_DIR$\..\Src\main.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Src\stm32_bus_ex.c</name>
+        <name>$PROJ_DIR$/../Src/stm32_bus_ex.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Src\gnss_lib_config.c</name>
+        <name>$PROJ_DIR$/../Src/gnss_lib_config.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Src\app_gnss.c</name>
+        <name>$PROJ_DIR$/../Src/app_gnss.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Src\stm32l0xx_nucleo_bus.c</name>
+        <name>$PROJ_DIR$/../Src/stm32l0xx_nucleo_bus.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Src\stm32l0xx_nucleo.c</name>
+        <name>$PROJ_DIR$/../Src/stm32l0xx_nucleo.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Src\stm32l0xx_it.c</name>

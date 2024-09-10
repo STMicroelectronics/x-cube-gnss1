@@ -45,7 +45,7 @@
 /**************************************************************************/
 /**************************************************************************/
 
-SYSTEM_CLOCK      =   128000000
+SYSTEM_CLOCK      =   32000000
 SYSTICK_CYCLES    =   ((SYSTEM_CLOCK / 100) -1)
 
 /**************************************************************************/
@@ -257,10 +257,12 @@ __tx_DBGHandler:
     EXTERN  _tx_thread_system_stack_ptr
     EXTERN  _tx_initialize_unused_memory
     EXTERN  _tx_timer_interrupt
+    EXTERN  _tx_execution_isr_enter
+    EXTERN  _tx_execution_isr_exit
     EXTERN  __vector_table
 ;
 ;
-SYSTEM_CLOCK      EQU   128000000
+SYSTEM_CLOCK      EQU   32000000
 SYSTICK_CYCLES    EQU   ((SYSTEM_CLOCK / 100) -1)
 ;
 ;
@@ -455,7 +457,7 @@ __tx_DBGHandler:
 /**************************************************************************/
 /**************************************************************************/
 
-SYSTEM_CLOCK      =   128000000
+SYSTEM_CLOCK      =   32000000
 SYSTICK_CYCLES    =   ((SYSTEM_CLOCK / 100) -1)
 
 /**************************************************************************/

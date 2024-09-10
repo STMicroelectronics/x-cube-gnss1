@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -433,12 +433,12 @@ static void AppCmdProcess(char *com)
     */
     int lowMask = 0x18004F;
     int highMask = gnss_feature;
-    //PRINT_DBG("Saving Configuration...");
+    /* PRINT_DBG("Saving Configuration..."); */
     AppCfgMsgList(lowMask, highMask);
 
     PRINT_OUT("\r\n>");
   }
-  // 1 - GETPOS / 2 - LASTPOS
+  /*  1 - GETPOS / 2 - LASTPOS */
   else if((strcmp((char *)com, "1") == 0 || strcmp((char *)com, "getpos") == 0) ||
      (strcmp((char *)com, "2") == 0 || strcmp((char *)com, "lastpos") == 0))
   {
@@ -447,7 +447,7 @@ static void AppCmdProcess(char *com)
     osMutexRelease(gnssDataMutexHandle);
   }
 
-  // 3 - WAKEUPSTATUS
+  /* 3 - WAKEUPSTATUS */
   else if(strcmp((char *)com, "3") == 0 || strcmp((char *)com, "wakestatus") == 0)
   {
     GNSS1A1_GNSS_Wakeup_Status(GNSS1A1_TESEO_LIV3F, &status);
@@ -457,13 +457,13 @@ static void AppCmdProcess(char *com)
     PRINT_OUT("\r\n>");
   }
 
-  // 4 - HELP
+  /* 4 - HELP */
   else if(strcmp((char *)com, "4") == 0 || strcmp((char *)com, "help") == 0)
   {
     showCmds();
   }
 
-  // 5 - DEBUG
+  /* 5 - DEBUG */
   else if(strcmp((char *)com, "5") == 0 || strcmp((char *)com, "debug") == 0)
   {
     GNSSParser_Data.debug = (GNSSParser_Data.debug == DEBUG_ON ? DEBUG_OFF : DEBUG_ON);
@@ -473,7 +473,7 @@ static void AppCmdProcess(char *com)
       PRINT_OUT("Debug: ON\r\n>");
   }
 
-  // 6 - TRACKPOS
+  /* 6 - TRACKPOS */
   else if(strcmp((char *)com, "6") == 0 || strcmp((char *)com, "track") == 0)
   {
     uint32_t t, s;
@@ -504,7 +504,7 @@ static void AppCmdProcess(char *com)
     }
   }
 
-  // 7 - LASTTRACK
+  /* 7 - LASTTRACK */
   else if(strcmp((char *)com, "7") == 0 || strcmp((char *)com, "lasttrack") == 0)
   {
     if(tracked > 0)
@@ -518,7 +518,7 @@ static void AppCmdProcess(char *com)
     }
   }
 
-  // 8 - GETFWVER
+  /* 8 - GETFWVER */
   else if(strcmp((char *)com, "8") == 0 || strcmp((char *)com, "getfwver") == 0)
   {
     memset(com, 0, MAX_STR_LEN);
@@ -548,7 +548,7 @@ static void AppCmdProcess(char *com)
     PRINT_OUT("\nType the command now:\r\n> ");
   }
 
-  // GETFWVER,x
+  /* GETFWVER,x  */
   else if(strncmp((char *)com, "$PSTMGETSWVER", strlen("$PSTMGETSWVER")) == 0)
   {
     if (GetSWVerCmdIsAllowed(com)) {
@@ -559,7 +559,7 @@ static void AppCmdProcess(char *com)
     }
   }
 
-  // 9 - GET Fix data for single or combined Satellite navigation system
+  /* 9 - GET Fix data for single or combined Satellite navigation system */
   else if(strcmp((char *)com, "9") == 0 || strcmp((char *)com, "getgnsmsg") == 0)
   {
     osMutexWait(gnssDataMutexHandle, osWaitForever);
@@ -567,7 +567,7 @@ static void AppCmdProcess(char *com)
     osMutexRelease(gnssDataMutexHandle);
   }
 
-  // 10 - GET GPS Pseudorange Noise Statistics
+  /* 10 - GET GPS Pseudorange Noise Statistics */
   else if(strcmp((char *)com, "10") == 0 || strcmp((char *)com, "getgpgst") == 0)
   {
     osMutexWait(gnssDataMutexHandle, osWaitForever);
@@ -575,7 +575,7 @@ static void AppCmdProcess(char *com)
     osMutexRelease(gnssDataMutexHandle);
   }
 
-  // 11 - GET Recommended Minimum Specific GPS/Transit data
+  /* 11 - GET Recommended Minimum Specific GPS/Transit data  */
   else if(strcmp((char *)com, "11") == 0 || strcmp((char *)com, "getgprmc") == 0)
   {
     osMutexWait(gnssDataMutexHandle, osWaitForever);
@@ -583,7 +583,7 @@ static void AppCmdProcess(char *com)
     osMutexRelease(gnssDataMutexHandle);
   }
 
-  // 12 - GET GPS DOP and Active Satellites
+  /* 12 - GET GPS DOP and Active Satellites */
   else if(strcmp((char *)com, "12") == 0 || strcmp((char *)com, "getgsamsg") == 0)
   {
     osMutexWait(gnssDataMutexHandle, osWaitForever);
@@ -591,7 +591,7 @@ static void AppCmdProcess(char *com)
     osMutexRelease(gnssDataMutexHandle);
   }
 
-  // 13 - GET GPS Satellites in View
+  /* 13 - GET GPS Satellites in View  */
   else if(strcmp((char *)com, "13") == 0 || strcmp((char *)com, "getgsvmsg") == 0)
   {
     osMutexWait(gnssDataMutexHandle, osWaitForever);
@@ -600,7 +600,7 @@ static void AppCmdProcess(char *com)
   }
 
 #if (configUSE_FEATURE == 1)
-  // 14 - EN-FEATURE
+  /* 14 - EN-FEATURE */
   else if(strcmp((char *)com, "14") == 0 || strcmp((char *)com, "en-feature") == 0)
   {
 #if (configUSE_GEOFENCE == 1)
@@ -635,7 +635,7 @@ static void AppCmdProcess(char *com)
 #endif /* configUSE_FEATURE */
 
 #if (configUSE_GEOFENCE == 1)
-  // 15 - CONF-GEOFENCE
+  /* 15 - CONF-GEOFENCE */
   else if(strcmp((char *)com, "15") == 0 || strcmp((char *)com, "conf-geofence") == 0)
   {
     memset(com, 0, MAX_STR_LEN);
@@ -643,14 +643,14 @@ static void AppCmdProcess(char *com)
     PRINT_OUT("Type \"Geofence-Catania\" to config circle in Catania \r\n");
     PRINT_OUT("Type the command:\r\n> ");
   }
-  // GEOFENCE-CIRCLE
+  /* GEOFENCE-CIRCLE */
   else if(strncmp((char *)com, "Geofence-Lecce", strlen("Geofence-Lecce")) == 0 ||
           strncmp((char *)com, "Geofence-Catania", strlen("Geofence-Catania")) == 0)
   {
     AppGeofenceCfg(com);
   }
 
-  // 16 - REQ-GEOFENCE
+  /* 16 - REQ-GEOFENCE */
   else if(strcmp((char *)com, "16") == 0 || strcmp((char *)com, "req-geofence") == 0)
   {
     GNSS_DATA_SendCommand("$PSTMGEOFENCEREQ");
@@ -658,7 +658,7 @@ static void AppCmdProcess(char *com)
 #endif /* configUSE_GEOFENCE */
 
 #if (configUSE_ODOMETER == 1)
-  // 17 - ODOMETER (START/STOP)
+  /* 17 - ODOMETER (START/STOP) */
   else if(strcmp((char *)com, "17") == 0 || strcmp((char *)com, "odometer-op") == 0)
   {
     memset(com, 0, MAX_STR_LEN);
@@ -667,7 +667,7 @@ static void AppCmdProcess(char *com)
     PRINT_OUT("Type the command:\r\n> ");
   }
 
-  // Odometer op
+  /* Odometer op  */
   else if(strncmp((char *)com, "START-ODO", strlen("START-ODO")) == 0 ||
           strncmp((char *)com, "STOP-ODO", strlen("STOP-ODO")) == 0)
   {
@@ -676,7 +676,7 @@ static void AppCmdProcess(char *com)
 #endif /* configUSE_ODOMETER */
 
 #if (configUSE_DATALOG == 1)
-  // 18 - DATALOG (START/STOP/ERASE)
+  /* 18 - DATALOG (START/STOP/ERASE) */
   else if(strcmp((char *)com, "18") == 0 || strcmp((char *)com, "datalog-op") == 0)
   {
     memset(com, 0, MAX_STR_LEN);
@@ -686,7 +686,7 @@ static void AppCmdProcess(char *com)
     PRINT_OUT("Type \"ERASE-DATALOG\"  to erase datalog\r\n");
     PRINT_OUT("Type the command:\r\n> ");
   }
-  // Datalog op
+  /* Datalog op  */
   else if(strncmp((char *)com, "CONFIG-DATALOG", strlen("CONFIG-DATALOG")) == 0 ||
           strncmp((char *)com, "START-DATALOG", strlen("START-DATALOG")) == 0 ||
           strncmp((char *)com, "STOP-DATALOG", strlen("STOP-DATALOG")) == 0 ||
@@ -696,7 +696,7 @@ static void AppCmdProcess(char *com)
   }
 #endif /* configUSE_DATALOG */
 
-  // 19 - EXT-HELP
+  /* 19 - EXT-HELP */
   else if(strcmp((char *)com, "19") == 0 || strcmp((char *)com, "ext-help") == 0)
   {
     printHelp();
@@ -806,7 +806,7 @@ static int ConsoleReadable(void)
   if(__HAL_UART_GET_FLAG(&hcom_uart[COM1], UART_FLAG_ORE)) {
     __HAL_UART_CLEAR_OREFLAG(&hcom_uart[COM1]);
   }
-  // Check if data is received
+  /* Check if data is received */
   return (__HAL_UART_GET_FLAG(&hcom_uart[COM1], UART_FLAG_RXNE) != RESET) ? 1 : 0;
 }
 

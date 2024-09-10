@@ -10,6 +10,7 @@
 | STM32L4xx CMSIS                         | ARM Limited - STMicroelectronics   | Apache-2.0 |
 | STM32L4xx HAL/LL Drivers                | STMicroelectronics                 | BSD-3-Clause |
 | STM32L4xx-NUCLEO BSP                    | STMicroelectronics                 | BSD-3-Clause |
+| ES_WiFi Component BSP                   | STMicroelectronics                 | BSD-3-Clause |
 | B-L475E-IOT01                           | STMicroelectronics                 | BSD-3-Clause |
 | STM32U5xx CMSIS                         | ARM Limited - STMicroelectronics   | Apache-2.0 |
 | STM32U5xx HAL/LL Drivers                | STMicroelectronics                 | BSD-3-Clause |

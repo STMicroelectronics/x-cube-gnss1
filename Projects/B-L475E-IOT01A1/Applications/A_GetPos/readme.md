@@ -143,16 +143,30 @@ GNSS, I2C, UART, WIFI, RTOS, Geofencing, Odometer, Data Logging
 
 ### <b>Hardware and Software environment</b>
 
-  - This example runs on B-L475E-IOT01A1 equipped board with a X-NUCLEO-GNSS1A1 (or X-NUCLEO-GNSS2A1) expansion board
+  - This example runs on B-L475E-IOT01A1 board equipped with a X-NUCLEO-GNSS1A1 (or X-NUCLEO-GNSS2A1 or X-NUCLEO-LIV4A1) expansion board
 
   - To use UART channel, modify the Jumper configuration on X-NUCLEO-GNSS1A1 as follows:
-    - J2 closed
-    - J3 open
-    - J4 open
-    - J5 closed
+    -	J2 closed
+    -	J3 open
+    -	J4 open
+    -	J5 closed
+  
+ - To use UART channel, modify the Jumper configuration on X-NUCLEO-GNSS2A1 as follows:
+    -	J28 in position 1-2
+    -	J27 in position 2-3
+ 
+ - To use UART channel, modify the Jumper configuration on X-NUCLEO-LIV4A1 as follows:
+    -	J11 in position 1-2
+    -	J8 in position 2-3
+	
 
-ADDITIONAL_BOARD : X-NUCLEO-GNSS1A1 https://www.st.com/content/st_com/en/products/ecosystems/stm32-open-development-environment/stm32-nucleo-expansion-boards/stm32-ode-connect-hw/x-nucleo-gnss1a1.html
-ADDITIONAL_COMP : Teseo-LIV3F https://www.st.com/content/st_com/en/products/positioning/gnss-modules/teseo-liv3f.html
+ADDITIONAL_BOARD : X-NUCLEO-GNSS1A1 https://www.st.com/en/ecosystems/x-nucleo-gnss1a1.html
+ADDITIONAL_BOARD : X-NUCLEO-GNSS2A1 https://www.st.com/en/ecosystems/x-nucleo-gnss2a1.html
+ADDITIONAL_BOARD : X-NUCLEO-LIV4A1 https://www.st.com/en/ecosystems/x-nucleo-liv4a1.html
+
+ADDITIONAL_COMP : Teseo-LIV3F https://www.st.com/en/positioning/teseo-liv3f.html
+ADDITIONAL_COMP : Teseo-VIC3DA https://www.st.com/en/positioning/teseo-vic3da.html
+ADDITIONAL_COMP : Teseo-LIV4F https://www.st.com/en/positioning/teseo-liv4f.html
 
 ### <b>How to use it?</b>
 
@@ -162,9 +176,9 @@ In order to make the program work, you must do the following:
    installation path is not too in-depth since the toolchain may report errors
    after building.
 
- - Open STM32CubeIDE (this firmware has been successfully tested with Version 1.9.0).
+ - Open STM32CubeIDE (this firmware has been successfully tested with Version 1.15.1).
    Alternatively you can use the Keil uVision toolchain (this firmware
-   has been successfully tested with V5.32.0) or the IAR toolchain (this firmware has 
+   has been successfully tested with V5.37.0) or the IAR toolchain (this firmware has 
    been successfully tested with Embedded Workbench V9.20.1).
 
  - The Preprocessor symbol ASSISTED_GNSS should be included in project option.
@@ -175,6 +189,29 @@ In order to make the program work, you must do the following:
 
  - Alternatively, you can download the pre-built binaries in "Binary" 
    folder included in the distributed package.
+
+
+### <b>Keil v5.38 Changes </b>
+
+In order to make the project build for Keil v5.38 , follow the below steps:
+
+- Change the include path from ../../../../../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F to ../../../../../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
+- Change the path of port.c include in the Middlewares/Third_Party/FreeRTOS from ..\..\..\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\port.c
+ to ..\..\..\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F\port.c
+- Add below line in <code>Drivers/BSP/GNSS1A1/gnss1a1_gnss.h
+ #if defined ( __CC_ARM)
+ /* Compatibility header for Arm Compiler 5 intrinsics */
+ #include &lt;arm_compat.h&gt;
+ #endif
+- Add in Projects\B-L475E-IOT01A1\Applications\A_GetPos\Common\Shared\Src\heap.c below two lines (+)
+ (1) +#elif defined ( __CC_ARM   ) || defined(__ARMCC_VERSION)
+  /* Check if ARM compiler 5 or 6 are available */
+ extern void *__initial_sp;
+ (2) stack_start = &p;
+ +#if defined (__GNUC__) && !(defined ( __CC_ARM   )|| defined(__ARMCC_VERSION))
+ /* Check if ARM compiler 5 or 6 are available */
+ stack_init = ((unsigned char*) &_estack) - ((uint32_t) &_Min_Stack_Size);
+#endif
 
 ### <b>Author</b>
 

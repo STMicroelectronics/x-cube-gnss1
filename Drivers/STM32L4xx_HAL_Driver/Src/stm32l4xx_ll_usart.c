@@ -31,7 +31,7 @@
   * @{
   */
 
-#if defined (USART1) || defined (USART2) || defined (USART3) || defined (UART4) || defined (UART5)
+#if defined(USART1) || defined(USART2) || defined(USART3) || defined(UART4) || defined(UART5)
 
 /** @addtogroup USART_LL
   * @{
@@ -40,6 +40,17 @@
 /* Private types -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private constants ---------------------------------------------------------*/
+/** @addtogroup USART_LL_Private_Constants
+  * @{
+  */
+
+/* Definition of default baudrate value used for USART initialisation */
+#define USART_DEFAULT_BAUDRATE          (9600U)
+
+/**
+  * @}
+  */
+
 /* Private macros ------------------------------------------------------------*/
 /** @addtogroup USART_LL_Private_Macros
   * @{
@@ -131,7 +142,7 @@
   *          - SUCCESS: USART registers are de-initialized
   *          - ERROR: USART registers are not de-initialized
   */
-ErrorStatus LL_USART_DeInit(USART_TypeDef *USARTx)
+ErrorStatus LL_USART_DeInit(const USART_TypeDef *USARTx)
 {
   ErrorStatus status = SUCCESS;
 
@@ -206,7 +217,7 @@ ErrorStatus LL_USART_DeInit(USART_TypeDef *USARTx)
   *          - SUCCESS: USART registers are initialized according to USART_InitStruct content
   *          - ERROR: Problem occurred during USART Registers initialization
   */
-ErrorStatus LL_USART_Init(USART_TypeDef *USARTx, LL_USART_InitTypeDef *USART_InitStruct)
+ErrorStatus LL_USART_Init(USART_TypeDef *USARTx, const LL_USART_InitTypeDef *USART_InitStruct)
 {
   ErrorStatus status = ERROR;
   uint32_t periphclk = LL_RCC_PERIPH_FREQUENCY_NO;
@@ -290,9 +301,9 @@ ErrorStatus LL_USART_Init(USART_TypeDef *USARTx, LL_USART_InitTypeDef *USART_Ini
     }
 
     /* Configure the USART Baud Rate :
-#if defined(USART_PRESC_PRESCALER)
+    #if defined(USART_PRESC_PRESCALER)
        - prescaler value is required
-#endif
+    #endif
        - valid baud rate value (different from 0) is required
        - Peripheral clock as returned by RCC service, should be valid (different from 0).
     */
@@ -338,7 +349,7 @@ void LL_USART_StructInit(LL_USART_InitTypeDef *USART_InitStruct)
 #if defined(USART_PRESC_PRESCALER)
   USART_InitStruct->PrescalerValue      = LL_USART_PRESCALER_DIV1;
 #endif /* USART_PRESC_PRESCALER */
-  USART_InitStruct->BaudRate            = 9600U;
+  USART_InitStruct->BaudRate            = USART_DEFAULT_BAUDRATE;
   USART_InitStruct->DataWidth           = LL_USART_DATAWIDTH_8B;
   USART_InitStruct->StopBits            = LL_USART_STOPBITS_1;
   USART_InitStruct->Parity              = LL_USART_PARITY_NONE ;
@@ -361,7 +372,7 @@ void LL_USART_StructInit(LL_USART_InitTypeDef *USART_InitStruct)
   *                     to USART_ClockInitStruct content
   *          - ERROR: Problem occurred during USART Registers initialization
   */
-ErrorStatus LL_USART_ClockInit(USART_TypeDef *USARTx, LL_USART_ClockInitTypeDef *USART_ClockInitStruct)
+ErrorStatus LL_USART_ClockInit(USART_TypeDef *USARTx, const LL_USART_ClockInitTypeDef *USART_ClockInitStruct)
 {
   ErrorStatus status = SUCCESS;
 

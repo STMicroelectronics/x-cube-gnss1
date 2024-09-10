@@ -575,6 +575,9 @@ HAL_StatusTypeDef HAL_SMBUS_ConfigDigitalFilter(SMBUS_HandleTypeDef *hsmbus, uin
 /**
   * @brief  Register a User SMBUS Callback
   *         To be used instead of the weak predefined callback
+  * @note   The HAL_SMBUS_RegisterCallback() may be called before HAL_SMBUS_Init() in
+  *         HAL_SMBUS_STATE_RESET to register callbacks for HAL_SMBUS_MSPINIT_CB_ID and
+  *         HAL_SMBUS_MSPDEINIT_CB_ID.
   * @param  hsmbus Pointer to a SMBUS_HandleTypeDef structure that contains
   *                the configuration information for the specified SMBUS.
   * @param  CallbackID ID of the callback to be registered
@@ -603,9 +606,6 @@ HAL_StatusTypeDef HAL_SMBUS_RegisterCallback(SMBUS_HandleTypeDef *hsmbus,
 
     return HAL_ERROR;
   }
-
-  /* Process locked */
-  __HAL_LOCK(hsmbus);
 
   if (HAL_SMBUS_STATE_READY == hsmbus->State)
   {
@@ -682,14 +682,15 @@ HAL_StatusTypeDef HAL_SMBUS_RegisterCallback(SMBUS_HandleTypeDef *hsmbus,
     status =  HAL_ERROR;
   }
 
-  /* Release Lock */
-  __HAL_UNLOCK(hsmbus);
   return status;
 }
 
 /**
   * @brief  Unregister an SMBUS Callback
   *         SMBUS callback is redirected to the weak predefined callback
+  * @note   The HAL_SMBUS_UnRegisterCallback() may be called before HAL_SMBUS_Init() in
+  *         HAL_SMBUS_STATE_RESET to un-register callbacks for HAL_SMBUS_MSPINIT_CB_ID and
+  *         HAL_SMBUS_MSPDEINIT_CB_ID
   * @param  hsmbus Pointer to a SMBUS_HandleTypeDef structure that contains
   *                the configuration information for the specified SMBUS.
   * @param  CallbackID ID of the callback to be unregistered
@@ -709,9 +710,6 @@ HAL_StatusTypeDef HAL_SMBUS_UnRegisterCallback(SMBUS_HandleTypeDef *hsmbus,
                                                HAL_SMBUS_CallbackIDTypeDef CallbackID)
 {
   HAL_StatusTypeDef status = HAL_OK;
-
-  /* Process locked */
-  __HAL_LOCK(hsmbus);
 
   if (HAL_SMBUS_STATE_READY == hsmbus->State)
   {
@@ -788,8 +786,6 @@ HAL_StatusTypeDef HAL_SMBUS_UnRegisterCallback(SMBUS_HandleTypeDef *hsmbus,
     status =  HAL_ERROR;
   }
 
-  /* Release Lock */
-  __HAL_UNLOCK(hsmbus);
   return status;
 }
 
@@ -813,8 +809,6 @@ HAL_StatusTypeDef HAL_SMBUS_RegisterAddrCallback(SMBUS_HandleTypeDef *hsmbus,
 
     return HAL_ERROR;
   }
-  /* Process locked */
-  __HAL_LOCK(hsmbus);
 
   if (HAL_SMBUS_STATE_READY == hsmbus->State)
   {
@@ -829,8 +823,6 @@ HAL_StatusTypeDef HAL_SMBUS_RegisterAddrCallback(SMBUS_HandleTypeDef *hsmbus,
     status =  HAL_ERROR;
   }
 
-  /* Release Lock */
-  __HAL_UNLOCK(hsmbus);
   return status;
 }
 
@@ -845,9 +837,6 @@ HAL_StatusTypeDef HAL_SMBUS_UnRegisterAddrCallback(SMBUS_HandleTypeDef *hsmbus)
 {
   HAL_StatusTypeDef status = HAL_OK;
 
-  /* Process locked */
-  __HAL_LOCK(hsmbus);
-
   if (HAL_SMBUS_STATE_READY == hsmbus->State)
   {
     hsmbus->AddrCallback = HAL_SMBUS_AddrCallback; /* Legacy weak AddrCallback  */
@@ -861,8 +850,6 @@ HAL_StatusTypeDef HAL_SMBUS_UnRegisterAddrCallback(SMBUS_HandleTypeDef *hsmbus)
     status =  HAL_ERROR;
   }
 
-  /* Release Lock */
-  __HAL_UNLOCK(hsmbus);
   return status;
 }
 
@@ -1020,8 +1007,15 @@ HAL_StatusTypeDef HAL_SMBUS_Master_Transmit_IT(SMBUS_HandleTypeDef *hsmbus, uint
       /* PEC byte is automatically sent by HW block, no need to manage it in Transmit process */
       if (SMBUS_GET_PEC_MODE(hsmbus) != 0UL)
       {
-        hsmbus->XferSize--;
-        hsmbus->XferCount--;
+        if (hsmbus->XferSize > 0U)
+        {
+          hsmbus->XferSize--;
+          hsmbus->XferCount--;
+        }
+        else
+        {
+          return HAL_ERROR;
+        }
       }
     }
 
@@ -1857,7 +1851,7 @@ __weak void HAL_SMBUS_ErrorCallback(SMBUS_HandleTypeDef *hsmbus)
   *                the configuration information for the specified SMBUS.
   * @retval HAL state
   */
-uint32_t HAL_SMBUS_GetState(SMBUS_HandleTypeDef *hsmbus)
+uint32_t HAL_SMBUS_GetState(const SMBUS_HandleTypeDef *hsmbus)
 {
   /* Return SMBUS handle state */
   return hsmbus->State;
@@ -1869,7 +1863,7 @@ uint32_t HAL_SMBUS_GetState(SMBUS_HandleTypeDef *hsmbus)
   *              the configuration information for the specified SMBUS.
   * @retval SMBUS Error Code
   */
-uint32_t HAL_SMBUS_GetError(SMBUS_HandleTypeDef *hsmbus)
+uint32_t HAL_SMBUS_GetError(const SMBUS_HandleTypeDef *hsmbus)
 {
   return hsmbus->ErrorCode;
 }
@@ -2631,8 +2625,11 @@ static void SMBUS_ITErrorHandler(SMBUS_HandleTypeDef *hsmbus)
     __HAL_SMBUS_CLEAR_FLAG(hsmbus, SMBUS_FLAG_PECERR);
   }
 
-  /* Flush TX register */
-  SMBUS_Flush_TXDR(hsmbus);
+  if (hsmbus->ErrorCode != HAL_SMBUS_ERROR_NONE)
+  {
+    /* Flush TX register */
+    SMBUS_Flush_TXDR(hsmbus);
+  }
 
   /* Store current volatile hsmbus->ErrorCode, misra rule */
   tmperror = hsmbus->ErrorCode;

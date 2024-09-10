@@ -1091,16 +1091,16 @@
         <name>$PROJ_DIR$\..\Src\tx_initialize_low_level.S</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Src\stm32_bus_ex.c</name>
+        <name>$PROJ_DIR$/../Src/stm32_bus_ex.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Src\gnss_lib_config.c</name>
+        <name>$PROJ_DIR$/../Src/gnss_lib_config.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Src\gnss_utils.c</name>
+        <name>$PROJ_DIR$/../Src/gnss_utils.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Src\app_gnss.c</name>
+        <name>$PROJ_DIR$/../Src/app_gnss.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Src\app_threadx.c</name>
@@ -1109,10 +1109,10 @@
         <name>$PROJ_DIR$\..\Src\app_azure_rtos.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Src\stm32u5xx_nucleo_bus.c</name>
+        <name>$PROJ_DIR$/../Src/stm32u5xx_nucleo_bus.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Src\stm32u5xx_nucleo.c</name>
+        <name>$PROJ_DIR$/../Src/stm32u5xx_nucleo.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Src\stm32u5xx_it.c</name>

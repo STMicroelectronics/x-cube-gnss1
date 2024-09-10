@@ -24,6 +24,7 @@
 extern "C" {
 #endif
 
+#if defined(FMC_BANK1)
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32u5xx_ll_fmc.h"
@@ -204,7 +205,7 @@ HAL_StatusTypeDef HAL_SRAM_WriteOperation_Disable(SRAM_HandleTypeDef *hsram);
   */
 
 /* SRAM  State functions ******************************************************/
-HAL_SRAM_StateTypeDef HAL_SRAM_GetState(SRAM_HandleTypeDef *hsram);
+HAL_SRAM_StateTypeDef HAL_SRAM_GetState(const SRAM_HandleTypeDef *hsram);
 
 /**
   * @}
@@ -222,6 +223,7 @@ HAL_SRAM_StateTypeDef HAL_SRAM_GetState(SRAM_HandleTypeDef *hsram);
   * @}
   */
 
+#endif /* FMC_BANK1 */
 
 #ifdef __cplusplus
 }
