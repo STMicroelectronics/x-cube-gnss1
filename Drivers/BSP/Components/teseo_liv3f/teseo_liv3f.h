@@ -44,10 +44,35 @@ extern "C"
  * @{
  */
 
+/**
+ * @brief 
+ * Function pointer to assign BSP I2C/UART initialization function.
+ */
 typedef int32_t  (*TESEO_LIV3F_Init_Func)(void);
+
+/**
+ * @brief 
+ * Function Pointer to assign BSP the BSP I2C/UART Deinitialization Function
+ */ 
 typedef int32_t  (*TESEO_LIV3F_DeInit_Func)(void);
+
+/**
+ * @brief 
+ * Function Pointer to assign BSP I2C/UART Transmit function 
+ */ 
+ 
 typedef int32_t  (*TESEO_LIV3F_Transmit_IT_Func)(uint16_t, uint8_t *, uint16_t);
+
+/**
+ * @brief 
+ * Function Pointer to assign BSP I2C/UART Receive function 
+ */  
 typedef int32_t  (*TESEO_LIV3F_Receive_IT_Func)(uint16_t, uint8_t *, uint16_t);
+
+/**
+ * @brief 
+ * Function Pointer to toggle reset Teseo module using GPIO line
+ */    
 typedef void     (*TESEO_LIV3F_Reset_Func)(void);
 typedef int32_t  (*TESEO_LIV3F_GetTick_Func)(void);
 typedef void     (*TESEO_LIV3F_ClearOREF_Func)(void);
@@ -119,46 +144,110 @@ typedef struct
  */
 
 /**
- * @brief  Register Component Bus IO operations
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
+ * @brief Registers the bus I/O functions for the Teseo driver object.
+ * 
+ * This function assigns the function pointers to the Teseo driver object for 
+ * initialization, deinitialization, transmit, receive, and other bus handling functions 
+ * for either the UART or I2C depending on the selection made by the user.
+ * 
+ * @param pObj Teseo driver object which contains function pointers for bus functions, 
+ * data pointers to message queue, and status of the object.
+ * @param pIO Teseo bus initialization parameters identifying the type of bus, initialization,
+ * and interrupt handling.
+ * 
+ * @return A zero value indicates a successful assignment.
+ * 
+ * @remark Called by GNSSA1_GNSS_Init() function and not exposed to application.
  */
+int32_t TESEO_LIV3F_RegisterBusIO(
+                                   TESEO_LIV3F_Object_t *pObj, 
+                                   TESEO_LIV3F_IO_t *pIO
+                                 );
 int32_t                  TESEO_LIV3F_RegisterBusIO(TESEO_LIV3F_Object_t *pObj, TESEO_LIV3F_IO_t *pIO);
 
 /**
- * @brief  Initialize the TESEO component
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
+ * @brief Initializes the Teseo module.
+ * 
+ * This function is called by the GNSS1A1_GNSS_Init() function from the application.
+ * The GPIO Reset line from the MCU connected to the module is toggled to initiate 
+ * a hardware reset. The function initializes the peripheral BSP where callbacks are initialized.
+ * The function also initializes the Teseo data reception state machine and prepares the
+ * receive wrapper function to receive data bytes.
+ * 
+ * @param pObj Teseo driver object which contains function pointers for bus functions.
+ * 
+ * @return A zero value indicates the peripheral hardware BSP and Teseo data reception
+ * state machine has been initialized correctly. A non-zero value indicates an error in initialization.
+ * 
+ * @remark Called by GNSS1A1_GNSS_Init() function and not exposed to the application.
  */
 int32_t                  TESEO_LIV3F_Init(TESEO_LIV3F_Object_t *pObj);
 
 /**
- * @brief  Deinitialize the TESEO component
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
+ * @brief Deinitializes the Teseo module.
+ * 
+ * This function is called by the GNSS1A1_GNSS_DeInit() function from the application.
+ * The function sets the UART/I2C state machine variables to their initial state.
+ * The underlying BSP function is called to deinitialize UART/I2C.
+ * 
+ * @param pObj Teseo driver object which contains function pointers for bus functions.
+ * 
+ * @return A zero value indicates the peripheral hardware BSP and Teseo data reception
+ * state machine have been deinitialized correctly. A non-zero value indicates an error in deinitialization.
+ * 
+ * @remark Called by GNSS1A1_GNSS_DeInit() function and not exposed to the application.
  */
 int32_t                  TESEO_LIV3F_DeInit(TESEO_LIV3F_Object_t *pObj);
 
 /**
- * @brief  Get the NMEA message coming from the TESEO component
- * @param  pObj the device pObj
- * @retval The message buffer
+ * @brief Returns the data pointer and message length from the function call of GNSS1A1_GNSS_GetMessage() function.
+ * 
+ * This function returns the data pointer and message length from the function call of 
+ * GNSS1A1_GNSS_GetMessage() function.
+ * 
+ * @pre GNSS1A1_GNSS_Init() must be called before calling this function.
+ * 
+ * @param pObj Teseo Module object.
+ * 
+ * @return The queue pointer to the NMEA message is sent back to the calling function.
+ *         The queue pointer information includes the address of the data and the length of the data.
+ * 
+ * @remark This function is not exposed to the application but is called from within the library.
  */
 const TESEO_LIV3F_Msg_t* TESEO_LIV3F_GetMessage(const TESEO_LIV3F_Object_t *pObj);
 
 /**
- * @brief  Release the NMEA message buffer
- * @param  pObj the device pObj
- * @param  Message The message buffer
- * @retval 0 in case of success, an error code otherwise
+ * @brief Releases message from the GNSS queue and marks the queue slot as empty or writable.
+ * 
+ * This function releases a message from the GNSS queue and marks the queue slot as empty or writable.
+ * This allows another incoming message from the module to occupy the buffer space that was previously
+ * occupied by the message that was read. This function is called after GNSS1A1_GNSS_GetMessage() function.
+ * 
+ * @pre None.
+ * 
+ * @param pObj Teseo Module object that contains the address of queue slots.
+ * @param Message Address that the message was read into in the application.
+ * 
+ * @return A zero value indicates that the queue space was marked as writable.
+ *         A non-zero value indicates the message was not found in the queue and a buffer could not be marked as writable.
+ * 
+ * @remark None.
  */
 int32_t                  TESEO_LIV3F_ReleaseMessage(const TESEO_LIV3F_Object_t *pObj, const TESEO_LIV3F_Msg_t *Message);
 
 /**
- * @brief  Send a command to the TESEO compenent
- * @param  pObj the device pObj
- * @param  Message The message buffer
- * @retval 0 in case of success, an error code otherwise
+ * @brief Sends a message to the Teseo module.
+ * 
+ * This function sends a message to the Teseo module.
+ * 
+ * @pre GNSS1A1_GNSS_Init() must be called before this function.
+ * 
+ * @param pObj Teseo module object used for all Teseo modules.
+ * @param Message The TESEO_LIV3F_Msg_t type contains the address of the string and the length of the data.
+ * 
+ * @return A non-zero value indicates a failure in sending the message.
+ * 
+ * @remark The function is called from GNSS1A1_GNSS_Send() and not exposed to the application.
  */
 int32_t                  TESEO_LIV3F_Send(const TESEO_LIV3F_Object_t *pObj, const TESEO_LIV3F_Msg_t *Message);
 
@@ -170,33 +259,101 @@ void                     TESEO_LIV3F_I2C_BackgroundProcess(void);
 
 /* I2C callbacks */
 /**
- * @brief  I2C Rx completion handler
- * @retval none
+ * @brief I2C receive callback function.
+ * 
+ * This callback function will call the I2C state machine in the GNSS library to read 
+ * data provided by I2C HAL. Calling this function implies that the I2C bus did 
+ * not encounter any error.
+ * 
+ * @pre I2C driver should be initialized and callbacks should be enabled.
+ * 
+ * @param None.
+ * 
+ * @return None.
+ * 
+ * @remark GNSS1A1_RegisterRxCb is called with GNSS1A1_GNSS_I2C_RxCb as an argument. 
+ *         GNSS1A1_GNSS_I2C_RxCb calls TESEO_LIV3F_I2C_RxCb.
+ *         GNSS1A1_RegisterRxCb is defined to peripheral BSP function callback.
+ *         The callbacks are registered automatically as part of Cube-MX settings and GNSS
+ *         library configuration. No user action is needed.
  */
 void TESEO_LIV3F_I2C_RxCb(void);
 
 /**
- * @brief  I2C Rx Error handler
- * @retval none
+ * @brief I2C error callback function.
+ * 
+ * This callback function will call the I2C state machine in the GNSS library with an 
+ * error code and sets a timeout delay.
+ * 
+ * @pre I2C driver should be initialized with callbacks enabled.
+ * 
+ * @param None.
+ * 
+ * @return None.
+ * 
+ * @remark GNSS1A1_RegisterErrorCb is called with GNSS1A1_GNSS_I2C_ErrorCb as an argument. 
+ *         GNSS1A1_GNSS_I2C_ErrorCb calls TESEO_LIV3F_I2C_ErrorCb.
+ *         GNSS1A1_RegisterErrorCb is defined to peripheral BSP function callback.
+ *         The callbacks are registered automatically as part of Cube-MX settings and GNSS
+ *         library configuration. No user action is needed.
  */
 void TESEO_LIV3F_I2C_ErrorCb(void);
 
 /**
- * @brief  I2C Rx Abort handler
- * @retval none
+ * @brief I2C abort callback function.
+ * 
+ * This callback function sets the I2C state machine in an idle state.
+ * 
+ * @pre I2C driver should be initialized and callbacks enabled.
+ * 
+ * @param None.
+ * 
+ * @return None.
+ * 
+ * @remark GNSS1A1_RegisterAbortCb is called with GNSS1A1_GNSS_I2C_AbortCb as an argument.
+ *         GNSS1A1_RegisterAbortCb is defined to peripheral BSP function callback.
+ *         The callbacks are registered automatically as part of Cube-MX settings and GNSS
+ *         library configuration. No user action is needed.
  */
 void TESEO_LIV3F_I2C_AbortCb(void);
 
-/* UART callbacks */
 /**
- * @brief  UART Rx completion handler
- * @retval none
+ * @brief UART receive callback function.
+ * 
+ * This function is a callback function that is called once the UART data is received
+ * by the UART interrupt.
+ * 
+ * @pre The UART peripheral must be initialized and callbacks enabled.
+ * 
+ * @param None.
+ * 
+ * @return None.
+ * 
+ * @remark GNSS1A1_RegisterRxCb is called with GNSS1A1_GNSS_UART_RxCb as an argument.
+ *         GNSS1A1_RegisterRxCb is defined to peripheral BSP function callback.
+ *         The callbacks are registered automatically as part of Cube-MX settings
+ *         and GNSS library configuration. No user action is needed.
  */
 void TESEO_LIV3F_UART_RxCb(void);
 
 /**
- * @brief  UART Rx Error handler
- * @retval none
+ * @brief UART error callback function.
+ * 
+ * This callback function will call the UART data receive state machine to set the state
+ * machine to frame discard state. It will also call the receive function to receive
+ * a dummy character as a result of error.
+ * 
+ * @pre UART driver should be initialized with callbacks enabled.
+ * 
+ * @param None.
+ * 
+ * @return None.
+ * 
+ * @remark GNSS1A1_RegisterErrorCb is called with GNSS1A1_GNSS_UART_ErrorCb as an argument. 
+ *         GNSS1A1_GNSS_UART_ErrorCb calls TESEO_LIV3F_UART_ErrorCb.
+ *         GNSS1A1_RegisterErrorCb is defined to peripheral BSP function callback.
+ *         The callbacks are registered automatically as part of Cube-MX settings and GNSS
+ *         library configuration. No user action is needed.
  */
 void TESEO_LIV3F_UART_ErrorCb(void);
 

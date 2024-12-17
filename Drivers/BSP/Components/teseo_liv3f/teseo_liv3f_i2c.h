@@ -69,18 +69,45 @@ typedef enum
  */
 
 /**
- * @brief  Low level driver function to enable/disable the communication with Teseo III via I2C.
- * @param  pCtx Pointer to the Teseo relevant context
- * @param  enable Flag to enable/disable the communication
- * @param  nr_msg Number of complete messages we want to receive from the GNSS module
- * @retval None
+ * @brief This function initializes the I2C Data object with the function 
+ * pointers that are assigned to the Teseo object.
+ *
+ * I2C Data structure that is part of the I2C state machine is 
+ * also initialized.
+ *
+ * @pre None
+ *
+ * @param pCtx Control portion of Teseo module object that contains 
+ *             wrapper functions for Transmit, Receive, and BusOnOff.
+ *             The Control portion of Teseo module object also contains pointers to queue
+ *             and buffer.
+ * @param enable Flag to indicate enable or disable. If I2C needs to be activated, 
+ *               enable should be set to 1.
+ * @param nr_msg Not used. For future development.
+ * 
+ * @return None
+ *
+ * @remarks None
  */
 void teseo_i2c_onoff(TESEO_LIV3F_ctx_t *pCtx, uint8_t enable, int8_t nr_msg);
 
 /**
- * @brief  Low level driver function to handle the I2C recv callabck and update consistently the FSM.
- * @param  c   The type of callback
- * @retval None
+ * @brief This callback routine is invoked by the I2C Master interrupt handler.
+ *
+ * The status of the I2C bus is passed to the callback function. 
+ * If there is no error on the I2C, the callback routine will inspect each
+ * byte received from the I2C interrupt. If the value received is a 
+ * valid data byte and not high value, then I2C state machine is invoked.
+ *
+ * @pre I2C peripheral and interrupt should be enabled.
+ *      Callback should be assigned to the peripheral function responsible 
+ *      for returning data from the I2C driver.
+ *
+ * @param c Status of I2C bus, ok, abort, error
+ * 
+ * @return None
+ *
+ * @remarks None
  */
 void teseo_i2c_rx_callback(Teseo_I2C_CB_CallerTypedef c);
 

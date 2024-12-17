@@ -68,17 +68,43 @@ typedef enum
  */
 
 /**
- * @brief  Low level driver function to enable/disable the communication with Teseo III via UART.
- * @param  pCtx Pointer to the Teseo relevant context
- * @param  enable Flag to enable/disable the communication
- * @retval None
+ * @brief Initializes the UART receive state machine.
+ * 
+ * This function is called to initialize the UART receive state machine.
+ * This function also assigns the queue pointer of the Teseo object to the  
+ * data queue of Teseo UART object. The enable flag should be set to activate initialization.
+ * 
+ * @pre Teseo object should be initialized.
+ * 
+ * @param pCtx Control portion of Teseo module object that contains 
+ *             wrapper functions for Transmit, Receive and BusOnOff.
+ *             The Control portion of Teseo module object also contains pointers to queue
+ *             and buffer.
+ * @param enable Flag to indicate enable or disable. If UART needs to be activated, 
+ *               enable should be set to 1.
+ * 
+ * @return None
+ * 
+ * @note Managed internally by GNSS library and not exposed to application.
  */
 void teseo_uart_rx_onoff(TESEO_LIV3F_ctx_t *pCtx, uint8_t enable);
 
 /**
- * @brief  Low level driver function to handle the UART recv callabck and update consistently the FSM.
- * @param  c     The type of callback
- * @retval None
+ * @brief Callback routine invoked by the UART driver.
+ * 
+ * This function is a callback routine invoked by the UART driver.
+ * Based on the status of the UART driver.
+ * 
+ * @pre UART module should be configured with interrupts enabled.
+ *      Callback should be assigned to the peripheral function responsible 
+ *      for returning data from the UART driver. Byte level data transfer is  
+ *      being done, therefore the appropriate UART handler should be associated.
+ * 
+ * @param c Status of UART bus, receive or error.
+ * 
+ * @return None
+ * 
+ * @remark None
  */
 void teseo_uart_rx_callback(Teseo_UART_CB_CallerTypedef c);
 /**

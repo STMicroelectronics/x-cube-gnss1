@@ -76,7 +76,7 @@ void GNSS_DATA_SendCommand(uint8_t *pCommand)
 void GNSS_DATA_GetValidInfo(GNSSParser_Data_t *pGNSSParser_Data)
 {
 
-  if(pGNSSParser_Data->gpgga_data.valid == (uint8_t)VALID)
+  if(pGNSSParser_Data->gpgga_data.valid > INVALID)
   {
     float64_t lat_mod = fmod(pGNSSParser_Data->gpgga_data.xyz.lat, 100.0);
     float64_t lon_mod = fmod(pGNSSParser_Data->gpgga_data.xyz.lon, 100.0);
@@ -140,7 +140,7 @@ int32_t GNSS_DATA_TrackGotPos(GNSSParser_Data_t *pGNSSParser_Data, uint32_t how_
   int32_t tracked = 0;
   for(uint16_t i = 0; i < (uint16_t)how_many; i++)
   {
-    if(pGNSSParser_Data->gpgga_data.valid != (uint8_t)VALID)
+    if(pGNSSParser_Data->gpgga_data.valid == INVALID)
     {
       break;
     }

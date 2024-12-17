@@ -58,13 +58,43 @@ extern "C" {
  */
 
 /* Exported functions prototypes ---------------------------------------------*/
-/**	
- * @brief  This function puts a string on the console (via UART).
- * @param  pBuffer The string that contains the data to be written on the console
- * @retval None
+/**
+ * @brief Function to send data to Teseo module.
+ * 
+ * @param buffer Pointer to the data that needs to be sent. 
+ *               As checksum is not a requirement for the module, the buffer can be created without the checksum.
+ *               However, it is advised to include the checksum.
+ *               Check Teseo module software manual on creating the complete string which includes the "*<checksum>"
+ * @param length Length of the data that is being sent
+ * 
+ * @return int32_t A zero value indicates that data transmit operation was successful.
+ *                 A non-zero value indicates operation failure.
+ * 
+ * @pre None.
+ * @remarks None.
  */
 int32_t GNSS_Wrapper_Send(uint8_t *buffer, uint16_t length);
+/**
+ * @brief This wrapper function calls the GNSS1A1_GNSS_Reset() function which
+ *        deinitializes, performs hardware reset of the module, and then reinitializes the module.
+ * 
+ * @return int32_t A zero value indicates the reset function executed successfully.
+ * 
+ * @pre None.
+ * @remarks This can be called by the application.
+ */
 int32_t GNSS_Wrapper_Reset(void);
+
+/**
+ * @brief Generates a delay based on the SysTick Timer.
+ * 
+ * @param Delay Count of the delay. Interval depends on the source of SysTick.
+ * 
+ * @return None
+ * 
+ * @pre None.
+ * @remarks This can be called by the application.
+ */
 void    GNSS_Wrapper_Delay(uint32_t Delay);
 
 /**

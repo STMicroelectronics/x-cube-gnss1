@@ -552,7 +552,7 @@ ParseStatus_t NMEA_ParseGPGGA(GPGGA_Info_t *pGPGGAInfo, uint8_t NMEA[])
     if (valid_msg == TRUE)
     {
       int32_t valid = strtol((char *)app[6], NULL, BASE);
-      if((valid == 1) || (valid == 0))
+      if(valid > INVALID)
       {
         pGPGGAInfo->valid = (uint8_t)valid;
       }
