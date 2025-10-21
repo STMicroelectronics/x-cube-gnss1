@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2024 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -54,11 +54,11 @@ static GNSSParser_Data_t GNSSParser_Data;
 /* Private function prototypes -----------------------------------------------*/
 static void MX_SimOSGetPos_Process(void);
 
-#if (configUSE_FEATURE == 1)
-static void AppCfgMsgList(int lowMask, int highMask);
+#if (CONFIG_USE_FEATURE == 1)
+static void AppCfgMsgList(uint32_t lowMask, uint32_t highMask);
 static void AppGeofenceCfg(char *command);
 static void AppEnFeature(char *command);
-#endif /* configUSE_FEATURE */
+#endif /* CONFIG_USE_FEATURE */
 
 /* USER CODE BEGIN PFP */
 
@@ -71,7 +71,7 @@ void MX_GNSS_Init(void)
   /* USER CODE END GNSS_Init_PreTreatment */
 
   /* Initialize the peripherals and the teseo device */
-  if(BSP_COM_Init(COM1) != BSP_ERROR_NONE)
+  if (BSP_COM_Init(COM1) != BSP_ERROR_NONE)
   {
     Error_Handler();
   }
@@ -100,21 +100,21 @@ static void MX_SimOSGetPos_Process(void)
 {
   GNSSParser_Status_t status, check;
   const GNSS1A1_GNSS_Msg_t *gnssMsg;
-#if (configUSE_FEATURE == 1)
-  static int config_done = 0;
-#endif
+#if (CONFIG_USE_FEATURE == 1)
+  static uint8_t config_done = 0;
+#endif /* CONFIG_USE_FEATURE */
 
   GNSS1A1_GNSS_Init(GNSS1A1_TESEO_LIV3F);
 
   GNSS_PARSER_Init(&GNSSParser_Data);
 
-  for(;;)
+  for (;;)
   {
 #if (USE_I2C == 1)
     GNSS1A1_GNSS_BackgroundProcess(GNSS1A1_TESEO_LIV3F);
 #endif /* USE_I2C */
 
-#if (configUSE_FEATURE == 1)
+#if (CONFIG_USE_FEATURE == 1)
     /* See CDB-ID 201 - This LOW_BITS Mask enables the following messages:
      * 0x1 $GPGNS Message
      * 0x2 $GPGGA Message
@@ -124,13 +124,13 @@ static void MX_SimOSGetPos_Process(void)
      * 0x80000 $GPGSV Message
      * 0x100000 $GPGLL Message
      */
-    if(!config_done)
+    if (!config_done)
     {
-      int lowMask = 0x18004F;
-      int highMask = GEOFENCE;
+      uint32_t lowMask = 0x18004F;
+      uint32_t highMask = GEOFENCE;
       PRINT_OUT("\n\rConfigure Message List\n\r");
       AppCfgMsgList(lowMask, highMask);
-      HAL_Delay(1000);  /*Allows to catch the reply from Teseo */
+      HAL_Delay(1000);  /* Allows to catch the reply from Teseo */
 
       PRINT_OUT("\n\rEnable Geofence\r");
       AppEnFeature("GEOFENCE,1");
@@ -141,41 +141,41 @@ static void MX_SimOSGetPos_Process(void)
 
       config_done = 1;
     }
-#endif /* configUSE_FEATURE */
+#endif /* CONFIG_USE_FEATURE */
 
     gnssMsg = GNSS1A1_GNSS_GetMessage(GNSS1A1_TESEO_LIV3F);
 
-    if(gnssMsg == NULL)
+    if (gnssMsg == NULL)
     {
       continue;
     }
 
     check = GNSS_PARSER_CheckSanity((uint8_t *)gnssMsg->buf, gnssMsg->len);
 
-    if(check != GNSS_PARSER_ERROR)
+    if (check != GNSS_PARSER_ERROR)
     {
-      for(int m = 0; m < NMEA_MSGS_NUM; m++)
+      for (uint8_t m = 0; m < NMEA_MSGS_NUM; m++)
       {
         status = GNSS_PARSER_ParseMsg(&GNSSParser_Data, (eNMEAMsg)m, (uint8_t *)gnssMsg->buf);
 
-        if((status != GNSS_PARSER_ERROR) && ((eNMEAMsg)m == GPGGA))
+        if ((status != GNSS_PARSER_ERROR) && ((eNMEAMsg)m == GPGGA))
         {
           GNSS_DATA_GetValidInfo(&GNSSParser_Data);
         }
-#if (configUSE_FEATURE == 1)
-        if((status != GNSS_PARSER_ERROR) && ((eNMEAMsg)m == PSTMGEOFENCE))
+#if (CONFIG_USE_FEATURE == 1)
+        if ((status != GNSS_PARSER_ERROR) && ((eNMEAMsg)m == PSTMGEOFENCE))
         {
           GNSS_DATA_GetGeofenceInfo(&GNSSParser_Data);
         }
-        if((status != GNSS_PARSER_ERROR) && ((eNMEAMsg)m == PSTMSGL))
+        if ((status != GNSS_PARSER_ERROR) && ((eNMEAMsg)m == PSTMSGL))
         {
           GNSS_DATA_GetMsglistAck(&GNSSParser_Data);
         }
-        if((status != GNSS_PARSER_ERROR) && ((eNMEAMsg)m == PSTMSAVEPAR))
+        if ((status != GNSS_PARSER_ERROR) && ((eNMEAMsg)m == PSTMSAVEPAR))
         {
           GNSS_DATA_GetGNSSAck(&GNSSParser_Data);
         }
-#endif /* configUSE_FEATURE */
+#endif /* CONFIG_USE_FEATURE */
       }
     }
 
@@ -183,20 +183,20 @@ static void MX_SimOSGetPos_Process(void)
   }
 }
 
-#if (configUSE_FEATURE == 1)
+#if (CONFIG_USE_FEATURE == 1)
 /* CfgMessageList */
-static void AppCfgMsgList(int lowMask, int highMask)
+static void AppCfgMsgList(uint32_t lowMask, uint32_t highMask)
 {
   GNSS_DATA_CfgMessageList(lowMask, highMask);
 }
 
 static void AppEnFeature(char *command)
 {
-  if(strcmp(command, "GEOFENCE,1") == 0)
+  if (strcmp(command, "GEOFENCE,1") == 0)
   {
     GNSS_DATA_EnableGeofence(1);
   }
-  if(strcmp(command, "GEOFENCE,0") == 0)
+  if (strcmp(command, "GEOFENCE,0") == 0)
   {
     GNSS_DATA_EnableGeofence(0);
   }
@@ -204,20 +204,20 @@ static void AppEnFeature(char *command)
 
 static void AppGeofenceCfg(char *command)
 {
-  if(strcmp(command, "Geofence-Lecce") == 0)
+  if (strcmp(command, "Geofence-Lecce") == 0)
   {
     GNSS_DATA_ConfigGeofence(&Geofence_STLecce);
   }
-  if(strcmp(command, "Geofence-Catania") == 0)
+  if (strcmp(command, "Geofence-Catania") == 0)
   {
     GNSS_DATA_ConfigGeofence(&Geofence_Catania);
   }
 }
-#endif /* configUSE_FEATURE */
+#endif /* CONFIG_USE_FEATURE */
 
-int GNSS_PRINT(char *pBuffer)
+uint8_t GNSS_PRINT(char *pBuffer)
 {
-  if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t*)pBuffer, (uint16_t)strlen((char *)pBuffer), 1000) != HAL_OK)
+  if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t *)pBuffer, (uint16_t)strlen((char *)pBuffer), 1000) != HAL_OK)
   {
     return 1;
   }
@@ -226,9 +226,9 @@ int GNSS_PRINT(char *pBuffer)
   return 0;
 }
 
-int GNSS_PUTC(char pChar)
+uint8_t GNSS_PUTC(char pChar)
 {
-  if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t*)&pChar, 1, 1000) != HAL_OK)
+  if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t *)&pChar, 1, 1000) != HAL_OK)
   {
     return 1;
   }

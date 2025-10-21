@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -301,26 +301,26 @@ static int32_t TESEO_LIV3F_Probe(void)
 
   io_ctx.BusType     = TESEO_LIV3F_I2C_BUS;
   io_ctx.Address     = TESEO_LIV3F_I2C_7BITS_ADDR;
-  io_ctx.Init        = GNSS1A1_GNSS_I2C_Init;
-  io_ctx.DeInit      = GNSS1A1_GNSS_I2C_DeInit;
-  io_ctx.Transmit_IT = GNSS1A1_GNSS_I2C_Transmit_IT;
-  io_ctx.Receive_IT  = GNSS1A1_GNSS_I2C_Receive_IT;
+  io_ctx.Init        = GNSS1A1_GNSS_I2C_INIT;
+  io_ctx.DeInit      = GNSS1A1_GNSS_I2C_DEINIT;
+  io_ctx.Transmit_IT = GNSS1A1_GNSS_I2C_TRANSMIT_IT;
+  io_ctx.Receive_IT  = GNSS1A1_GNSS_I2C_RECEIVE_IT;
 
 #else
 
   io_ctx.BusType     = TESEO_LIV3F_UART_BUS;
-  io_ctx.Init        = GNSS1A1_GNSS_UART_Init;
-  io_ctx.DeInit      = GNSS1A1_GNSS_UART_DeInit;
-  io_ctx.Transmit_IT = GNSS1A1_GNSS_UART_Transmit_IT;
-  io_ctx.Receive_IT  = GNSS1A1_GNSS_UART_Receive_IT;
-  io_ctx.ClearOREF   = GNSS1A1_GNSS_UART_ClearOREF;
+  io_ctx.Init        = GNSS1A1_GNSS_UART_INIT;
+  io_ctx.DeInit      = GNSS1A1_GNSS_UART_DEINIT;
+  io_ctx.Transmit_IT = GNSS1A1_GNSS_UART_TRANSMIT_IT;
+  io_ctx.Receive_IT  = GNSS1A1_GNSS_UART_RECEIVE_IT;
+  io_ctx.ClearOREF   = GNSS1A1_GNSS_UART_CLEAR_OREF;
 
 #endif
 
-  io_ctx.Reset         = GNSS1A1_GNSS_Rst;
-  io_ctx.GetTick       = GNSS1A1_GNSS_GetTick;
+  io_ctx.Reset         = GNSS1A1_GNSS_RST;
+  io_ctx.GetTick       = GNSS1A1_GNSS_GET_TICK;
 
-//  GNSS1A1_RegisterDefaultMspCallbacks();
+  /* GNSS1A1_RegisterDefaultMspCallbacks(); */
 
   if (TESEO_LIV3F_RegisterBusIO(&teseo_liv3f_obj, &io_ctx) != TESEO_LIV3F_OK)
   {
@@ -356,17 +356,17 @@ static void GNSS1A1_GNSS_RegisterCallbacks(void)
   
 #if (USE_HAL_I2C_REGISTER_CALLBACKS == 1)
   // FIXME: check the return value instead
-  (void)GNSS1A1_RegisterRxCb(GNSS1A1_GNSS_I2C_RxCb);
-  (void)GNSS1A1_RegisterErrorCb(GNSS1A1_GNSS_I2C_ErrorCb);
-  (void)GNSS1A1_RegisterAbortCb(GNSS1A1_GNSS_I2C_AbortCb);
+  (void)GNSS1A1_REGISTER_RX_CB(GNSS1A1_GNSS_I2C_RxCb);
+  (void)GNSS1A1_REGISTER_ERROR_CB(GNSS1A1_GNSS_I2C_ErrorCb);
+  (void)GNSS1A1_REGISTER_ABORT_CB(GNSS1A1_GNSS_I2C_AbortCb);
 #endif /* USE_HAL_I2C_REGISTER_CALLBACKS */
   
 #else
   
 #if (USE_HAL_UART_REGISTER_CALLBACKS == 1)
   // FIXME: check the return value instead
-  (void)GNSS1A1_RegisterRxCb(GNSS1A1_GNSS_UART_RxCb);
-  (void)GNSS1A1_RegisterErrorCb(GNSS1A1_GNSS_UART_ErrorCb);
+  (void)GNSS1A1_REGISTER_RX_CB(GNSS1A1_GNSS_UART_RxCb);
+  (void)GNSS1A1_REGISTER_ERROR_CB(GNSS1A1_GNSS_UART_ErrorCb);
 #endif /* USE_HAL_UART_REGISTER_CALLBACKS */
   
 #endif /* USE_I2C */

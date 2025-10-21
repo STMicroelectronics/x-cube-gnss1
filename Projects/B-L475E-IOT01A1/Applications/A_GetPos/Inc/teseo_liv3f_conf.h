@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -28,37 +28,37 @@ extern "C" {
 #include <stdio.h>
 #include <stddef.h>
 #ifdef __GNUC__
-  #ifndef __weak
-    #define __weak __attribute__((weak))
-  #endif
-#endif
+#ifndef __weak
+#define __weak __attribute__((weak))
+#endif /* __weak */
+#endif /* __GNUC__ */
 
 /* Defines -------------------------------------------------------------------*/
 //#define USE_FREE_RTOS /* defined in the preprocessor options */
 
 #define GNSS_DEBUG 0 /* Debug off */
 
-#define configUSE_FEATURE 0 /* Feature off */
+#define CONFIG_USE_FEATURE 0 /* Feature off */
 
-#define configUSE_ODOMETER 0 /* Odometer off */
+#define CONFIG_USE_ODOMETER 0 /* Odometer off */
 
-#define configUSE_GEOFENCE 0 /* Geofence off */
+#define CONFIG_USE_GEOFENCE 0 /* Geofence off */
 
-#define configUSE_DATALOG 0 /* Datalog off */
+#define CONFIG_USE_DATALOG 0 /* Datalog off */
 
 #if (GNSS_DEBUG == 1)
 #define PRINT_DBG(pBuffer)  GNSS_PRINT(pBuffer)
 #else
 #define PRINT_DBG(pBuffer)
-#endif
+#endif /* GNSS_DEBUG */
 
 #define PRINT_INFO(pBuffer) GNSS_PRINT(pBuffer)
 #define PRINT_OUT(pBuffer)  GNSS_PRINT(pBuffer)
 #define PUTC_OUT(pChar)     GNSS_PUTC(pChar)
 
 /* Exported functions prototypes ---------------------------------------------*/
-int GNSS_PRINT(char *pBuffer);
-int GNSS_PUTC(char pChar);
+uint8_t GNSS_PRINT(char *pBuffer);
+uint8_t GNSS_PUTC(char pChar);
 
 #ifdef __cplusplus
 }

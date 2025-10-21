@@ -6,7 +6,7 @@
   *******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -20,49 +20,49 @@
 #define _GNSS_UTILS_H_
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /** @addtogroup PROJECTS
- * @{
- */
+  * @{
+  */
 
 /** @addtogroup APPLICATIONS
- * @{
- */
- 
+  * @{
+  */
+
 /** @addtogroup GetPos
- * @{
- */
-		
+  * @{
+  */
+
 /** @addtogroup GetPos_PUBLIC_FUNCTIONS
- * @{
- */
+  * @{
+  */
 /**
- * @brief  This function prints to console the command menu.
- * @param  None
- * @retval None
- */
+  *@brief  This function prints to console the command menu.
+  * @param  None
+  * @retval None
+  */
 void showCmds(void);
 
 /**
- * @brief  This function prints to console the prompt character.
- * @param  None
- * @retval None
- */
+  * @brief  This function prints to console the prompt character.
+  * @param  None
+  * @retval None
+  */
 void showPrompt(void);
 
 /**
- * @brief  This function prints to console the help.
- * @param  None
- * @retval None
- */
+  * @brief  This function prints to console the help.
+  * @param  None
+  * @retval None
+  */
 void printHelp(void);
 
 /**
   * @}
   */
-         
+
 /**
   * @}
   */

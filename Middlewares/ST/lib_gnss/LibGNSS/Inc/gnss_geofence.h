@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -23,29 +23,29 @@ extern "C" {
 #endif
 
 /** @addtogroup MIDDLEWARES
- *  @{
- */
+  *  @{
+  */
 
 /** @addtogroup ST
- *  @{
- */
+  *  @{
+  */
 
 /** @addtogroup LIB_GNSS
- *  @{
- */
- 
+  *  @{
+  */
+
 /** @addtogroup LibGNSS
- *  @{
- */
+  *  @{
+  */
 
 /** @defgroup GNSSGeofence_EXPORTED_TYPES GNSSGeofence EXPORTED TYPES
- *  @brief Types related to Geofence
- *  @{
- */
+  *  @brief Types related to Geofence
+  *  @{
+  */
 
 /**
- * @brief Data structure that contains the Geofence data
- */
+  * @brief Data structure that contains the Geofence data
+  */
 typedef struct
 {
   int id;
@@ -57,24 +57,24 @@ typedef struct
   int status;
 } GNSSGeofence_t;
 /**
- * @}
- */
- 
-/**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
-  
+  * @}
+  */
+
 /**
- * @}
- */
-  
+  * @}
+  */
+
 /**
- * @}
- */ 
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 #ifdef __cplusplus
 }

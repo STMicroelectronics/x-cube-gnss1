@@ -42,13 +42,18 @@ GNSS, UART
 
 ### <b>Hardware and Software environment</b>
 
-  - This example runs on STM32 Nucleo devices equipped with a X-NUCLEO-GNSS1A1 expansion board
+  - This example runs on STM32 Nucleo devices equipped with a X-NUCLEO-GNSS1A1 or X-NUCLEO-GNSS2A1 or X-NUCLEO-LIV4A1 expansion board
   - This example has been tested with STMicroelectronics:
     - NUCLEO-F401RE RevC board
     and can be easily tailored to any other supported device and development board.
 
 ADDITIONAL_BOARD : X-NUCLEO-GNSS1A1 https://www.st.com/en/ecosystems/x-nucleo-gnss1a1.html
+ADDITIONAL_BOARD : X-NUCLEO-GNSS2A1 https://www.st.com/en/ecosystems/x-nucleo-gnss2a1.html
+ADDITIONAL_BOARD : X-NUCLEO-LIV4A1 https://www.st.com/en/ecosystems/x-nucleo-liv4a1.html
+
 ADDITIONAL_COMP : Teseo-LIV3F https://www.st.com/en/positioning/teseo-liv3f.html
+ADDITIONAL_COMP : Teseo-VIC3DA https://www.st.com/en/positioning/teseo-vic3da.html
+ADDITIONAL_COMP : Teseo-LIV4F https://www.st.com/en/positioning/teseo-liv4f.html
   
 ### <b>How to use it?</b>
 
@@ -58,10 +63,10 @@ In order to make the program work, you must do the following:
    installation path is not too in-depth since the toolchain may report errors
    after building.
    
- - Open STM32CubeIDE (this firmware has been successfully tested with Version 1.9.0).
+ - Open STM32CubeIDE (this firmware has been successfully tested with Version 1.19.0).
    Alternatively you can use the Keil uVision toolchain (this firmware
-   has been successfully tested with V5.32.0) or the IAR toolchain (this firmware has 
-   been successfully tested with Embedded Workbench V9.20.1).
+   has been successfully tested with V5.38.0) or the IAR toolchain (this firmware has 
+   been successfully tested with Embedded Workbench V9.60.3).
    
  - Rebuild all files and load your image into target memory.
  
@@ -70,14 +75,22 @@ In order to make the program work, you must do the following:
  - Alternatively, you can download the pre-built binaries in "Binary" 
    folder included in the distributed package.
 
- 
+   
+### <b>Keil v5.38 Changes </b>
+
+In order to make the project build for Keil v5.38 , follow the below steps:
+
+- Change the include path from ../../../../../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F to ../../../../../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
+- Change the path of port.c include in the Middlewares/Third_Party/FreeRTOS from ..\..\..\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\port.c
+ to ..\..\..\..\..\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F\port.c
+
 ### <b>Author</b>
 
 SRA Application Team
 
 ### <b>License</b>
 
-Copyright (c) 2022 STMicroelectronics.
+Copyright (c) 2025 STMicroelectronics.
 All rights reserved.
 
 This software is licensed under terms that can be found in the LICENSE file

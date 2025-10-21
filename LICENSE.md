@@ -14,6 +14,9 @@
 | STM32U5xx CMSIS                         | ARM Limited - STMicroelectronics   | Apache-2.0 |
 | STM32U5xx HAL/LL Drivers                | STMicroelectronics                 | BSD-3-Clause |
 | STM32U5xx-NUCLEO BSP                    | STMicroelectronics                 | BSD-3-Clause |
+| STM32H5xx CMSIS                         | ARM Limited - STMicroelectronics   | Apache-2.0 |
+| STM32H5xx HAL/LL Drivers                | STMicroelectronics                 | BSD-3-Clause |
+| STM32H5xx-NUCLEO BSP                    | STMicroelectronics                 | BSD-3-Clause |
 | teseo_liv3f component BSP               | STMicroelectronics                 | BSD-3-Clause |
 | GNSS1A1 BSP                             | STMicroelectronics                 | BSD-3-Clause |
 | lib_gnss Middleware                     | STMicroelectronics                 | SLA0055 |
@@ -26,6 +29,7 @@
 | NUCLEO-L073RZ Application Projects      | STMicroelectronics                 | SLA0055 |
 | NUCLEO-L476RG Application Projects      | STMicroelectronics                 | SLA0055 |
 | NUCLEO-U575ZI-Q Application Projects    | STMicroelectronics                 | SLA0055 |
+| NUCLEO-H563Zi Application Projects      | STMicroelectronics                 | SLA0055 |
 | FirmwareUpdaterTool Utility             | STMicroelectronics                 | EPL-1.0 |
 | JARINJARLOADER library                  | Eclipse Foundation                 | EPL-1.0 |
 | jSerialComm library                     | Fazecast, Inc.                     | Apache-2.0 |

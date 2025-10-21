@@ -57,22 +57,22 @@ int FLASH_unlock_erase(uint32_t address, uint32_t len_bytes)
    * After erase, the flash is left in unlocked state.
    */
   EraseInit.TypeErase = FLASH_TYPEERASE_PAGES;
-  
-  EraseInit.Banks = FLASH_get_bank(address); 
+
+  EraseInit.Banks = FLASH_get_bank(address);
   if (EraseInit.Banks != FLASH_get_bank(address + len_bytes))
   {
 #ifndef CODE_UNDER_FIREWALL
     printf("Error: Cannot erase across FLASH banks.\n");
-#endif
+#endif /* CODE_UNDER_FIREWALL */
     return rc;
   }
   else
   {
     EraseInit.Page = FLASH_get_pageInBank(address);
     EraseInit.NbPages = FLASH_get_pageInBank(address + len_bytes - 1) - EraseInit.Page + 1;
-    
+
     HAL_FLASH_Unlock();
-    
+
     if (HAL_FLASHEx_Erase(&EraseInit, &PageError) == HAL_OK)
     {
       rc = 0;
@@ -81,7 +81,7 @@ int FLASH_unlock_erase(uint32_t address, uint32_t len_bytes)
     {
 #ifndef CODE_UNDER_FIREWALL
       printf("Error erasing at 0x%08lx\n", address);
-#endif
+#endif /* CODE_UNDER_FIREWALL */
     }
   }
   return rc;
@@ -99,16 +99,16 @@ static int FLASH_write_at(uint32_t address, uint64_t *pData, uint32_t len_bytes)
 {
   int i;
   int ret = -1;
-#ifndef CODE_UNDER_FIREWALL    
-    /* irq already mask under firewall */
+#ifndef CODE_UNDER_FIREWALL
+  /* irq already mask under firewall */
   __disable_irq();
-#endif
-  
+#endif /* CODE_UNDER_FIREWALL */
+
   for (i = 0; i < len_bytes; i += 8)
   {
     if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD,
-        address + i,
-        *(pData + (i/8) )) != HAL_OK)
+                          address + i,
+                          *(pData + (i / 8))) != HAL_OK)
     {
       break;
     }
@@ -117,21 +117,21 @@ static int FLASH_write_at(uint32_t address, uint64_t *pData, uint32_t len_bytes)
   for (i = 0; i < len_bytes; i += 4)
   {
     uint32_t *dst = (uint32_t *)(address + i);
-    uint32_t *src = ((uint32_t *) pData) + (i/4);
-      
-    if ( *dst != *src )
+    uint32_t *src = ((uint32_t *) pData) + (i / 4);
+
+    if (*dst != *src)
     {
-#ifndef CODE_UNDER_FIREWALL 
+#ifndef CODE_UNDER_FIREWALL
       printf("Write failed @0x%08lx, read value=0x%08lx, expected=0x%08lx\n", (uint32_t) dst, *dst, *src);
-#endif
+#endif /* CODE_UNDER_FIREWALL */
       break;
     }
     ret = 0;
   }
-#ifndef CODE_UNDER_FIREWALL   
-  /* irq should never be enable under firewall */ 
+#ifndef CODE_UNDER_FIREWALL
+  /* irq should never be enable under firewall */
   __enable_irq();
-#endif
+#endif /* CODE_UNDER_FIREWALL */
   return ret;
 }
 
@@ -156,7 +156,7 @@ uint32_t FLASH_get_bank(uint32_t addr)
     /* Bank swap */
     bank = (addr < (FLASH_BASE + FLASH_BANK_SIZE)) ? FLASH_BANK_2 : FLASH_BANK_1;
   }
-  
+
   return bank;
 }
 
@@ -170,21 +170,21 @@ static int FLASH_get_pageInBank(uint32_t addr)
 {
   int page = -1;
 
-  if ( ((FLASH_BASE + FLASH_SIZE) > addr) && (addr >= FLASH_BASE) )
+  if (((FLASH_BASE + FLASH_SIZE) > addr) && (addr >= FLASH_BASE))
   {
     /* The address is in internal FLASH range. */
-    if ( addr < (FLASH_BASE + FLASH_BANK_SIZE) )
-    { 
+    if (addr < (FLASH_BASE + FLASH_BANK_SIZE))
+    {
       /* Addr in the first bank */
       page = (addr - FLASH_BASE) / FLASH_PAGE_SIZE;
     }
-    else 
+    else
     {
       /* Addr in the second bank */
       page = (addr - FLASH_BASE - FLASH_BANK_SIZE) / FLASH_PAGE_SIZE;
     }
   }
-  
+
   return page;
 }
 
@@ -193,7 +193,7 @@ static int FLASH_get_pageInBank(uint32_t addr)
   * @note   The FLASH chunk must no cross a FLASH bank boundary.
   * @note   The source and destination buffers have no specific alignment constraints.
   * @param  In: dst_addr    Destination address in the FLASH memory.
-  * @param  In: data        Source address. 
+  * @param  In: data        Source address.
   * @param  In: size        Number of bytes to update.
   * @retval  0:  Success.
   *         <0:  Failure.
@@ -202,18 +202,19 @@ int FLASH_update(uint32_t dst_addr, const void *data, uint32_t size)
 {
   int ret = 0;
   int remaining = size;
-  uint8_t * src_addr = (uint8_t *) data;
-  uint64_t page_cache[FLASH_PAGE_SIZE/sizeof(uint64_t)];
- 
+  uint8_t *src_addr = (uint8_t *) data;
+  uint64_t page_cache[FLASH_PAGE_SIZE / sizeof(uint64_t)];
+
   __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_ALL_ERRORS);
 
-  do {
+  do
+  {
     uint32_t fl_addr = ROUND_DOWN(dst_addr, FLASH_PAGE_SIZE);
     int fl_offset = dst_addr - fl_addr;
     int len = MIN(FLASH_PAGE_SIZE - fl_offset, size);
-    
+
     /* Load from the flash into the cache */
-    memcpy(page_cache, (void *) fl_addr, FLASH_PAGE_SIZE);  
+    memcpy(page_cache, (void *) fl_addr, FLASH_PAGE_SIZE);
     /* Update the cache from the source */
     memcpy((uint8_t *)page_cache + fl_offset, src_addr, len);
     /* Erase the page, and write the cache */
@@ -222,16 +223,16 @@ int FLASH_update(uint32_t dst_addr, const void *data, uint32_t size)
     {
 #ifndef CODE_UNDER_FIREWALL
       printf("Error erasing at 0x%08lx\n", fl_addr);
-#endif
+#endif /* CODE_UNDER_FIREWALL */
     }
     else
     {
       ret = FLASH_write_at(fl_addr, page_cache, FLASH_PAGE_SIZE);
-      if(ret != 0)
+      if (ret != 0)
       {
 #ifndef CODE_UNDER_FIREWALL
         printf("Error writing %lu bytes at 0x%08lx\n", FLASH_PAGE_SIZE, fl_addr);
-#endif
+#endif /* CODE_UNDER_FIREWALL */
       }
       else
       {
@@ -241,7 +242,7 @@ int FLASH_update(uint32_t dst_addr, const void *data, uint32_t size)
       }
     }
   } while ((ret == 0) && (remaining > 0));
-  
+
   return ret;
 }
 
@@ -334,7 +335,7 @@ uint32_t FLASH_Init(void)
     }
     else
     {
-         printf("FLASH_If_Init : failed to lock\n");
+      printf("FLASH_If_Init : failed to lock\n");
     }
   }
   else

@@ -84,7 +84,7 @@
   *******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -112,9 +112,9 @@
 #include "gnss1a1_conf.h"
 #include "gnss1a1_gnss.h"
 
-#if (configUSE_FEATURE == 1)
+#if (CONFIG_USE_FEATURE == 1)
 #include "gnss_feature_cfg_data.h"
-#endif /* configUSE_FEATURE */
+#endif /* CONFIG_USE_FEATURE */
 
 /* Private defines -----------------------------------------------------------*/
 
@@ -138,7 +138,7 @@ osThreadId backgroundTaskHandle;
 /* Private variables ---------------------------------------------------------*/
 
 static GNSSParser_Data_t GNSSParser_Data;
-static int gnss_feature = 0x0;
+static uint8_t gnss_feature = 0x0;
 
 static UART_HandleTypeDef console_uart;
 static volatile uint8_t button_flags = 0;
@@ -161,31 +161,33 @@ static void Console_Parse_Task_Init(void);
 static void ConsoleParseTask(void const * argument);
 
 static void ConsoleRead(uint8_t *string);
-static int ConsoleReadable(void);
+static uint8_t ConsoleReadable(void);
 
 #if (USE_I2C == 1)
 static void BackgroundTask(void const * argument);
 #endif /* USE_I2C */
 
 static void AppCmdProcess(char *com);
-static void AppCfgMsgList(int lowMask, int highMask);
+static void AppCfgMsgList(uint32_t lowMask, uint32_t highMask);
 
-#if (configUSE_FEATURE == 1)
+#if (CONFIG_USE_FEATURE == 1)
 static void AppEnFeature(char *command);
-#endif /* configUSE_FEATURE */
+#endif /* CONFIG_USE_FEATURE */
 
-#if (configUSE_GEOFENCE == 1)
+#if (CONFIG_USE_GEOFENCE == 1)
 static void AppGeofenceCfg(char *command);
-#endif /* configUSE_GEOFENCE */
+#endif /* CONFIG_USE_GEOFENCE */
 
-#if (configUSE_ODOMETER == 1)
+#if (CONFIG_USE_ODOMETER == 1)
 static void AppOdometerOp(char *command);
-#endif /* configUSE_ODOMETER */
+#endif /* CONFIG_USE_ODOMETER */
 
-#if (configUSE_DATALOG == 1)
+#if (CONFIG_USE_DATALOG == 1)
 static void AppDatalogOp(char *command);
-#endif /* configUSE_DATALOG */
+#endif /* CONFIG_USE_DATALOG */
 
+static uint8_t SetPARameterCmdIsAllowed(const char *com);
+static uint8_t GetPARameterCmdIsAllowed(const char *com);
 static void Button_ISR(void);
 void SPI_WIFI_ISR(void);
 
@@ -377,17 +379,17 @@ void TeseoConsumerTask(void const * argument)
   
   GNSS1A1_GNSS_Init(GNSS1A1_TESEO_LIV3F);
 
-#if (configUSE_ODOMETER == 1)
+#if (CONFIG_USE_ODOMETER == 1)
   gnss_feature |= ODOMETER;
-#endif /* configUSE_ODOMETER */
+#endif /* CONFIG_USE_ODOMETER */
 
-#if (configUSE_GEOFENCE == 1)
+#if (CONFIG_USE_GEOFENCE == 1)
   gnss_feature |= GEOFENCE;
-#endif /* configUSE_GEOFENCE */
+#endif /* CONFIG_USE_GEOFENCE */
 
-#if (configUSE_DATALOG == 1)
+#if (CONFIG_USE_DATALOG == 1)
   gnss_feature |= DATALOG;
-#endif /* configUSE_DATALOG */
+#endif /* CONFIG_USE_DATALOG */
   
   /* Create the mutex for accessing the GNSS Data */
   GNSSData_Mutex_Init();
@@ -422,7 +424,14 @@ void TeseoConsumerTask(void const * argument)
         if((status != GNSS_PARSER_ERROR) && ((eNMEAMsg)m == PSTMVER)) {
           GNSS_DATA_GetPSTMVerInfo(&GNSSParser_Data);
         }
-
+         if((status != GNSS_PARSER_ERROR) && ((eNMEAMsg)m == PSTMSETPAR))
+        {
+          GNSS_DATA_GetPSTMSetParInfo(&GNSSParser_Data);
+        }
+        if((status != GNSS_PARSER_ERROR) && ((eNMEAMsg)m == PSTMGETPAR))
+        {
+          GNSS_DATA_GetPSTMGetParInfo(&GNSSParser_Data);
+        }
         if((status != GNSS_PARSER_ERROR) && ((eNMEAMsg)m == PSTMPASSRTN)) {
           GNSS_DATA_GetPSTMPassInfo(&GNSSParser_Data);
         }
@@ -431,23 +440,23 @@ void TeseoConsumerTask(void const * argument)
           GNSS_DATA_GetPSTMAGPSInfo(&GNSSParser_Data);
         }
 
-#if (configUSE_GEOFENCE == 1)
+#if (CONFIG_USE_GEOFENCE == 1)
         if((status != GNSS_PARSER_ERROR) && ((eNMEAMsg)m == PSTMGEOFENCE)) {
           GNSS_DATA_GetGeofenceInfo(&GNSSParser_Data);
         }
-#endif /* configUSE_GEOFENCE */
+#endif /* CONFIG_USE_GEOFENCE */
 
-#if (configUSE_ODOMETER == 1)
+#if (CONFIG_USE_ODOMETER == 1)
         if((status != GNSS_PARSER_ERROR) && ((eNMEAMsg)m == PSTMODO)) {
           GNSS_DATA_GetOdometerInfo(&GNSSParser_Data);
         }
-#endif /* configUSE_ODOMETER */
+#endif /* CONFIG_USE_ODOMETER */
 
-#if (configUSE_DATALOG == 1)
+#if (CONFIG_USE_DATALOG == 1)
         if((status != GNSS_PARSER_ERROR) && ((eNMEAMsg)m == PSTMDATALOG)) {
           GNSS_DATA_GetDatalogInfo(&GNSSParser_Data);
         }
-#endif /* configUSE_DATALOG */
+#endif /* CONFIG_USE_DATALOG */
  
         if((status != GNSS_PARSER_ERROR) && ((eNMEAMsg)m == PSTMSGL)) {
           GNSS_DATA_GetMsglistAck(&GNSSParser_Data);
@@ -472,7 +481,7 @@ void ConsoleParseTask(void const * argument)
   uint8_t ch;
   
   showCmds();
-  for(;;)
+  for (;;)
   {
     ch = '\0';
 
@@ -486,7 +495,7 @@ void ConsoleParseTask(void const * argument)
     {
       PUTC_OUT((char)ch);
     }
-    if(ch == '\r')
+    if (ch == '\r')
     {
       PRINT_OUT("\n\r");
 
@@ -501,7 +510,7 @@ void ConsoleParseTask(void const * argument)
         showPrompt();
       }
     }
-    else if((ch > 31 && ch < 126))
+    else if ((ch > 31 && ch < 126))
     {
       cmd[strlen(cmd)] = ch;
     }
@@ -515,17 +524,17 @@ static void ConsoleRead(uint8_t *string)
 {
   uint8_t ch;
 
-  while(1)
+  while (1)
   {
     ch = '\0';
 
     HAL_UART_Receive(&console_uart, &ch, 1, 1000);
 
-    if((ch > 31 && ch < 126))
+    if ((ch > 31 && ch < 126))
     {
       PUTC_OUT((char)ch);
     }
-    if(ch == '\r')
+    if (ch == '\r')
     {
       PRINT_OUT("\n\r");
       string[strlen((char *)string)] = '\0';
@@ -533,7 +542,7 @@ static void ConsoleRead(uint8_t *string)
     }
     else
     {
-      if((ch > 31 && ch < 126)) {
+      if ((ch > 31 && ch < 126)) {
         string[strlen((char *)string)] = ch;
       }
     }
@@ -551,21 +560,21 @@ static void AppCmdProcess(char *com)
   int seedMask;
 
   // 0 - FWUPG
-  if((strcmp((char *)com, "0") == 0 || strcmp((char *)com, "agnss") == 0)) {
-
+  if ((strcmp((char *)com, "0") == 0 || strcmp((char *)com, "agnss") == 0)) 
+  {
     PRINT_OUT("Type \"GENPASS\" to get password\r\n");
     PRINT_OUT("Type \"DOWNLOAD-PR-DATA,x\" - x constellation flag:\r\n");
-    PRINT_OUT("G or g: only GPS \n");
-    PRINT_OUT("R or r: only GLO \n");
-    PRINT_OUT("E or e: only GAL \n");
-    PRINT_OUT("C or c: only BEI \n");
+    PRINT_OUT("G or g: only GPS \r\n");
+    PRINT_OUT("R or r: only GLO \r\n");
+    PRINT_OUT("E or e: only GAL \r\n");
+    PRINT_OUT("C or c: only BEI \r\n");
     //PRINT_OUT("A or a: FULL constellation GPS + GLO + GAL\n");
 
     PRINT_OUT("Type \"DOWNLOAD-RT-DATA,x\" - x constellation flag:\r\n");
-    PRINT_OUT("G or g: only GPS \n");
-    PRINT_OUT("R or r: only GLO \n");
-    PRINT_OUT("E or e: only GAL \n");
-    PRINT_OUT("C or c: only BEI \n");
+    PRINT_OUT("G or g: only GPS \r\n");
+    PRINT_OUT("R or r: only GLO \r\n");
+    PRINT_OUT("E or e: only GAL \r\n");
+    PRINT_OUT("C or c: only BEI \r\n");
 
     PRINT_OUT("Type \"GETAGPSSTATUS\" to get A-GNSS status\r\n");
 //    PRINT_OUT("Type \"SCALE-CLOCK-DOWN\" after conversion completed\r\n");
@@ -574,15 +583,17 @@ static void AppCmdProcess(char *com)
   }
 
   // GENPASS
-  else if(strncmp((char *)com, "GENPASS", strlen("GENPASS")) == 0) {
+  else if (strncmp((char *)com, "GENPASS", strlen("GENPASS")) == 0) 
+  {
     AppAGNSS_PassGen();
   }
   // DOWNLOAD-PR-DATA,x
-  else if(strncmp((char *)com, "DOWNLOAD-PR-DATA", strlen("DOWNLOAD-PR-DATA")) == 0) {
+  else if (strncmp((char *)com, "DOWNLOAD-PR-DATA", strlen("DOWNLOAD-PR-DATA")) == 0) 
+  {
     seedMask = AppAGNSS_ParseSeedOp(com);
-    if(seedMask != 0)
+    if (seedMask != 0)
     {
-      if(AppAGNSS_DownloadSeed(&GNSSParser_Data, seedMask, PR_SEED) == 0)
+      if (AppAGNSS_DownloadSeed(&GNSSParser_Data, seedMask, PR_SEED) == 0)
       {
 //        GNSS_DATA_SendCommand(&pGNSS, "$PSTMGPSSUSPEND");
         AppAGNSS_ConvertPRSeed(seedMask);
@@ -590,9 +601,10 @@ static void AppCmdProcess(char *com)
     }
   }
   // DOWNLOAD-RT-DATA,x
-  else if(strncmp((char *)com, "DOWNLOAD-RT-DATA", strlen("DOWNLOAD-RT-DATA")) == 0) {
+  else if (strncmp((char *)com, "DOWNLOAD-RT-DATA", strlen("DOWNLOAD-RT-DATA")) == 0) 
+  {
     seedMask = AppAGNSS_ParseSeedOp(com);
-    if(seedMask != 0)
+    if (seedMask != 0)
     {
       if(AppAGNSS_DownloadSeed(&GNSSParser_Data, seedMask, RT_SEED) == 0)
       {
@@ -601,7 +613,8 @@ static void AppCmdProcess(char *com)
     }
   }
   // GETAGPSSTATUS
-  else if(strncmp((char *)com, "GETAGPSSTATUS", strlen("GETAGPSSTATUS")) == 0) {
+  else if (strncmp((char *)com, "GETAGPSSTATUS", strlen("GETAGPSSTATUS")) == 0) 
+  {
     GNSS_DATA_SendCommand((uint8_t *)"$PSTMGETAGPSSTATUS");
   }
   // SCALE CLOCK DOWN
@@ -609,7 +622,8 @@ static void AppCmdProcess(char *com)
 //    GNSS_DATA_SendCommand(&pGNSS, "$PSTMGPSRESTART");
 //  }
 
-  else if(strcmp((char *)com, "y") == 0) {
+  else if (strcmp((char *)com, "y") == 0) 
+  {
    /* See CDB-ID 201 - This LOW_BITS Mask enables the following messages:
     * 0x1 $GPGNS Message
     * 0x2 $GPGGA Message
@@ -619,27 +633,29 @@ static void AppCmdProcess(char *com)
     * 0x80000 $GPGSV Message
     * 0x100000 $GPGLL Message
     */
-    int lowMask = 0x18004F;
-    int highMask = gnss_feature;
+    uint32_t lowMask = 0x18004F;
+    uint32_t highMask = gnss_feature;
     //PRINT_DBG("Saving Configuration...");
     AppCfgMsgList(lowMask, highMask);
     PRINT_OUT("\r\n>"); 
   }
-
-	else if(strcmp((char *)com, "n") == 0) {
+  else if (strcmp((char *)com, "n") == 0) 
+  {
     PRINT_OUT("\r\n>"); 
   }
 	
   // 1 - GETPOS / 2 - LASTPOS
-  else if((strcmp((char *)com, "1") == 0 || strcmp((char *)com, "getpos") == 0) ||
-     (strcmp((char *)com, "2") == 0 || strcmp((char *)com, "lastpos") == 0)) {
+  else if ((strcmp((char *)com, "1") == 0 || strcmp((char *)com, "getpos") == 0) ||
+     (strcmp((char *)com, "2") == 0 || strcmp((char *)com, "lastpos") == 0)) 
+  {
     osMutexWait(gnssDataMutexHandle, osWaitForever);
     GNSS_DATA_GetValidInfo(&GNSSParser_Data);
     osMutexRelease(gnssDataMutexHandle);
   }
 
   // 3 - WAKEUPSTATUS
-  else if(strcmp((char *)com, "3") == 0 || strcmp((char *)com, "wakestatus") == 0) {
+  else if(strcmp((char *)com, "3") == 0 || strcmp((char *)com, "wakestatus") == 0) 
+  {
     GNSS1A1_GNSS_Wakeup_Status(GNSS1A1_TESEO_LIV3F, &status);
     
     PRINT_OUT("WakeUp Status: "); 
@@ -648,12 +664,14 @@ static void AppCmdProcess(char *com)
   }   
   
   // 4 - HELP
-  else if(strcmp((char *)com, "4") == 0 || strcmp((char *)com, "help") == 0) {
+  else if(strcmp((char *)com, "4") == 0 || strcmp((char *)com, "help") == 0) 
+  {
     showCmds();
   }
 
   // 5 - DEBUG
-  else if(strcmp((char *)com, "5") == 0 || strcmp((char *)com, "debug") == 0) {
+  else if(strcmp((char *)com, "5") == 0 || strcmp((char *)com, "debug") == 0) 
+  {
     GNSSParser_Data.debug = (GNSSParser_Data.debug == DEBUG_ON ? DEBUG_OFF : DEBUG_ON);
     if(GNSSParser_Data.debug == DEBUG_OFF)
       PRINT_OUT("Debug: OFF\r\n>");
@@ -662,24 +680,26 @@ static void AppCmdProcess(char *com)
   }
 
   // 6 - TRACKPOS
-  else if(strcmp((char *)com, "6") == 0 || strcmp((char *)com, "track") == 0) {
-    uint32_t t, s;
+  else if(strcmp((char *)com, "6") == 0 || strcmp((char *)com, "track") == 0) 
+  {
+    uint32_t num_positions;
+    uint32_t delay_seconds;
     do {
       memset(tracks, 0, 16);
       sprintf(msg, "How many positions do you want to track? (max allowed %d)\r\n>", (int)MAX_STOR_POS);
       PRINT_OUT(msg);                
       ConsoleRead((uint8_t *)tracks);
-    } while(atoi((char *)tracks) < 0 || atoi((char *)tracks) > MAX_STOR_POS);
+    } while (atoi((char *)tracks) < 0 || atoi((char *)tracks) > MAX_STOR_POS);
     do {
       memset(secs, 0, 16);
       PRINT_OUT("How many seconds do you want to delay while tracking? (>= 0)\r\n> ");
       ConsoleRead((uint8_t *)secs);
-    } while(atoi((char *)secs) < 0);
-    t = strtoul((char *)tracks, NULL, 10);
-    s = strtoul((char *)secs, NULL, 10);
+    } while (atoi((char *)secs) < 0);
+    num_positions = strtoul((char *)tracks, NULL, 10);
+    delay_seconds = strtoul((char *)secs, NULL, 10);
 
-    tracked = GNSS_DATA_TrackGotPos(&GNSSParser_Data, t, s);
-    if(tracked > 0){
+    tracked = GNSS_DATA_TrackGotPos(&GNSSParser_Data, num_positions, delay_seconds);
+    if (tracked > 0){
       PRINT_OUT("Last tracking process went good.\r\n\n>");  
     }
     else
@@ -687,8 +707,9 @@ static void AppCmdProcess(char *com)
   }
 
   // 7 - LASTTRACK
-  else if(strcmp((char *)com, "7") == 0 || strcmp((char *)com, "lasttrack") == 0) {
-    if(tracked > 0){
+  else if(strcmp((char *)com, "7") == 0 || strcmp((char *)com, "lasttrack") == 0) 
+  {
+    if (tracked > 0){
       PRINT_OUT("Acquired positions:\r\n");
       GNSS_DATA_PrintTrackedPositions(tracked);
     }
@@ -697,7 +718,8 @@ static void AppCmdProcess(char *com)
   }
   
   // 8 - GETFWVER
-  else if(strcmp((char *)com, "8") == 0 || strcmp((char *)com, "getfwver") == 0) {
+  else if(strcmp((char *)com, "8") == 0 || strcmp((char *)com, "getfwver") == 0) 
+  {
     PRINT_OUT("Type \"$PSTMGETSWVER\"   to get the GNSSLIB version \r\n");
     PRINT_OUT("Type \"$PSTMGETSWVER,1\" to get the OS20LIB version \r\n");
     PRINT_OUT("Type \"$PSTMGETSWVER,2\" to get the GPSAPP version \r\n");
@@ -709,100 +731,112 @@ static void AppCmdProcess(char *com)
   }
   
   // GETFWVER,x
-  else if(strncmp((char *)com, "$PSTMGETSWVER", strlen("$PSTMGETSWVER")) == 0) {
+  else if(strncmp((char *)com, "$PSTMGETSWVER", strlen("$PSTMGETSWVER")) == 0) 
+  {
     GNSS_DATA_SendCommand((uint8_t *)com);
   }
 
   // 9 - GET Fix data for single or combined Satellite navigation system
-  else if(strcmp((char *)com, "9") == 0 || strcmp((char *)com, "getgnsmsg") == 0) {
+  else if(strcmp((char *)com, "9") == 0 || strcmp((char *)com, "getgnsmsg") == 0) 
+  {
     osMutexWait(gnssDataMutexHandle, osWaitForever);
     GNSS_DATA_GetGNSInfo(&GNSSParser_Data);
     osMutexRelease(gnssDataMutexHandle);
   }
 
   // 10 - GET GPS Pseudorange Noise Statistics
-  else if(strcmp((char *)com, "10") == 0 || strcmp((char *)com, "getgpgst") == 0) {
+  else if(strcmp((char *)com, "10") == 0 || strcmp((char *)com, "getgpgst") == 0) 
+  {
     osMutexWait(gnssDataMutexHandle, osWaitForever);
     GNSS_DATA_GetGPGSTInfo(&GNSSParser_Data);
     osMutexRelease(gnssDataMutexHandle);
   }
 
   // 11 - GET Recommended Minimum Specific GPS/Transit data
-  else if(strcmp((char *)com, "11") == 0 || strcmp((char *)com, "getgprmc") == 0) {
+  else if(strcmp((char *)com, "11") == 0 || strcmp((char *)com, "getgprmc") == 0) 
+  {
     osMutexWait(gnssDataMutexHandle, osWaitForever);
     GNSS_DATA_GetGPRMCInfo(&GNSSParser_Data);
     osMutexRelease(gnssDataMutexHandle);
   }
 
   // 12 - GET GPS DOP and Active Satellites
-  else if(strcmp((char *)com, "12") == 0 || strcmp((char *)com, "getgsamsg") == 0) {
+  else if(strcmp((char *)com, "12") == 0 || strcmp((char *)com, "getgsamsg") == 0) 
+  {
     osMutexWait(gnssDataMutexHandle, osWaitForever);
     GNSS_DATA_GetGSAInfo(&GNSSParser_Data);
     osMutexRelease(gnssDataMutexHandle);
   }
   
   // 13 - GET GPS Satellites in View
-  else if(strcmp((char *)com, "13") == 0 || strcmp((char *)com, "getgsvmsg") == 0) {
+  else if(strcmp((char *)com, "13") == 0 || strcmp((char *)com, "getgsvmsg") == 0) 
+  {
     osMutexWait(gnssDataMutexHandle, osWaitForever);
     GNSS_DATA_GetGSVInfo(&GNSSParser_Data);
     osMutexRelease(gnssDataMutexHandle);
   }
 
-#if (configUSE_FEATURE == 1)
+#if (CONFIG_USE_FEATURE == 1)
   // 14 - EN-FEATURE
-  else if(strcmp((char *)com, "14") == 0 || strcmp((char *)com, "en-feature") == 0) {
-#if (configUSE_GEOFENCE == 1)
+  else if(strcmp((char *)com, "14") == 0 || strcmp((char *)com, "en-feature") == 0) 
+  {
+#if (CONFIG_USE_GEOFENCE == 1)
     PRINT_OUT("Type \"GEOFENCE,1\" to enable geofence\r\n");
     PRINT_OUT("Type \"GEOFENCE,0\" to disable geofence\r\n");
-#endif /* configUSE_GEOFENCE */
+#endif /* CONFIG_USE_GEOFENCE */
  
-#if (configUSE_ODOMETER == 1)
+#if (CONFIG_USE_ODOMETER == 1)
     PRINT_OUT("Type \"ODO,1\" to enable odometer\r\n");
     PRINT_OUT("Type \"ODO,0\" to disable odometer\r\n");
-#endif /* configUSE_ODOMETER */
+#endif /* CONFIG_USE_ODOMETER */
 
-#if (configUSE_DATALOG == 1)
+#if (CONFIG_USE_DATALOG == 1)
     PRINT_OUT("Type \"DATALOG,1\" to enable datalog\r\n");
     PRINT_OUT("Type \"DATALOG,0\" to disable datalog\r\n");
-#endif /* configUSE_DATALOG */
+#endif /* CONFIG_USE_DATALOG */
 
     PRINT_OUT("\nType the command now:\r\n> ");
   }
-#endif /* configUSE_FEATURE */
+#endif /* CONFIG_USE_FEATURE */
   
-#if (configUSE_FEATURE == 1)
+#if (CONFIG_USE_FEATURE == 1)
   else if(strncmp((char *)com, "GEOFENCE,1", strlen("GEOFENCE,1")) == 0 ||
           strncmp((char *)com, "GEOFENCE,0", strlen("GEOFENCE,0")) == 0 ||
           strncmp((char *)com, "ODO,1", strlen("ODO,1")) == 0 ||
           strncmp((char *)com, "ODO,0", strlen("ODO,0")) == 0 ||
           strncmp((char *)com, "DATALOG,1", strlen("DATALOG,1")) == 0 ||
-          strncmp((char *)com, "DATALOG,0", strlen("DATALOG,0")) == 0) {
+          strncmp((char *)com, "DATALOG,0", strlen("DATALOG,0")) == 0) 
+  {
     AppEnFeature(com);
   }
-#endif /* configUSE_FEATURE */
+#endif /* CONFIG_USE_FEATURE */
 
-#if (configUSE_GEOFENCE == 1)
+#if (CONFIG_USE_GEOFENCE == 1)
   // 15 - CONF-GEOFENCE
-  else if(strcmp((char *)com, "15") == 0 || strcmp((char *)com, "conf-geofence") == 0) {
+  else if(strcmp((char *)com, "15") == 0 || strcmp((char *)com, "conf-geofence") == 0) 
+  {
     PRINT_OUT("Type \"Geofence-Lecce\" to config circle in Lecce \r\n");
     PRINT_OUT("Type \"Geofence-Catania\" to config circle in Catania \r\n");
     PRINT_OUT("Type the command:\r\n> ");
   }
   // GEOFENCE-CIRCLE
   else if(strncmp((char *)com, "Geofence-Lecce", strlen("Geofence-Lecce")) == 0 ||
-          strncmp((char *)com, "Geofence-Catania", strlen("Geofence-Catania")) == 0) {
+          strncmp((char *)com, "Geofence-Catania", strlen("Geofence-Catania")) == 0) 
+  {
     AppGeofenceCfg(com);
   }
   
   // 16 - REQ-GEOFENCE
-  else if(strcmp((char *)com, "16") == 0 || strcmp((char *)com, "req-geofence") == 0) {
+  else if(strcmp((char *)com, "16") == 0 || strcmp((char *)com, "req-geofence") == 0) 
+  {
     GNSS_DATA_SendCommand((uint8_t *)"$PSTMGEOFENCEREQ");
   }
-#endif /* configUSE_GEOFENCE */
+#endif /* CONFIG_USE_GEOFENCE */
 
-#if (configUSE_ODOMETER == 1)
+#if (CONFIG_USE_ODOMETER == 1)
   // 17 - ODOMETER (START/STOP)
-  else if(strcmp((char *)com, "17") == 0 || strcmp((char *)com, "odometer-op") == 0) {
+  else if(strcmp((char *)com, "17") == 0 || strcmp((char *)com, "odometer-op") == 0) 
+  {
     PRINT_OUT("Type \"START-ODO\" to start odometer\r\n");
     PRINT_OUT("Type \"STOP-ODO\"  to stop odometer\r\n");
     PRINT_OUT("Type the command:\r\n> ");
@@ -810,14 +844,16 @@ static void AppCmdProcess(char *com)
 
   // Odometer op
   else if(strncmp((char *)com, "START-ODO", strlen("START-ODO")) == 0 ||
-          strncmp((char *)com, "STOP-ODO", strlen("STOP-ODO")) == 0) {
+          strncmp((char *)com, "STOP-ODO", strlen("STOP-ODO")) == 0) 
+  {
     AppOdometerOp(com);
   }
-#endif /* configUSE_ODOMETER */
+#endif /* CONFIG_USE_ODOMETER */
 
-#if (configUSE_DATALOG == 1)  
+#if (CONFIG_USE_DATALOG == 1)  
   // 18 - DATALOG (START/STOP/ERASE)
-  else if(strcmp((char *)com, "18") == 0 || strcmp((char *)com, "datalog-op") == 0) {
+  else if (strcmp((char *)com, "18") == 0 || strcmp((char *)com, "datalog-op") == 0) 
+  {
     PRINT_OUT("Type \"CONFIG-DATALOG\" to config datalog\r\n");
     PRINT_OUT("Type \"START-DATALOG\" to start datalog\r\n");
     PRINT_OUT("Type \"STOP-DATALOG\"  to stop datalog\r\n");
@@ -828,29 +864,115 @@ static void AppCmdProcess(char *com)
   else if(strncmp((char *)com, "CONFIG-DATALOG", strlen("CONFIG-DATALOG")) == 0 ||
           strncmp((char *)com, "START-DATALOG", strlen("START-DATALOG")) == 0 ||
           strncmp((char *)com, "STOP-DATALOG", strlen("STOP-DATALOG")) == 0 ||
-          strncmp((char *)com, "ERASE-DATALOG", strlen("ERASE-DATALOG")) == 0) {
+          strncmp((char *)com, "ERASE-DATALOG", strlen("ERASE-DATALOG")) == 0) 
+  {
     AppDatalogOp(com);
   }
-#endif /* configUSE_DATALOG */
+#endif /* CONFIG_USE_DATALOG */
 
   // 19 - EXT-HELP
-  else if(strcmp((char *)com, "19") == 0 || strcmp((char *)com, "ext-help") == 0) {
+  else if(strcmp((char *)com, "19") == 0 || strcmp((char *)com, "ext-help") == 0) 
+  {
     printHelp();
   }
-  
-  else {
+    // 20 - SET-CDB REGISTER
+  else if(strcmp((char *)com, "20") == 0 || strcmp((char *)com, "set-cdb") == 0)
+  {
+    memset(com, 0, MAX_STR_LEN);
+    PRINT_OUT("Type \"$PSTMSETPAR\" with required parameters \r\n");
+
+    PRINT_OUT("\nType the command now:\r\n> ");
+  }
+  // SET-CDB REGISTER,x
+  else if(strncmp((char *)com, "$PSTMSETPAR", strlen("$PSTMSETPAR")) == 0)
+  {
+    if (SetPARameterCmdIsAllowed(com))
+    {
+      GNSS_DATA_SendCommand((uint8_t *)com);
+    }
+    else
+    {
+      PRINT_OUT("\nCommand not valid.\r\n> ");
+    }
+  }
+
+  // 21 - GET-CDB REGISTER
+  else if(strcmp((char *)com, "21") == 0 || strcmp((char *)com, "get-cdb") == 0)
+  {
+    memset(com, 0, MAX_STR_LEN);
+    PRINT_OUT("Type \"$PSTMGETPAR\"  reads the defined parameter from CDB \r\n");
+
+    PRINT_OUT("\nType the command now:\r\n> ");
+  }
+  // GET-CDB REGISTER,x
+  else if(strncmp((char *)com, "$PSTMGETPAR", strlen("$PSTMGETPAR")) == 0)
+  {
+    if (GetPARameterCmdIsAllowed(com))
+    {
+      GNSS_DATA_SendCommand((uint8_t *)com);
+    }
+    else
+    {
+      PRINT_OUT("\nCommand not valid.\r\n> ");
+    }
+  }
+
+  // 22 - SAVE-CDB REGISTER
+  else if(strcmp((char *)com, "22") == 0 || strcmp((char *)com, "save-cdb") == 0)
+  {
+    memset(com, 0, MAX_STR_LEN);
+    PRINT_OUT("Type \"$PSTMSAVEPAR\"  save current CDB \r\n");
+
+    PRINT_OUT("\nType the command now:\r\n> ");
+  }
+  // SAVE-CDB REGISTER,x
+  else if(strncmp((char *)com, "$PSTMSAVEPAR", strlen("$PSTMSAVEPAR")) == 0)
+  {
+    GNSS_DATA_SendCommand((uint8_t *)com);
+  }
+
+  // 23 SYSTEM RESET
+  else if(strcmp((char *)com, "23") == 0 || strcmp((char *)com, "reset") == 0)
+  {
+    memset(com, 0, MAX_STR_LEN);
+    PRINT_OUT("Type \"$PSTMSRR\"  GNSS firmware reboots \r\n");
+
+    PRINT_OUT("\nType the command now:\r\n> ");
+  }
+  // SYSTEM RESET, x
+  else if(strncmp((char *)com, "$PSTMSRR", strlen("$PSTMSRR")) == 0)
+  {
+    GNSS_DATA_SendCommand((uint8_t *)com);
+  }
+
+  // 24 CDB FACTORY RESET
+  else if(strcmp((char *)com, "24") == 0 || strcmp((char *)com, "cdb-factoryreset") == 0)
+  {
+    memset(com, 0, MAX_STR_LEN);
+    PRINT_OUT("Type \"$PSTMRESTOREPAR\"  GNSS firmware reboots \r\n");
+
+    PRINT_OUT("\nType the command now:\r\n> ");
+  }
+  // CDB FACTORY RESET, x
+  else if(strncmp((char *)com, "$PSTMRESTOREPAR", strlen("$PSTMRESTOREPAR")) == 0)
+  {
+    GNSS_DATA_SendCommand((uint8_t *)com);
+  }
+
+  else
+  {
     PRINT_OUT("Command not valid.\r\n\n>");
   }
 }
 
 /* CfgMessageList */
-static void AppCfgMsgList(int lowMask, int highMask)
+static void AppCfgMsgList(uint32_t lowMask, uint32_t highMask)
 {
   GNSS_DATA_CfgMessageList(lowMask, highMask);
 }
 
 /* Enable feature */
-#if (configUSE_FEATURE == 1)
+#if (CONFIG_USE_FEATURE == 1)
 static void AppEnFeature(char *command)
 {
   if(strcmp(command, "GEOFENCE,1") == 0) {
@@ -872,10 +994,10 @@ static void AppEnFeature(char *command)
     GNSS_DATA_EnableDatalog(0);
   }
 }
-#endif /* configUSE_FEATURE */
+#endif /* CONFIG_USE_FEATURE */
 
 /* Geofence configure */
-#if (configUSE_GEOFENCE == 1)
+#if (CONFIG_USE_GEOFENCE == 1)
 static void AppGeofenceCfg(char *command)
 { 
   if(strcmp(command, "Geofence-Lecce") == 0) {
@@ -885,10 +1007,10 @@ static void AppGeofenceCfg(char *command)
     GNSS_DATA_ConfigGeofence(&Geofence_Catania);
   }
 }
-#endif /* configUSE_GEOFENCE */
+#endif /* CONFIG_USE_GEOFENCE */
 
 /* Odometer configure */
-#if (configUSE_ODOMETER == 1)
+#if (CONFIG_USE_ODOMETER == 1)
 static void AppOdometerOp(char *command)
 { 
   if(strcmp(command, "START-ODO") == 0) {
@@ -898,10 +1020,10 @@ static void AppOdometerOp(char *command)
     GNSS_DATA_StopOdo();
   }
 }
-#endif /* configUSE_ODOMETER */
+#endif /* CONFIG_USE_ODOMETER */
 
 /* Datalog configure */
-#if (configUSE_DATALOG == 1)
+#if (CONFIG_USE_DATALOG == 1)
 static void AppDatalogOp(char *command)
 {
   if(strcmp(command, "CONFIG-DATALOG") == 0) {
@@ -917,7 +1039,7 @@ static void AppDatalogOp(char *command)
     GNSS_DATA_EraseDatalog();
   }
 }
-#endif /* configUSE_DATALOG */
+#endif /* CONFIG_USE_DATALOG */
 
 /*
  * This function is executed in case of error occurrence.
@@ -1031,7 +1153,7 @@ void SPI3_IRQHandler(void)
   HAL_SPI_IRQHandler(&hspi);
 }
 
-static int ConsoleReadable(void)
+static uint8_t ConsoleReadable(void)
 {
   /*  To avoid a target blocking case, let's check for
   *  possible OVERRUN error and discard it
@@ -1105,7 +1227,39 @@ GETCHAR_PROTOTYPE
   return ch;
 }
 
-int GNSS_PRINT(char *pBuffer)
+static uint8_t SetPARameterCmdIsAllowed(const char *com)
+{
+  uint8_t ret = 0;
+
+  if ((com[11] == ',') &&
+     ((com[12] == '1') || (com[12] == '2') || (com[12] == '3')) &&
+     (com[13] >= '0' && com[13] <= '9') &&
+     (com[14] >= '0' && com[14] <= '9') &&
+     (com[15] >= '0' && com[15] <= '9') && (com[16] == ','))
+  {
+    ret = 1;
+  }
+
+  return ret;
+}
+
+static uint8_t GetPARameterCmdIsAllowed(const char *com)
+{
+  int ret = 0;
+
+  if ((com[11] == ',') &&
+     ((com[12] == '1') || (com[12] == '2') || (com[12] == '3')) &&
+     (com[13] >= '0' && com[13] <= '9') &&
+     (com[14] >= '0' && com[14] <= '9') &&
+     (com[15] >= '0' && com[15] <= '9') &&
+     (com[16] == '\0'))
+  {
+    ret = 1;
+  }
+
+  return ret;
+}
+uint8_t GNSS_PRINT(char *pBuffer)
 {
   if (HAL_UART_Transmit(&console_uart, (uint8_t*)pBuffer, (uint16_t)strlen((char *)pBuffer), 1000) != HAL_OK)
   {
@@ -1116,7 +1270,7 @@ int GNSS_PRINT(char *pBuffer)
   return 0;
 }
 
-int GNSS_PUTC(char pChar)
+uint8_t GNSS_PUTC(char pChar)
 {
   if (HAL_UART_Transmit(&console_uart, (uint8_t*)&pChar, 1, 1000) != HAL_OK)
   {

@@ -7,7 +7,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2024 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -32,15 +32,16 @@ extern "C" {
 
 #define USE_I2C 0U
 
-#define USE_GNSS1A1_GNSS_TESEO_LIV3F	1U
+#define USE_GNSS1A1_GNSS_TESEO_LIV3F 1U
 
-#define GNSS1A1_GNSS_UART_Init        BSP_LPUART1_Init
-#define GNSS1A1_GNSS_UART_DeInit      BSP_LPUART1_DeInit
-#define GNSS1A1_GNSS_UART_Transmit_IT BSP_LPUART1_Send_IT
-#define GNSS1A1_GNSS_UART_Receive_IT  BSP_LPUART1_Recv_IT
-#define GNSS1A1_GNSS_GetTick         BSP_GetTick
+#define GNSS1A1_GNSS_UART_INIT       BSP_LPUART1_Init
+#define GNSS1A1_GNSS_UART_DEINIT     BSP_LPUART1_DeInit
+#define GNSS1A1_GNSS_UART_TRANSMIT_IT BSP_LPUART1_Send_IT
+#define GNSS1A1_GNSS_UART_RECEIVE_IT  BSP_LPUART1_Recv_IT
+#define GNSS1A1_GNSS_UART_CLEAR_OREF   BSP_LPUART1_ClearOREF
+#define GNSS1A1_GNSS_GET_TICK         BSP_GetTick
 
-#define GNSS1A1_GNSS_UART_ClearOREF   BSP_LPUART1_ClearOREF
+#define GNSS1A1_GNSS_RST                      GNSS1A1_GNSS_Rst
 
 #define GNSS1A1_RST_PORT                        GPIOF
 #define GNSS1A1_RST_PIN                         GPIO_PIN_13
@@ -48,12 +49,12 @@ extern "C" {
 #define GNSS1A1_WAKEUP_PORT                     GPIOA
 #define GNSS1A1_WAKEUP_PIN                      GPIO_PIN_5
 
-//#define GNSS1A1_RegisterDefaultMspCallbacks     BSP_LPUART1_RegisterDefaultMspCallbacks
-#define GNSS1A1_RegisterRxCb                    BSP_LPUART1_RegisterRxCallback
-#define GNSS1A1_RegisterErrorCb                 BSP_LPUART1_RegisterErrorCallback
+/* #define GNSS1A1_RegisterDefaultMspCallbacks     BSP_USART1_RegisterDefaultMspCallbacks */
+#define GNSS1A1_REGISTER_RX_CB                    BSP_LPUART1_RegisterRxCallback
+#define GNSS1A1_REGISTER_ERROR_CB                 BSP_LPUART1_RegisterErrorCallback
 
 /* To be checked */
-#define GNSS1A1_UART_IRQHanlder                 BSP_LPUART1_IRQHanlder
+#define GNSS1A1_UART_IRQ_HANDLER                 BSP_LPUART1_IRQHanlder
 
 #ifdef __cplusplus
 }

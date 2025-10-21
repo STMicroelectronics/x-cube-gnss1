@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2024 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -37,20 +37,20 @@
 #define CONSOLE_STACK_SIZE      (GNSS_THREAD_MINIMUM_STACK)
 #define CONSUMER_STACK_SIZE     (GNSS_THREAD_MINIMUM_STACK)
 #if (USE_I2C == 1)
-  #define BACKGROUND_STACK_SIZE (GNSS_THREAD_MINIMUM_STACK)
+#define BACKGROUND_STACK_SIZE (GNSS_THREAD_MINIMUM_STACK)
 #else
-  #define BACKGROUND_STACK_SIZE 0 /* in case of USART bus, the background task is not used */
+#define BACKGROUND_STACK_SIZE 0 /* in case of USART bus, the background task is not used */
 #endif /* USE_I2C */
 #define SAFETY_STACK_SIZE       (GNSS_THREAD_MINIMUM_STACK)
 
 #if (GNSS_APP_MEM_POOL_SIZE < (BACKGROUND_STACK_SIZE + CONSOLE_STACK_SIZE + CONSUMER_STACK_SIZE + SAFETY_STACK_SIZE))
-  #warning "The application requires a greater GNSS_APP_MEM_POOL_SIZE!"
-#endif
+#warning "The application requires a greater GNSS_APP_MEM_POOL_SIZE!"
+#endif /* (GNSS_APP_MEM_POOL_SIZE) */
 
 #define TESEO_CONSUMER_TASK_PRIORITY      1
 #define TESEO_CONSOLE_TASK_PRIORITY       1
 #if (USE_I2C == 1)
-  #define TESEO_BACKGROUND_TASK_PRIORITY  1
+#define TESEO_BACKGROUND_TASK_PRIORITY  1
 #endif /* USE_I2C */
 
 /* Global variables ----------------------------------------------------------*/
@@ -58,12 +58,12 @@
 TX_THREAD teseoConsumerTaskHandle;
 TX_THREAD consoleParseTaskHandle;
 #if (USE_I2C == 1)
-  TX_THREAD backgroundTaskHandle;
+TX_THREAD backgroundTaskHandle;
 #endif /* USE_I2C */
 
 /* Private variables ---------------------------------------------------------*/
 /* User Button flag */
-static int btnRst = 0;
+static uint8_t btnRst = 0;
 
 /* USER CODE BEGIN PV */
 
@@ -73,16 +73,16 @@ static int btnRst = 0;
 static UINT Teseo_Consumer_Task_Init(VOID *memory_ptr);
 static UINT Console_Parse_Task_Init(VOID *memory_ptr);
 #if (USE_I2C == 1)
-  static UINT Background_Task_Init(VOID *memory_ptr);
+static UINT Background_Task_Init(VOID *memory_ptr);
 #endif /* USE_I2C */
 
 static void TeseoConsumerTask(ULONG argument);
 static void ConsoleParseTask(ULONG argument);
 #if (USE_I2C == 1)
-  static void BackgroundTask(ULONG argument);
+static void BackgroundTask(ULONG argument);
 #endif /* USE_I2C */
 
-static int ConsoleReadable(void);
+static uint8_t ConsoleReadable(void);
 
 /* USER CODE BEGIN PFP */
 
@@ -95,7 +95,7 @@ void MX_GNSS_PreOSInit(void)
   /* USER CODE END GNSS_Init_PreTreatment */
 
   /* Initialize the BSP common utilities */
-  if(BSP_COM_Init(COM1) != BSP_ERROR_NONE)
+  if (BSP_COM_Init(COM1) != BSP_ERROR_NONE)
   {
     Error_Handler();
   }
@@ -117,17 +117,20 @@ UINT MX_GNSS_Init(VOID *memory_ptr)
 
   /* Initialize the tasks */
   ret = Console_Parse_Task_Init(memory_ptr);
-  if (ret != TX_SUCCESS) {
+  if (ret != TX_SUCCESS)
+  {
     return ret;
   }
 #if (USE_I2C == 1)
   ret = Background_Task_Init(memory_ptr);
-  if (ret != TX_SUCCESS) {
+  if (ret != TX_SUCCESS)
+  {
     return ret;
   }
 #endif /* USE_I2C */
   ret = Teseo_Consumer_Task_Init(memory_ptr);
-  if (ret != TX_SUCCESS) {
+  if (ret != TX_SUCCESS)
+  {
     return ret;
   }
 
@@ -140,14 +143,15 @@ UINT MX_GNSS_Init(VOID *memory_ptr)
  */
 static UINT Teseo_Consumer_Task_Init(VOID *memory_ptr)
 {
-  TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
+  TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL *)memory_ptr;
   UINT ret = TX_SUCCESS;
   CHAR *pointer;
 
   UINT teseo_consumer_task_preemption_th = TESEO_CONSUMER_TASK_PRIORITY;
 
   ret = tx_byte_allocate(byte_pool, (VOID **)&pointer, CONSUMER_STACK_SIZE, TX_NO_WAIT);
-  if (ret != TX_SUCCESS) {
+  if (ret != TX_SUCCESS)
+  {
     return ret;
   }
 
@@ -163,18 +167,20 @@ static UINT Teseo_Consumer_Task_Init(VOID *memory_ptr)
 /* This function creates a background task for I2C FSM */
 static UINT Background_Task_Init(VOID *memory_ptr)
 {
-  TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
+  TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL *)memory_ptr;
   UINT ret = TX_SUCCESS;
   CHAR *pointer;
   UINT teseo_background_task_preemption_th = TESEO_BACKGROUND_TASK_PRIORITY;
 
   ret = tx_byte_allocate(byte_pool, (VOID **)&pointer, BACKGROUND_STACK_SIZE, TX_NO_WAIT);
-  if (ret != TX_SUCCESS) {
+  if (ret != TX_SUCCESS)
+  {
     return ret;
   }
 
   ret = tx_thread_create(&backgroundTaskHandle, "BackgroundTask", BackgroundTask, 0,
-                         pointer, BACKGROUND_STACK_SIZE, TESEO_BACKGROUND_TASK_PRIORITY, teseo_background_task_preemption_th,
+                         pointer, BACKGROUND_STACK_SIZE, TESEO_BACKGROUND_TASK_PRIORITY,
+                         teseo_background_task_preemption_th,
                          TX_NO_TIME_SLICE, TX_AUTO_START);
   return ret;
 }
@@ -183,13 +189,14 @@ static UINT Background_Task_Init(VOID *memory_ptr)
 /* This function creates the task reading input from the cocsole */
 static UINT Console_Parse_Task_Init(VOID *memory_ptr)
 {
-  TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
+  TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL *)memory_ptr;
   UINT ret = TX_SUCCESS;
   CHAR *pointer;
   UINT teseo_console_task_preemption_th = TESEO_CONSOLE_TASK_PRIORITY;
 
   ret = tx_byte_allocate(byte_pool, (VOID **)&pointer, CONSOLE_STACK_SIZE, TX_NO_WAIT);
-  if (ret != TX_SUCCESS) {
+  if (ret != TX_SUCCESS)
+  {
     return ret;
   }
 
@@ -203,25 +210,27 @@ static UINT Console_Parse_Task_Init(VOID *memory_ptr)
 /* TeseoConsumerTask function */
 static void TeseoConsumerTask(ULONG argument)
 {
+  /* Wait for hardware ready */
+  HAL_Delay(100);
   const GNSS1A1_GNSS_Msg_t *gnssMsg;
 
   GNSS1A1_GNSS_Init(GNSS1A1_TESEO_LIV3F);
 
-  for(;;)
+  for (;;)
   {
-    if(btnRst == 1)
+    if (btnRst == 1)
     {
       GNSS1A1_GNSS_Reset(GNSS1A1_TESEO_LIV3F);
       btnRst = 0;
     }
 
     gnssMsg = GNSS1A1_GNSS_GetMessage(GNSS1A1_TESEO_LIV3F);
-    if(gnssMsg == NULL)
+    if (gnssMsg == NULL)
     {
       continue;
     }
 
-    PRINT_OUT((char*)gnssMsg->buf);
+    PRINT_OUT((char *)gnssMsg->buf);
     GNSS1A1_GNSS_ReleaseMessage(GNSS1A1_TESEO_LIV3F, gnssMsg);
   }
 }
@@ -230,7 +239,7 @@ static void TeseoConsumerTask(ULONG argument)
 /* BackgroundTask function */
 static void BackgroundTask(ULONG argument)
 {
-  for(;;)
+  for (;;)
   {
     GNSS1A1_GNSS_BackgroundProcess(GNSS1A1_TESEO_LIV3F);
   }
@@ -245,9 +254,9 @@ static void ConsoleParseTask(ULONG argument)
   uint16_t rxLen;
   GNSS1A1_GNSS_Msg_t gnssMsg;
 
-  for(;;)
+  for (;;)
   {
-    while(!ConsoleReadable())
+    while (!ConsoleReadable())
     {
       tx_thread_relinquish();
     }
@@ -267,31 +276,32 @@ static void ConsoleParseTask(ULONG argument)
 }
 
 /**
- * @brief  BSP Push Button callback
- * @param  Button Specifies the pin connected EXTI line
- * @retval None.
- */
+  * @brief  BSP Push Button callback
+  * @param  Button Specifies the pin connected EXTI line
+  * @retval None.
+  */
 void BSP_PB_Callback(Button_TypeDef Button)
 {
   btnRst = 1;
 }
 
-static int ConsoleReadable(void)
+static uint8_t ConsoleReadable(void)
 {
   /*
    * To avoid a target blocking case, let's check for
    *  possible OVERRUN error and discard it
    */
-  if(__HAL_UART_GET_FLAG(&hcom_uart[COM1], UART_FLAG_ORE)) {
+  if (__HAL_UART_GET_FLAG(&hcom_uart[COM1], UART_FLAG_ORE))
+  {
     __HAL_UART_CLEAR_OREFLAG(&hcom_uart[COM1]);
   }
-  // Check if data is received
+  /* Check if data is received */
   return (__HAL_UART_GET_FLAG(&hcom_uart[COM1], UART_FLAG_RXNE) != RESET) ? 1 : 0;
 }
 
-int GNSS_PRINT(char *pBuffer)
+uint8_t GNSS_PRINT(char *pBuffer)
 {
-  if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t*)pBuffer, (uint16_t)strlen((char *)pBuffer), 1000) != HAL_OK)
+  if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t *)pBuffer, (uint16_t)strlen((char *)pBuffer), 1000) != HAL_OK)
   {
     return 1;
   }
@@ -300,9 +310,9 @@ int GNSS_PRINT(char *pBuffer)
   return 0;
 }
 
-int GNSS_PUTC(char pChar)
+uint8_t GNSS_PUTC(char pChar)
 {
-  if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t*)&pChar, 1, 1000) != HAL_OK)
+  if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t *)&pChar, 1, 1000) != HAL_OK)
   {
     return 1;
   }

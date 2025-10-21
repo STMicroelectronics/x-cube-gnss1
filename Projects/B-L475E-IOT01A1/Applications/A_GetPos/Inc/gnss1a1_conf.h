@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -30,22 +30,23 @@ extern "C" {
 
 #define USE_I2C 0U
 
-#define USE_GNSS1A1_GNSS_TESEO_LIV3F	1U
+#define USE_GNSS1A1_GNSS_TESEO_LIV3F 1U
 
 #if (USE_I2C == 1)
-#define GNSS1A1_GNSS_I2C_Init BSP_I2C1_Init
-#define GNSS1A1_GNSS_I2C_DeInit BSP_I2C1_DeInit
-#define GNSS1A1_GNSS_I2C_Transmit_IT BSP_I2C1_Send_IT
-#define GNSS1A1_GNSS_I2C_Receive_IT BSP_I2C1_Recv_IT
+#define GNSS1A1_GNSS_I2C_INIT BSP_I2C1_Init
+#define GNSS1A1_GNSS_I2C_DEINIT BSP_I2C1_DeInit
+#define GNSS1A1_GNSS_I2C_TRANSMIT_IT BSP_I2C1_Send_IT
+#define GNSS1A1_GNSS_I2C_RECEIVE_IT BSP_I2C1_Recv_IT
 #else
-#define GNSS1A1_GNSS_UART_Init BSP_UART4_Init
-#define GNSS1A1_GNSS_UART_DeInit BSP_UART4_DeInit
-#define GNSS1A1_GNSS_UART_Transmit_IT BSP_UART4_Send_IT
-#define GNSS1A1_GNSS_UART_Receive_IT BSP_UART4_Recv_IT
-#define GNSS1A1_GNSS_UART_ClearOREF BSP_UART4_ClearOREF
+#define GNSS1A1_GNSS_UART_INIT BSP_UART4_Init
+#define GNSS1A1_GNSS_UART_DEINIT BSP_UART4_DeInit
+#define GNSS1A1_GNSS_UART_TRANSMIT_IT BSP_UART4_Send_IT
+#define GNSS1A1_GNSS_UART_RECEIVE_IT BSP_UART4_Recv_IT
+#define GNSS1A1_GNSS_UART_CLEAR_OREF BSP_UART4_ClearOREF
 #endif /* USE_I2C */
 
-#define GNSS1A1_GNSS_GetTick BSP_GetTick
+#define GNSS1A1_GNSS_RST GNSS1A1_GNSS_Rst
+#define GNSS1A1_GNSS_GET_TICK BSP_GetTick
 
 #define GNSS1A1_RST_PORT                        GPIOA
 #define GNSS1A1_RST_PIN                         GPIO_PIN_4
@@ -54,12 +55,12 @@ extern "C" {
 #define GNSS1A1_WAKEUP_PIN                      GPIO_PIN_5
 
 #if (USE_I2C == 1)
-#define GNSS1A1_RegisterRxCb                    BSP_I2C1_RegisterRxCallback
-#define GNSS1A1_RegisterErrorCb                 BSP_I2C1_RegisterErrorCallback
-#define GNSS1A1_RegisterAbortCb                 BSP_I2C1_RegisterAbortCallback
+#define GNSS1A1_REGISTER_RX_CB                    BSP_I2C1_RegisterRxCallback
+#define GNSS1A1_REGISTER_ERROR_CB                 BSP_I2C1_RegisterErrorCallback
+#define GNSS1A1_REGISTER_ABORT_CB                 BSP_I2C1_RegisterAbortCallback
 #else
-#define GNSS1A1_RegisterRxCb                    BSP_UART4_RegisterRxCallback
-#define GNSS1A1_RegisterErrorCb                 BSP_UART4_RegisterErrorCallback
+#define GNSS1A1_REGISTER_RX_CB                    BSP_UART4_RegisterRxCallback
+#define GNSS1A1_REGISTER_ERROR_CB                 BSP_UART4_RegisterErrorCallback
 #endif /* USE_I2C */
 
 #ifdef __cplusplus

@@ -68,8 +68,11 @@ GNSS, I2C, UART, VCOM, RTOS
 
   - This example runs on STM32 Nucleo devices equipped with a X-NUCLEO-GNSS1A1 (or a X-NUCLEO-GNSS2A1 or X-NUCLEO-LIV4A1) expansion board
   - This example has been tested with STMicroelectronics:
-    - NUCLEO-F401RE RevC board
+    - NUCLEO-L073RZ board
+    - NUCLEO-F401RE board
+    - NUCLEO-L476RG board
     - NUCLEO-U575ZI-Q board
+    - NUCLEO-H563ZI board
     and can be easily tailored to any other supported device and development board.
 
 ADDITIONAL_BOARD : X-NUCLEO-GNSS1A1 https://www.st.com/en/ecosystems/x-nucleo-gnss1a1.html
@@ -81,16 +84,33 @@ ADDITIONAL_COMP : Teseo-VIC3DA https://www.st.com/en/positioning/teseo-vic3da.ht
 ADDITIONAL_COMP : Teseo-LIV4F https://www.st.com/en/positioning/teseo-liv4f.html
 
 
-- To use UART channel, modify the Jumper configuration on X-NUCLEO-GNSS1A1 as follows:
-    -	J3 close, J2 open
+- Modify the Jumper configuration for : NUCLEO-U575ZI-Q and NUCLEO-H563ZI board
 
- - To use UART channel, modify the Jumper configuration on X-NUCLEO-GNSS2A1 as follows:
-    -	J28 in position 2-3
-    -	J27 in position 2-3
-    
- - To use UART channel, modify the Jumper configuration on X-NUCLEO-LIV4A1 as follows:
-    -	J11 in position 2-3
-    -	J8 in position 2-3
+  | Teseo Module            | Jumper Setting | Jumpers                                 |
+  |-------------------------|----------------|------------------------------------------|
+  | **X-NUCLEO-LIV4A1**     | Open           | J14, J7, J5                             |
+  |                         | Closed         | J1, J2, J4, J6, J9                      |
+  |                         | 1-2            | J12, J10, J11                           |
+  |                         | 2-3            | J8, J3                                  |
+  | **X-NUCLEO-GNSS1A1**    | Closed         | J2, J13, J5, J9, J12, J11, J14, J15     |
+  |                         | Open           | J3, J4, J6, J7, J8, J10                 |
+  | **X-NUCLEO-GNSS2A1**    | Closed         | J11, J12, J14, J15                      |
+  |                         | 1-2            | J29, J28, J23, J25                      |
+  |                         | 2-3            | J27, J24, J26, J30                      |
+
+- Modify the Jumper configuration for : NUCLEO-L073RZ, NUCLEO-F401RE and NUCLEO-L476RG baord
+
+  | Teseo Module           | Jumper Setting | Jumpers                                 |
+  |------------------------|----------------|------------------------------------------|
+  | X-NUCLEO-LIV4A1        | Open           | J14, J7, J5                             |
+  |                        | Closed         | J1, J2, J4, J6, J9                      |
+  |                        | 1-2            | J8, J12, J10                            |
+  |                        | 2-3            | J11, J3                                 |
+  | X-NUCLEO-GNSS1A1       | Closed         | J3, J4, J6, J9, J11, J12, J13, J14, J15 |
+  |                        | Open           | J2, J5, J7, J8, J10                     |
+  | X-NUCLEO-GNSS2A1       | Closed         | J11, J12, J14, J15                      |
+  |                        | 1-2            | J23, J25, J27, J29                      |
+  |                        | 2-3            | J24, J26, J28, J30                      |
   
 ### <b>How to use it?</b>
 
@@ -100,10 +120,10 @@ In order to make the program work, you must do the following:
    installation path is not too in-depth since the toolchain may report errors
    after building.
    
- - Open STM32CubeIDE (this firmware has been successfully tested with Version 1.15.1).
+ - Open STM32CubeIDE (this firmware has been successfully tested with Version 1.19.0).
    Alternatively you can use the Keil uVision toolchain (this firmware
-   has been successfully tested with V5.37.0) or the IAR toolchain (this firmware has 
-   been successfully tested with Embedded Workbench V9.20.1).
+   has been successfully tested with V5.38.0) or the IAR toolchain (this firmware has 
+   been successfully tested with Embedded Workbench V9.60.3).
    
  - Rebuild all files and load your image into target memory.
  
@@ -126,7 +146,7 @@ SRA Application Team
 
 ### <b>License</b>
 
-Copyright (c) 2022 STMicroelectronics.
+Copyright (c) 2025 STMicroelectronics.
 All rights reserved.
 
 This software is licensed under terms that can be found in the LICENSE file

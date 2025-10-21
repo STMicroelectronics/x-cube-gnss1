@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-  <fileVersion>3</fileVersion>
+  <fileVersion>4</fileVersion>
   <configuration>
     <name>GetPos</name>
     <toolchain>
@@ -11,7 +11,7 @@
       <name>General</name>
       <archiveVersion>3</archiveVersion>
       <data>
-        <version>34</version>
+        <version>37</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -62,7 +62,7 @@
         </option>
         <option>
           <name>RTDescription</name>
-          <state>Use the full configuration of the C/C++ runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
+          <state>A complete configuration of the C/C++14 runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
         </option>
         <option>
           <name>OGProductVersion</name>
@@ -70,7 +70,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>9.20.1.43525</state>
+          <state>9.60.3.7274</state>
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
@@ -98,8 +98,8 @@
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>31</version>
-          <state>59</state>
+          <version>34</version>
+          <state>61</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -115,8 +115,8 @@
         </option>
         <option>
           <name>CoreVariant</name>
-          <version>31</version>
-          <state>59</state>
+          <version>34</version>
+          <state>61</state>
         </option>
         <option>
           <name>GFPUDeviceSlave</name>
@@ -138,8 +138,8 @@
         </option>
         <option>
           <name>GFPUCoreSlave2</name>
-          <version>31</version>
-          <state>59</state>
+          <version>34</version>
+          <state>61</state>
         </option>
         <option>
           <name>OGCMSISPackSelectDevice</name>
@@ -203,13 +203,30 @@
           <name>BuildFilesPath</name>
           <state>GetPos</state>
         </option>
+        <option>
+          <name>PointerAuthentication</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>FPU64</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>OG_32_64DeviceCoreSlave</name>
+          <version>34</version>
+          <state>61</state>
+        </option>
+        <option>
+          <name>GOutputSo</name>
+          <state>0</state>
+        </option>
       </data>
     </settings>
     <settings>
       <name>ICCARM</name>
       <archiveVersion>2</archiveVersion>
       <data>
-        <version>37</version>
+        <version>39</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -465,13 +482,29 @@
           <name>CCStackProtection</name>
           <state>0</state>
         </option>
+        <option>
+          <name>CCPointerAutentiction</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>CCBranchTargetIdentification</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>CCPosRadRwpi</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>CCPosSharedSlave</name>
+          <state>0</state>
+        </option>
       </data>
     </settings>
     <settings>
       <name>AARM</name>
       <archiveVersion>2</archiveVersion>
       <data>
-        <version>11</version>
+        <version>12</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -613,7 +646,17 @@
         </option>
         <option>
           <name>AUserIncludes</name>
-          <state></state>
+          <state>$PROJ_DIR$/../Inc</state>
+          <state>$PROJ_DIR$/../../../../../Drivers/STM32U5xx_HAL_Driver/Inc</state>
+          <state>$PROJ_DIR$/../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy</state>
+          <state>$PROJ_DIR$/../../../../../Middlewares/ST/threadx/common/inc</state>
+          <state>$PROJ_DIR$/../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include</state>
+          <state>$PROJ_DIR$/../../../../../Middlewares/ST/threadx/ports/cortex_m33/iar/inc</state>
+          <state>$PROJ_DIR$/../../../../../Drivers/CMSIS/Include</state>
+          <state>$PROJ_DIR$/../../../../../Middlewares/ST/lib_gnss/LibGNSS/Inc</state>
+          <state>$PROJ_DIR$/../../../../../Middlewares/ST/lib_gnss/LibNMEA/Inc</state>
+          <state>$PROJ_DIR$/../../../../../Drivers/BSP/Components/teseo_liv3f</state>
+          <state>$PROJ_DIR$/../../../../../Drivers/BSP/GNSS1A1</state>
         </option>
         <option>
           <name>AExtraOptionsCheckV2</name>
@@ -631,6 +674,10 @@
           <name>PreInclude</name>
           <state></state>
         </option>
+        <option>
+          <name>A_32_64Device</name>
+          <state>1</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -643,7 +690,7 @@
         <option>
           <name>OOCOutputFormat</name>
           <version>3</version>
-          <state>3</state>
+          <state>1</state>
         </option>
         <option>
           <name>OCOutputOverride</name>
@@ -651,7 +698,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>GetPos_U575ZI-Q_GNSS1A1.bin</state>
+          <state>GetPos.hex</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -665,27 +712,18 @@
     </settings>
     <settings>
       <name>CUSTOM</name>
-      <archiveVersion>3</archiveVersion>
+      <archiveVersion>4</archiveVersion>
       <data>
         <extensions></extensions>
         <cmdline></cmdline>
-        <hasPrio>0</hasPrio>
         <buildSequence>inputOutputBased</buildSequence>
-      </data>
-    </settings>
-    <settings>
-      <name>BUILDACTION</name>
-      <archiveVersion>1</archiveVersion>
-      <data>
-        <prebuild></prebuild>
-        <postbuild></postbuild>
       </data>
     </settings>
     <settings>
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>26</version>
+        <version>28</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -1045,6 +1083,18 @@
           <name>IlinkWrapperFile</name>
           <state></state>
         </option>
+        <option>
+          <name>IlinkProcessor</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>IlinkFpuProcessor</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>IlinkSharedSlave</name>
+          <state>0</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -1069,6 +1119,11 @@
       </data>
     </settings>
     <settings>
+      <name>BUILDACTION</name>
+      <archiveVersion>2</archiveVersion>
+      <data></data>
+    </settings>
+    <settings>
       <name>Coder</name>
       <archiveVersion>0</archiveVersion>
       <data></data>
@@ -1091,16 +1146,16 @@
         <name>$PROJ_DIR$\..\Src\tx_initialize_low_level.S</name>
       </file>
       <file>
-        <name>$PROJ_DIR$/../Src/stm32_bus_ex.c</name>
+        <name>$PROJ_DIR$\..\Src\stm32_bus_ex.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$/../Src/gnss_lib_config.c</name>
+        <name>$PROJ_DIR$\..\Src\gnss_lib_config.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$/../Src/gnss_utils.c</name>
+        <name>$PROJ_DIR$\..\Src\gnss_utils.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$/../Src/app_gnss.c</name>
+        <name>$PROJ_DIR$\..\Src\app_gnss.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Src\app_threadx.c</name>
@@ -1109,10 +1164,10 @@
         <name>$PROJ_DIR$\..\Src\app_azure_rtos.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$/../Src/stm32u5xx_nucleo_bus.c</name>
+        <name>$PROJ_DIR$\..\Src\stm32u5xx_nucleo_bus.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$/../Src/stm32u5xx_nucleo.c</name>
+        <name>$PROJ_DIR$\..\Src\stm32u5xx_nucleo.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Src\stm32u5xx_it.c</name>
@@ -1164,6 +1219,12 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_ll_exti.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_tim.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_tim_ex.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_uart.c</name>
@@ -1224,12 +1285,6 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_adc_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_tim.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_tim_ex.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_ll_ucpd.c</name>

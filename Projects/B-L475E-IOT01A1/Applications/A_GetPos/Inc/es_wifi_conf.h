@@ -19,10 +19,10 @@
 #define __ES_WIFI_CONF_H
 
 #ifdef __cplusplus
- extern "C" {
-#endif  
+extern "C" {
+#endif
 
-//#define WIFI_USE_CMSIS_OS
+/* #define WIFI_USE_CMSIS_OS */
 
 #ifdef WIFI_USE_CMSIS_OS
 #include "cmsis_os.h"
@@ -42,8 +42,8 @@ extern osMutexId es_wifi_mutex;
 #define UNLOCK_WIFI()
 #define LOCK_SPI()
 #define UNLOCK_SPI()
-#define SEM_SIGNAL(a)     
-#endif
+#define SEM_SIGNAL(a)
+#endif /* WIFI_USE_CMSIS_OS */
 
 #define ES_WIFI_MAX_SSID_NAME_SIZE                  32
 #define ES_WIFI_MAX_PSWD_NAME_SIZE                  32
@@ -56,17 +56,17 @@ extern osMutexId es_wifi_mutex;
 
 #define ES_WIFI_DATA_SIZE                           1400
 #define ES_WIFI_MAX_DETECTED_AP                     10
-   
+
 #define ES_WIFI_TIMEOUT                             30000
-                                                    
+
 #define ES_WIFI_USE_PING                            1
 #define ES_WIFI_USE_AWS                             0
 #define ES_WIFI_USE_FIRMWAREUPDATE                  0
 #define ES_WIFI_USE_WPS                             0
-                                                    
-#define ES_WIFI_USE_SPI                             1  
-#define ES_WIFI_USE_UART                            (!ES_WIFI_USE_SPI)   
-   
+
+#define ES_WIFI_USE_SPI                             1
+#define ES_WIFI_USE_UART                            (!ES_WIFI_USE_SPI)
+
 
 
 #ifdef __cplusplus

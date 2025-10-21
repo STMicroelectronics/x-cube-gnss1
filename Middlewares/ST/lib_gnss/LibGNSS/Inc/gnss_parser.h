@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -27,65 +27,65 @@ extern "C" {
 #include "NMEA_parser.h"
 #include "gnss_geofence.h"
 #include "gnss_datalog.h"
-  
+
 /** @addtogroup MIDDLEWARES
- *  @{
- */
+  *  @{
+  */
 
 /** @addtogroup ST
- *  @{
- */
+  *  @{
+  */
 
 /** @addtogroup LIB_GNSS
- *  @{
- */
- 
+  *  @{
+  */
+
 /** @defgroup LibGNSS LibGNSS
- *  @brief Module handling GNSS parsed data and advanced features.
- *  @{
- */
+  *  @brief Module handling GNSS parsed data and advanced features.
+  *  @{
+  */
 
 /** @defgroup LibGNSS_CONSTANTS_DEFINITIONS CONSTANTS DEFINITIONS
- * @{
- */
+  * @{
+  */
 
 /**
- * @brief Constant that indicates the maximum number of positions that can be stored.
- */
+  * @brief Constant that indicates the maximum number of positions that can be stored.
+  */
 #define MAX_STOR_POS 64
-  
+
 /**
- * @brief Constant that indicates the lenght of the buffer that stores the GPS data read by the GPS expansion.
- */
+  * @brief Constant that indicates the length of the buffer that stores the GPS data read by the GPS expansion.
+  */
 #define MAX_LEN 2*512
-  
- 
+
+
 /**
- * @brief Constant the indicates the max duration of the data reading by the GPS expansion.
- */
+  * @brief Constant the indicates the max duration of the data reading by the GPS expansion.
+  */
 #define MAX_DURATION  5000
-  
+
 /**
- * @brief Constant the indicates the ack value from the TeseoIII device during the FW upgrade process
- */ 
+  * @brief Constant the indicates the ack value from the TeseoIII device during the FW upgrade process
+  */
 #define FWUPG_DEVICE_ACK   0xCCU
 
 /**
- * @brief Constant that indicates the maximum number of nmea messages to be processed.
- */
-#define NMEA_MSGS_NUM 14 //Note: update this constant coherently to eMsg enum type
+  * @brief Constant that indicates the maximum number of nmea messages to be processed.
+  */
+#define NMEA_MSGS_NUM 19 /* Note: update this constant coherently to eMsg enum type */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup LibGNSS_EXPORTED_TYPES EXPORTED TYPES
- * @{
- */
+  * @{
+  */
 
 /**
- * @brief Enumeration structure that contains the two states of a parsing dispatcher process
- */
+  * @brief Enumeration structure that contains the two states of a parsing dispatcher process
+  */
 typedef enum
 {
   GNSS_PARSER_OK = 0,
@@ -93,16 +93,17 @@ typedef enum
 } GNSSParser_Status_t;
 
 /**
- * @brief Enumeration structure that contains the two states of a debug process
- */
-typedef enum {
+  * @brief Enumeration structure that contains the two states of a debug process
+  */
+typedef enum
+{
   DEBUG_OFF = 0, /**< In this case, nothing will be printed on the console (nmea strings, positions and so on) */
   DEBUG_ON = 1   /**< In this case, nmea strings and just acquired positions will be printed on the console */
 } Debug_State;
 
 /**
- * @brief Enumeration structure that contains the NMEA messages types
- */
+  * @brief Enumeration structure that contains the NMEA messages types
+  */
 typedef enum
 {
   GPGGA,
@@ -118,12 +119,17 @@ typedef enum
   PSTMODO,
   PSTMDATALOG,
   PSTMSGL,
-  PSTMSAVEPAR
+  PSTMSAVEPAR,
+  PSTMSETPAROK,
+  PSTMSETPAR,
+  PSTMSRR,
+  PSTMRESTOREPAR,
+  PSTMGETPAR
 } eNMEAMsg;
 
 /**
- * @brief Data structure that contains the GNSS data
- */
+  * @brief Data structure that contains the GNSS data
+  */
 typedef struct
 {
   Debug_State debug;      /**< Debug status */
@@ -137,95 +143,67 @@ typedef struct
   PSTMVER_Info_t pstmver_data;   /**< $PSTMVER Data holder */
   PSTMPASSRTN_Info_t pstmpass_data; /**< $PSTMPASSRTN Data holder */
   PSTMAGPS_Info_t pstmagps_data; /**< $PSTMAGPS Data holder */
+  PSTMSETPAROK_Info_t pstmsetparok_data; /**< Result from PSTMSETPAR command */
+  PSTMGETPAR_Info_t pstmgetpar_data; /**< $PSTMGETPAR Data holder */
 
   Geofence_Info_t geofence_data; /**< $PSTMGEOFENCE Data holder */
   Odometer_Info_t odo_data; /**< $PSTMODO Data holder */
   Datalog_Info_t datalog_data; /**< $PSTMDATALOG Data holder */
-  OpResult_t result;
+
+  OpResult_t result; /**< Operation result/status */
 } GNSSParser_Data_t;
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup LibGNSS_EXPORTED_FUNCTIONS EXPORTED FUNCTIONS
- * @{
- */
+  * @{
+  */
 
 /**
- * @brief Assigns memory in heap based on the different NMEA and ST proprietary 
- *        messages that are sent from the device.
- * 
- * @param pGNSSParser_Data Pointer to data structure containing NMEA and 
- *                         ST Proprietary message.
- * 
- * @return GNSSParser_Status_t If successful, the module returns 0 (GNSS_PARSER_OK). 
- *                             A return of non-zero value indicates an error.
- * 
- * @pre None.
- * @remarks This function must be called before any data is sent to the Teseo module.
- */
+  * @brief  This function initializes the agent handling parsed GNSS data
+  * @param  pGNSSParser_Data The agent
+  * @retval GNSS_PARSER_OK on success GNSS_PARSER_ERROR otherwise
+  */
 GNSSParser_Status_t GNSS_PARSER_Init(GNSSParser_Data_t *pGNSSParser_Data);
 
 /**
- * @brief Computes the checksum of the received string and compares it with the checksum 
- *        received in the NMEA stream.
- * 
- * @param pSentence Address of NMEA message sentence retrieved from the Teseo object queue.
- * @param len Length of the NMEA message.
- * 
- * @return GNSSParser_Status_t If successful, the module returns 0 (GNSS_PARSER_OK). 
- *                             A return of non-zero value indicates an error.
- * 
- * @pre None.
- * @remarks GNSS1A1_GNSS_GetMessage() must be called before calling this function.
- */
+  * @brief  This function computes the checksum and checks the sanity of a GNSS sentence
+  * @param  pSentence The sentence
+  * @param  len The sentence length
+  * @retval GNSS_PARSER_OK on success GNSS_PARSER_ERROR otherwise
+  */
 GNSSParser_Status_t GNSS_PARSER_CheckSanity(uint8_t *pSentence, uint64_t len);
 
 /**
- * @brief The NMEA ASCII stream received from the GNSS module is parsed into this 
- *        function and converted to integer and character values that can be used 
- *        by the application as needed.
- * 
- * The msg parameter, which is an index, identifies the specific NMEA message
- * that will be parsed into the specific parser function for the message.
- * 
- * @param pGNSSParser_Data Pointer to data structure containing NMEA and 
- *                         ST Proprietary message. The result of the NMEA data parsing will be stored in 
- *                         this data structure.
- * @param msg This is a search index that will index through a predefined NMEA list
- *            identifying the specific data structure to parse the data.
- * @param pBuffer Incoming NMEA message.
- * 
- * @return GNSSParser_Status_t If the NMEA message was able to be parsed into an existing 
- *                             data structure, the GNSS_PARSE_OK is returned. A non-zero value indicates an error.
- * 
- * @remarks GNSS1A1_GNSS_GetMessage() must be called before calling this function.
- *          To ascertain that the incoming NMEA buffer is parsed to an appropriate 
- *          data structure, GNSS_PARSER_ParseMsg() can be called within a loop for 
- *          NMEA_MSGS_NUM (14) times.
- */
+  * @brief  This function dispatches a GNSS sentence to be parsed
+  * @param  pGNSSParser_Data The agent
+  * @param  msg The message type
+  * @param  pBuffer The message to be dispatched
+  * @retval GNSS_PARSER_OK on success GNSS_PARSER_ERROR otherwise
+  */
 GNSSParser_Status_t GNSS_PARSER_ParseMsg(GNSSParser_Data_t *pGNSSParser_Data, uint8_t msg, uint8_t *pBuffer);
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
 
 
 #ifdef __cplusplus

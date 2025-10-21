@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2024 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -28,7 +28,7 @@
 /* USER CODE END Includes */
 
 /* Private defines -----------------------------------------------------------*/
-#define BUFFER_SIZE		(16)
+#define BUFFER_SIZE (16)
 
 /* Global variables ---------------------------------------------------------*/
 
@@ -57,7 +57,7 @@ void MX_GNSS_Init(void)
   idxPC = 0;
   idxGNSS = 0;
 
-  if(BSP_COM_Init(COM1) != BSP_ERROR_NONE)
+  if (BSP_COM_Init(COM1) != BSP_ERROR_NONE)
   {
     Error_Handler();
   }
@@ -76,12 +76,12 @@ void MX_GNSS_Process(void)
 
   if (HAL_UART_Receive(&hcom_uart[COM1], &fromPC[idxPC], 1, 0) == HAL_OK)
   {
-    HAL_UART_Transmit(&hgnss_uart, &fromPC[idxPC], 1, 0);
+    HAL_UART_Transmit(&GNSS_UART_INSTANCE, &fromPC[idxPC], 1, 0);
     idxPC++;
     idxPC %= BUFFER_SIZE;
   }
 
-  if (HAL_UART_Receive(&hgnss_uart, &fromGNSS[idxGNSS], 1, 0) == HAL_OK)
+  if (HAL_UART_Receive(&GNSS_UART_INSTANCE, &fromGNSS[idxGNSS], 1, 0) == HAL_OK)
   {
     HAL_UART_Transmit(&hcom_uart[COM1], &fromGNSS[idxGNSS], 1, 0);
     idxGNSS++;
@@ -93,9 +93,9 @@ void MX_GNSS_Process(void)
   /* USER CODE END GNSS_Process_PostTreatment */
 }
 
-int GNSS_PRINT(char *pBuffer)
+uint8_t GNSS_PRINT(char *pBuffer)
 {
-  if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t*)pBuffer, (uint16_t)strlen((char *)pBuffer), 1000) != HAL_OK)
+  if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t *)pBuffer, (uint16_t)strlen((char *)pBuffer), 1000) != HAL_OK)
   {
     return 1;
   }
@@ -104,9 +104,9 @@ int GNSS_PRINT(char *pBuffer)
   return 0;
 }
 
-int GNSS_PUTC(char pChar)
+uint8_t GNSS_PUTC(char pChar)
 {
-  if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t*)&pChar, 1, 1000) != HAL_OK)
+  if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t *)&pChar, 1, 1000) != HAL_OK)
   {
     return 1;
   }

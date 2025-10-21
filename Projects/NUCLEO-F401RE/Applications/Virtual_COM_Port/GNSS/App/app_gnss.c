@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2024 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -37,31 +37,31 @@
 #define CONSOLE_STACK_SIZE      1024
 #define CONSUMER_STACK_SIZE     1024
 #if (USE_I2C == 1)
-  #define BACKGROUND_STACK_SIZE 1024
+#define BACKGROUND_STACK_SIZE 1024
 #else
-  #define BACKGROUND_STACK_SIZE    0   /* in case of USART bus, the background task is not used */
+#define BACKGROUND_STACK_SIZE    0   /* in case of USART bus, the background task is not used */
 #endif /* USE_I2C */
 
 /* Global variables ----------------------------------------------------------*/
 /* Tasks handle */
 #if (osCMSIS < 0x20000U)
-  osThreadId teseoConsumerTaskHandle;
-  osThreadId consoleParseTaskHandle;
+osThreadId teseoConsumerTaskHandle;
+osThreadId consoleParseTaskHandle;
 #else
-  osThreadId_t teseoConsumerTaskHandle;
-  osThreadId_t consoleParseTaskHandle;
+osThreadId_t teseoConsumerTaskHandle;
+osThreadId_t consoleParseTaskHandle;
 #endif /* osCMSIS */
 #if (USE_I2C == 1)
 #if (osCMSIS < 0x20000U)
-  osThreadId backgroundTaskHandle;
+osThreadId backgroundTaskHandle;
 #else
-  osThreadId_t backgroundTaskHandle;
+osThreadId_t backgroundTaskHandle;
 #endif /* osCMSIS */
 #endif /* USE_I2C */
 
 /* Private variables ---------------------------------------------------------*/
 /* User Button flag */
-static int btnRst = 0;
+static uint8_t btnRst = 0;
 
 /* USER CODE BEGIN PV */
 
@@ -71,32 +71,33 @@ static int btnRst = 0;
 static void Teseo_Consumer_Task_Init(void);
 static void Console_Parse_Task_Init(void);
 #if (USE_I2C == 1)
-  static void Background_Task_Init(void);
+static void Background_Task_Init(void);
 #endif /* USE_I2C */
 
 #if (osCMSIS < 0x20000U)
-  static void TeseoConsumerTask(void const *argument);
-  static void ConsoleParseTask(void const *argument);
+static void TeseoConsumerTask(void const *argument);
+static void ConsoleParseTask(void const *argument);
 #else
-  static void TeseoConsumerTask(void *argument);
-  static void ConsoleParseTask(void *argument);
+static void TeseoConsumerTask(void *argument);
+static void ConsoleParseTask(void *argument);
 #endif /* osCMSIS */
 
 #if (USE_I2C == 1)
 #if (osCMSIS < 0x20000U)
-  static void BackgroundTask(void const *argument);
+static void BackgroundTask(void const *argument);
 #else
-  static void BackgroundTask(void *argument);
+static void BackgroundTask(void *argument);
 #endif /* osCMSIS */
 #endif /* USE_I2C */
 
 #if (osCMSIS >= 0x20000U)
-static osThreadAttr_t task_attributes = {
+static osThreadAttr_t task_attributes =
+{
   .priority = (osPriority_t) osPriorityNormal
 };
 #endif /* osCMSIS */
 
-static int ConsoleReadable(void);
+static uint8_t ConsoleReadable(void);
 
 /* USER CODE BEGIN PFP */
 
@@ -109,7 +110,7 @@ void MX_GNSS_Init(void)
   /* USER CODE END GNSS_Init_PreTreatment */
 
   /* Initialize the BSP common utilities */
-  if(BSP_COM_Init(COM1) != BSP_ERROR_NONE)
+  if (BSP_COM_Init(COM1) != BSP_ERROR_NONE)
   {
     Error_Handler();
   }
@@ -198,25 +199,27 @@ static void TeseoConsumerTask(void const *argument)
 static void TeseoConsumerTask(void *argument)
 #endif /* osCMSIS */
 {
+  /* Wait for hardware ready */
+  HAL_Delay(100);
   const GNSS1A1_GNSS_Msg_t *gnssMsg;
 
   GNSS1A1_GNSS_Init(GNSS1A1_TESEO_LIV3F);
 
-  for(;;)
+  for (;;)
   {
-    if(btnRst == 1)
+    if (btnRst == 1)
     {
       GNSS1A1_GNSS_Reset(GNSS1A1_TESEO_LIV3F);
       btnRst = 0;
     }
 
     gnssMsg = GNSS1A1_GNSS_GetMessage(GNSS1A1_TESEO_LIV3F);
-    if(gnssMsg == NULL)
+    if (gnssMsg == NULL)
     {
       continue;
     }
 
-    PRINT_OUT((char*)gnssMsg->buf);
+    PRINT_OUT((char *)gnssMsg->buf);
     GNSS1A1_GNSS_ReleaseMessage(GNSS1A1_TESEO_LIV3F, gnssMsg);
   }
 }
@@ -229,7 +232,7 @@ static void BackgroundTask(void const *argument)
 static void BackgroundTask(void *argument)
 #endif /* osCMSIS */
 {
-  for(;;)
+  for (;;)
   {
     GNSS1A1_GNSS_BackgroundProcess(GNSS1A1_TESEO_LIV3F);
   }
@@ -248,9 +251,9 @@ static void ConsoleParseTask(void *argument)
   uint16_t rxLen;
   GNSS1A1_GNSS_Msg_t gnssMsg;
 
-  for(;;)
+  for (;;)
   {
-    while(!ConsoleReadable())
+    while (!ConsoleReadable())
     {
       osThreadYield();
     }
@@ -270,31 +273,32 @@ static void ConsoleParseTask(void *argument)
 }
 
 /**
- * @brief  BSP Push Button callback
- * @param  Button Specifies the pin connected EXTI line
- * @retval None.
- */
+  * @brief  BSP Push Button callback
+  * @param  Button Specifies the pin connected EXTI line
+  * @retval None.
+  */
 void BSP_PB_Callback(Button_TypeDef Button)
 {
   btnRst = 1;
 }
 
-static int ConsoleReadable(void)
+static uint8_t ConsoleReadable(void)
 {
   /*
    * To avoid a target blocking case, let's check for
    *  possible OVERRUN error and discard it
    */
-  if(__HAL_UART_GET_FLAG(&hcom_uart[COM1], UART_FLAG_ORE)) {
+  if (__HAL_UART_GET_FLAG(&hcom_uart[COM1], UART_FLAG_ORE))
+  {
     __HAL_UART_CLEAR_OREFLAG(&hcom_uart[COM1]);
   }
-  // Check if data is received
+  /* Check if data is received */
   return (__HAL_UART_GET_FLAG(&hcom_uart[COM1], UART_FLAG_RXNE) != RESET) ? 1 : 0;
 }
 
-int GNSS_PRINT(char *pBuffer)
+uint8_t GNSS_PRINT(char *pBuffer)
 {
-  if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t*)pBuffer, (uint16_t)strlen((char *)pBuffer), 1000) != HAL_OK)
+  if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t *)pBuffer, (uint16_t)strlen((char *)pBuffer), 1000) != HAL_OK)
   {
     return 1;
   }
@@ -303,9 +307,9 @@ int GNSS_PRINT(char *pBuffer)
   return 0;
 }
 
-int GNSS_PUTC(char pChar)
+uint8_t GNSS_PUTC(char pChar)
 {
-  if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t*)&pChar, 1, 1000) != HAL_OK)
+  if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t *)&pChar, 1, 1000) != HAL_OK)
   {
     return 1;
   }

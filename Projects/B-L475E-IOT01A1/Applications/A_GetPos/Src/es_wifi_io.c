@@ -30,27 +30,27 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi;
-static  int volatile spi_rx_event=0;
-static  int volatile spi_tx_event=0;
-static  int volatile cmddata_rdy_rising_event=0;
+static  int volatile spi_rx_event = 0;
+static  int volatile spi_tx_event = 0;
+static  int volatile cmddata_rdy_rising_event = 0;
 
 #ifdef WIFI_USE_CMSIS_OS
 osMutexId es_wifi_mutex;
 osMutexDef(es_wifi_mutex);
 
-static	osMutexId spi_mutex;
+static osMutexId spi_mutex;
 osMutexDef(spi_mutex);
 
-static	osSemaphoreId spi_rx_sem;
+static osSemaphoreId spi_rx_sem;
 osSemaphoreDef(spi_rx_sem);
 
-static	osSemaphoreId spi_tx_sem;
+static osSemaphoreId spi_tx_sem;
 osSemaphoreDef(spi_tx_sem);
 
-static	osSemaphoreId cmddata_rdy_rising_sem;
+static osSemaphoreId cmddata_rdy_rising_sem;
 osSemaphoreDef(cmddata_rdy_rising_sem);
 
-#endif
+#endif /* WIFI_USE_CMSIS_OS */
 
 
 /* Private function prototypes -----------------------------------------------*/
@@ -62,37 +62,37 @@ static  void SPI_WIFI_DelayUs(uint32_t);
 /* Private functions ---------------------------------------------------------*/
 /*******************************************************************************
                        COM Driver Interface (SPI)
-*******************************************************************************/
+  *******************************************************************************/
 /**
   * @brief  Initialize SPI MSP
   * @param  hspi: SPI handle
   * @retval None
   */
-void SPI_WIFI_MspInit(SPI_HandleTypeDef* hspi)
+void SPI_WIFI_MspInit(SPI_HandleTypeDef *hspi)
 {
-  
+
   GPIO_InitTypeDef GPIO_Init;
-  
+
   __HAL_RCC_SPI3_CLK_ENABLE();
 
-    __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOE_CLK_ENABLE();
-    
+
   /* configure Wake up pin */
-  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_13, GPIO_PIN_RESET ); 
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
   GPIO_Init.Pin       = GPIO_PIN_13;
   GPIO_Init.Mode      = GPIO_MODE_OUTPUT_PP;
   GPIO_Init.Pull      = GPIO_NOPULL;
   GPIO_Init.Speed     = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_Init );
+  HAL_GPIO_Init(GPIOB, &GPIO_Init);
 
   /* configure Data ready pin */
   GPIO_Init.Pin       = GPIO_PIN_1;
   GPIO_Init.Mode      = GPIO_MODE_IT_RISING;
   GPIO_Init.Pull      = GPIO_NOPULL;
   GPIO_Init.Speed     = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOE, &GPIO_Init );
+  HAL_GPIO_Init(GPIOE, &GPIO_Init);
 
   /* configure Reset pin */
   GPIO_Init.Pin       = GPIO_PIN_8;
@@ -100,39 +100,39 @@ void SPI_WIFI_MspInit(SPI_HandleTypeDef* hspi)
   GPIO_Init.Pull      = GPIO_NOPULL;
   GPIO_Init.Speed     = GPIO_SPEED_FREQ_LOW;
   GPIO_Init.Alternate = 0;
-  HAL_GPIO_Init(GPIOE, &GPIO_Init );
-  
+  HAL_GPIO_Init(GPIOE, &GPIO_Init);
+
   /* configure SPI NSS pin pin */
-  HAL_GPIO_WritePin( GPIOE , GPIO_PIN_0, GPIO_PIN_SET ); 
+  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_SET);
   GPIO_Init.Pin       =  GPIO_PIN_0;
   GPIO_Init.Mode      = GPIO_MODE_OUTPUT_PP;
   GPIO_Init.Pull      = GPIO_NOPULL;
   GPIO_Init.Speed     = GPIO_SPEED_FREQ_MEDIUM;
-  HAL_GPIO_Init( GPIOE, &GPIO_Init );
-  
+  HAL_GPIO_Init(GPIOE, &GPIO_Init);
+
   /* configure SPI CLK pin */
   GPIO_Init.Pin       =  GPIO_PIN_10;
   GPIO_Init.Mode      = GPIO_MODE_AF_PP;
   GPIO_Init.Pull      = GPIO_NOPULL;
   GPIO_Init.Speed     = GPIO_SPEED_FREQ_MEDIUM;
   GPIO_Init.Alternate = GPIO_AF6_SPI3;
-  HAL_GPIO_Init(GPIOC, &GPIO_Init );
-  
+  HAL_GPIO_Init(GPIOC, &GPIO_Init);
+
   /* configure SPI MOSI pin */
   GPIO_Init.Pin       = GPIO_PIN_12;
   GPIO_Init.Mode      = GPIO_MODE_AF_PP;
   GPIO_Init.Pull      = GPIO_NOPULL;
   GPIO_Init.Speed     = GPIO_SPEED_FREQ_MEDIUM;
   GPIO_Init.Alternate = GPIO_AF6_SPI3;
-  HAL_GPIO_Init( GPIOC, &GPIO_Init );
-  
+  HAL_GPIO_Init(GPIOC, &GPIO_Init);
+
   /* configure SPI MISO pin */
   GPIO_Init.Pin       = GPIO_PIN_11;
   GPIO_Init.Mode      = GPIO_MODE_AF_PP;
   GPIO_Init.Pull      = GPIO_PULLUP;
   GPIO_Init.Speed     = GPIO_SPEED_FREQ_MEDIUM;
   GPIO_Init.Alternate = GPIO_AF6_SPI3;
-  HAL_GPIO_Init( GPIOC,&GPIO_Init );
+  HAL_GPIO_Init(GPIOC, &GPIO_Init);
 }
 
 /**
@@ -142,13 +142,13 @@ void SPI_WIFI_MspInit(SPI_HandleTypeDef* hspi)
   */
 int8_t SPI_WIFI_Init(uint16_t mode)
 {
-  int8_t  rc=0;
-  
+  int8_t rc = 0;
+
   if (mode == ES_WIFI_INIT)
   {
     hspi.Instance               = SPI3;
     SPI_WIFI_MspInit(&hspi);
-  
+
     hspi.Init.Mode              = SPI_MODE_MASTER;
     hspi.Init.Direction         = SPI_DIRECTION_2LINES;
     hspi.Init.DataSize          = SPI_DATASIZE_16BIT;
@@ -160,32 +160,32 @@ int8_t SPI_WIFI_Init(uint16_t mode)
     hspi.Init.TIMode            = SPI_TIMODE_DISABLE;
     hspi.Init.CRCCalculation    = SPI_CRCCALCULATION_DISABLE;
     hspi.Init.CRCPolynomial     = 0;
-  
-    if(HAL_SPI_Init( &hspi ) != HAL_OK)
+
+    if (HAL_SPI_Init(&hspi) != HAL_OK)
     {
       return -1;
     }
 
-	 // Enable Interrupt for Data Ready pin , GPIO_PIN1
-     HAL_NVIC_SetPriority((IRQn_Type)EXTI1_IRQn, 0x0F, 0x00);
-     HAL_NVIC_EnableIRQ((IRQn_Type)EXTI1_IRQn);
-	 
-	 // Enable Interrupt for SPI tx and rx
-     HAL_NVIC_SetPriority((IRQn_Type)SPI3_IRQn, 1, 0);
-     HAL_NVIC_EnableIRQ((IRQn_Type)SPI3_IRQn);
+    /* Enable Interrupt for Data Ready pin , GPIO_PIN1 */
+    HAL_NVIC_SetPriority((IRQn_Type)EXTI1_IRQn, 0x0F, 0x00);
+    HAL_NVIC_EnableIRQ((IRQn_Type)EXTI1_IRQn);
 
-#ifdef WIFI_USE_CMSIS_OS  
+    /* Enable Interrupt for SPI tx and rx */
+    HAL_NVIC_SetPriority((IRQn_Type)SPI3_IRQn, 1, 0);
+    HAL_NVIC_EnableIRQ((IRQn_Type)SPI3_IRQn);
+
+#ifdef WIFI_USE_CMSIS_OS
     es_wifi_mutex = osMutexCreate(osMutex(es_wifi_mutex));
     spi_mutex = osMutexCreate(osMutex(spi_mutex));
-    spi_rx_sem = osSemaphoreCreate(osSemaphore(spi_rx_sem) , 1 );
-    spi_tx_sem = osSemaphoreCreate(osSemaphore(spi_tx_sem) , 1 );
-    cmddata_rdy_rising_sem = osSemaphoreCreate(osSemaphore(cmddata_rdy_rising_sem) , 1 );
-#endif
-    // first call used for calibration
+    spi_rx_sem = osSemaphoreCreate(osSemaphore(spi_rx_sem), 1);
+    spi_tx_sem = osSemaphoreCreate(osSemaphore(spi_tx_sem), 1);
+    cmddata_rdy_rising_sem = osSemaphoreCreate(osSemaphore(cmddata_rdy_rising_sem), 1);
+#endif /* WIFI_USE_CMSIS_OS */
+    /* first call used for calibration */
     SPI_WIFI_DelayUs(10);
   }
-  
-  rc= SPI_WIFI_ResetModule();
+
+  rc = SPI_WIFI_ResetModule();
 
   return rc;
 }
@@ -197,28 +197,27 @@ int8_t SPI_WIFI_ResetModule(void)
   uint8_t Prompt[6];
   uint8_t count = 0;
   HAL_StatusTypeDef  Status;
- 
   WIFI_RESET_MODULE();
-  WIFI_ENABLE_NSS(); 
+  WIFI_ENABLE_NSS();
   SPI_WIFI_DelayUs(15);
- 
+
   while (WIFI_IS_CMDDATA_READY())
   {
-    Status = HAL_SPI_Receive(&hspi , &Prompt[count], 1, 0xFFFF);  
+    Status = HAL_SPI_Receive(&hspi, &Prompt[count], 1, 0xFFFF);
     count += 2;
-    if(((HAL_GetTick() - tickstart ) > 0xFFFF) || (Status != HAL_OK))
+    if (((HAL_GetTick() - tickstart) > 0xFFFF) || (Status != HAL_OK))
     {
-      WIFI_DISABLE_NSS(); 
+      WIFI_DISABLE_NSS();
       return -1;
-    }    
+    }
   }
-  
-  WIFI_DISABLE_NSS(); 
-  if((Prompt[0] != 0x15) ||(Prompt[1] != 0x15) ||(Prompt[2] != '\r')||
-       (Prompt[3] != '\n') ||(Prompt[4] != '>') ||(Prompt[5] != ' '))
+
+  WIFI_DISABLE_NSS();
+  if ((Prompt[0] != 0x15) || (Prompt[1] != 0x15) || (Prompt[2] != '\r') ||
+      (Prompt[3] != '\n') || (Prompt[4] != '>') || (Prompt[5] != ' '))
   {
     return -1;
-  }    
+  }
   return 0;
 }
 
@@ -229,14 +228,14 @@ int8_t SPI_WIFI_ResetModule(void)
   */
 int8_t SPI_WIFI_DeInit(void)
 {
-  HAL_SPI_DeInit( &hspi );
+  HAL_SPI_DeInit(&hspi);
 #ifdef  WIFI_USE_CMSIS_OS
   osMutexDelete(spi_mutex);
   osMutexDelete(es_wifi_mutex);
   osSemaphoreDelete(spi_tx_sem);
   osSemaphoreDelete(spi_rx_sem);
   osSemaphoreDelete(cmddata_rdy_rising_sem);
-#endif
+#endif /* WIFI_USE_CMSIS_OS */
   return 0;
 }
 
@@ -253,9 +252,9 @@ int8_t SPI_WIFI_DeInit(void)
 int wait_cmddata_rdy_high(int timeout)
 {
   int tickstart = HAL_GetTick();
-  while (WIFI_IS_CMDDATA_READY()==0)
+  while (WIFI_IS_CMDDATA_READY() == 0)
   {
-    if((HAL_GetTick() - tickstart ) > timeout)
+    if ((HAL_GetTick() - tickstart) > timeout)
     {
       return -1;
     }
@@ -268,52 +267,52 @@ int wait_cmddata_rdy_high(int timeout)
 int wait_cmddata_rdy_rising_event(int timeout)
 {
 #ifdef SEM_WAIT
-   return SEM_WAIT(cmddata_rdy_rising_sem, timeout); 
+  return SEM_WAIT(cmddata_rdy_rising_sem, timeout);
 #else
   int tickstart = HAL_GetTick();
-  while (cmddata_rdy_rising_event==1)
+  while (cmddata_rdy_rising_event == 1)
   {
-    if((HAL_GetTick() - tickstart ) > timeout)
+    if ((HAL_GetTick() - tickstart) > timeout)
     {
       return -1;
     }
   }
-  return 0; 
-#endif
+  return 0;
+#endif /* SEM_WAIT */
 }
 
 int wait_spi_rx_event(int timeout)
 {
 #ifdef SEM_WAIT
-   return SEM_WAIT(spi_rx_sem, timeout); 
+  return SEM_WAIT(spi_rx_sem, timeout);
 #else
   int tickstart = HAL_GetTick();
-  while (spi_rx_event==1)
+  while (spi_rx_event == 1)
   {
-    if((HAL_GetTick() - tickstart ) > timeout)
+    if ((HAL_GetTick() - tickstart) > timeout)
     {
       return -1;
     }
   }
-  return 0; 
-#endif
+  return 0;
+#endif /* SEM_WAIT */
 }
 
 int wait_spi_tx_event(int timeout)
 {
 #ifdef SEM_WAIT
-   return SEM_WAIT(spi_tx_sem, timeout); 
+  return SEM_WAIT(spi_tx_sem, timeout);
 #else
   int tickstart = HAL_GetTick();
-  while (spi_tx_event==1)
+  while (spi_tx_event == 1)
   {
-    if((HAL_GetTick() - tickstart ) > timeout)
+    if ((HAL_GetTick() - tickstart) > timeout)
     {
       return -1;
     }
   }
-  return 0; 
-#endif
+  return 0;
+#endif /* SEM_WAIT */
 }
 
 
@@ -322,51 +321,53 @@ int16_t SPI_WIFI_ReceiveData(uint8_t *pData, uint16_t len, uint32_t timeout)
 {
   int16_t length = 0;
   uint8_t tmp[2];
-  
-  WIFI_DISABLE_NSS(); 
+
+  WIFI_DISABLE_NSS();
   UNLOCK_SPI();
   SPI_WIFI_DelayUs(3);
 
 
-  if (wait_cmddata_rdy_rising_event(timeout)<0)
+  if (wait_cmddata_rdy_rising_event(timeout) < 0)
   {
-      return ES_WIFI_ERROR_WAITING_DRDY_FALLING;
+    return ES_WIFI_ERROR_WAITING_DRDY_FALLING;
   }
 
-  LOCK_SPI();  
-  WIFI_ENABLE_NSS(); 
+  LOCK_SPI();
+  WIFI_ENABLE_NSS();
   SPI_WIFI_DelayUs(15);
   while (WIFI_IS_CMDDATA_READY())
   {
-    if((length < len) || (!len))
+    if ((length < len) || (!len))
     {
-      spi_rx_event=1;
-      if (HAL_SPI_Receive_IT(&hspi, tmp, 1) != HAL_OK) {
+      spi_rx_event = 1;
+      if (HAL_SPI_Receive_IT(&hspi, tmp, 1) != HAL_OK)
+      {
         WIFI_DISABLE_NSS();
         UNLOCK_SPI();
         return ES_WIFI_ERROR_SPI_FAILED;
       }
-  
+
       wait_spi_rx_event(timeout);
 
       pData[0] = tmp[0];
       pData[1] = tmp[1];
       length += 2;
       pData  += 2;
-      
-      if (length >= ES_WIFI_DATA_SIZE) {
+
+      if (length >= ES_WIFI_DATA_SIZE)
+      {
         WIFI_DISABLE_NSS();
-        SPI_WIFI_ResetModule();    
+        SPI_WIFI_ResetModule();
         UNLOCK_SPI();
         return ES_WIFI_ERROR_STUFFING_FOREVER;
-      }     
+      }
     }
     else
     {
       break;
     }
   }
-  WIFI_DISABLE_NSS(); 
+  WIFI_DISABLE_NSS();
   UNLOCK_SPI();
   return length;
 }
@@ -377,24 +378,24 @@ int16_t SPI_WIFI_ReceiveData(uint8_t *pData, uint16_t len, uint32_t timeout)
   * @param  timeout : send timeout in mS
   * @retval Length of sent data
   */
-int16_t SPI_WIFI_SendData( uint8_t *pdata,  uint16_t len, uint32_t timeout)
+int16_t SPI_WIFI_SendData(uint8_t *pdata, uint16_t len, uint32_t timeout)
 {
   uint8_t Padding[2];
-  
-  if (wait_cmddata_rdy_high(timeout)<0)
+
+  if (wait_cmddata_rdy_high(timeout) < 0)
   {
     return ES_WIFI_ERROR_SPI_FAILED;
   }
-    
+
   // arm to detect rising event
-  cmddata_rdy_rising_event=1;
+  cmddata_rdy_rising_event = 1;
   LOCK_SPI();
   WIFI_ENABLE_NSS();
   SPI_WIFI_DelayUs(15);
   if (len > 1)
   {
-    spi_tx_event=1;
-    if( HAL_SPI_Transmit_IT(&hspi, (uint8_t *)pdata , len/2) != HAL_OK)
+    spi_tx_event = 1;
+    if (HAL_SPI_Transmit_IT(&hspi, (uint8_t *)pdata, len / 2) != HAL_OK)
     {
       WIFI_DISABLE_NSS();
       UNLOCK_SPI();
@@ -402,21 +403,21 @@ int16_t SPI_WIFI_SendData( uint8_t *pdata,  uint16_t len, uint32_t timeout)
     }
     wait_spi_tx_event(timeout);
   }
-  
-  if ( len & 1)
+
+  if (len & 1)
   {
-    Padding[0] = pdata[len-1];
+    Padding[0] = pdata[len - 1];
     Padding[1] = '\n';
 
-    spi_tx_event=1;
-    if( HAL_SPI_Transmit_IT(&hspi, Padding, 1) != HAL_OK)
+    spi_tx_event = 1;
+    if (HAL_SPI_Transmit_IT(&hspi, Padding, 1) != HAL_OK)
     {
       WIFI_DISABLE_NSS();
       UNLOCK_SPI();
       return ES_WIFI_ERROR_SPI_FAILED;
-    }  
+    }
     wait_spi_tx_event(timeout);
-    
+
   }
   return len;
 }
@@ -440,24 +441,24 @@ void SPI_WIFI_DelayUs(uint32_t n)
 {
   volatile      uint32_t ct;
   uint32_t       loop_per_us;
-  static  uint32_t cycle_per_loop=0;
+  static  uint32_t cycle_per_loop = 0;
 
-  // calibration happen on first call for a duration of 1 ms * nbcycle per loop 
+  // calibration happen on first call for a duration of 1 ms * nbcycle per loop
   // 10 cycle for STM32L4
-  if (cycle_per_loop == 0 ) 
+  if (cycle_per_loop == 0)
   {
-     uint32_t cycle_per_ms = (SystemCoreClock/1000L);
-     uint32_t   t; 
-     ct=cycle_per_ms;
-     t=HAL_GetTick();
-     while(ct) ct--;
-     cycle_per_loop=HAL_GetTick()-t;  
-     if (cycle_per_loop==0) cycle_per_loop=1;
+    uint32_t cycle_per_ms = (SystemCoreClock / 1000L);
+    uint32_t t;
+    ct = cycle_per_ms;
+    t = HAL_GetTick();
+    while (ct) { ct--; }
+    cycle_per_loop = HAL_GetTick() - t;
+    if (cycle_per_loop == 0) { cycle_per_loop = 1; }
   }
 
-  loop_per_us = SystemCoreClock/1000000/cycle_per_loop;
+  loop_per_us = SystemCoreClock / 1000000 / cycle_per_loop;
   ct = n * loop_per_us;
-  while(ct) ct--;
+  while (ct) { ct--; }
   return;
 }
 
@@ -473,7 +474,7 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
   if (spi_rx_event)
   {
     SEM_SIGNAL(spi_rx_sem);
-    spi_rx_event=0;
+    spi_rx_event = 0;
   }
 }
 
@@ -488,7 +489,7 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
   if (spi_tx_event)
   {
     SEM_SIGNAL(spi_tx_sem);
-    spi_tx_event=0;
+    spi_tx_event = 0;
   }
 }
 
@@ -500,19 +501,15 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
   */
 void    SPI_WIFI_ISR(void)
 {
-   if (cmddata_rdy_rising_event==1)  
-   {
-     SEM_SIGNAL(cmddata_rdy_rising_sem);
-     cmddata_rdy_rising_event=0;
-   }
+  if (cmddata_rdy_rising_event == 1)
+  {
+    SEM_SIGNAL(cmddata_rdy_rising_sem);
+    cmddata_rdy_rising_event = 0;
+  }
 }
 /**
   * @}
-  */ 
-
-/**
-  * @}
-  */ 
+  */
 
 /**
   * @}
@@ -520,5 +517,9 @@ void    SPI_WIFI_ISR(void)
 
 /**
   * @}
-  */ 
+  */
+
+/**
+  * @}
+  */
 

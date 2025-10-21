@@ -6,7 +6,7 @@
   *******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -30,7 +30,8 @@
 /*
  * Enumeration structure that contains the two success states of a parsing process
  */
-typedef enum {
+typedef enum
+{
   TENS = 0,
   HUNDREDS,
   THOUSANDS
@@ -64,7 +65,7 @@ static uint8_t app[MAX_MSG_LEN][MAX_MSG_LEN];
 static int32_t NMEA_CheckGNSMsg(const char header[])
 {
   int32_t is_gnsmsg = 1;
-  
+
   if (strcmp(header, "$GPGNS") == 0)
   {
     is_gnsmsg = 0;
@@ -95,7 +96,7 @@ static int32_t NMEA_CheckGNSMsg(const char header[])
 static int32_t NMEA_CheckGSAMsg(const char header[])
 {
   int32_t is_gsamsg = 1;
-  
+
   if (strcmp(header, "$GPGSA") == 0)
   {
     is_gsamsg = 0;
@@ -126,7 +127,7 @@ static int32_t NMEA_CheckGSAMsg(const char header[])
 static int32_t NMEA_CheckGSVMsg(const char header[])
 {
   int32_t is_gsvmsg = 1;
-  
+
   if (strcmp(header, "$GPGSV") == 0)
   {
     is_gsvmsg = 0;
@@ -177,7 +178,7 @@ static void NMEA_ResetGSVMsg(GSV_Info_t *pGSVInfo)
 static int32_t NMEA_CheckGeofenceMsg(const char header[])
 {
   int32_t is_geofencemsg = 1;
-  
+
   if (strcmp(header, "$PSTMCFGGEOFENCEOK") == 0)
   {
     is_geofencemsg = 0;
@@ -216,7 +217,7 @@ static int32_t NMEA_CheckGeofenceMsg(const char header[])
 static int32_t NMEA_CheckOdoMsg(const char header[])
 {
   int32_t is_odomsg = 1;
-  
+
   if (strcmp(header, "$PSTMCFGODOOK") == 0)
   {
     is_odomsg = 0;
@@ -251,7 +252,7 @@ static int32_t NMEA_CheckOdoMsg(const char header[])
 static int32_t NMEA_CheckDatalogMsg(const char header[])
 {
   int32_t is_datalogmsg = 1;
-  
+
   if (strcmp(header, "$PSTMCFGLOGOK") == 0)
   {
     is_datalogmsg = 0;
@@ -302,7 +303,7 @@ static int32_t NMEA_CheckDatalogMsg(const char header[])
 static int32_t NMEA_CheckListMsg(const char header[])
 {
   int32_t is_listmsg = 1;
-  
+
   if (strcmp(header, "$PSTMCFGMSGLOK") == 0)
   {
     is_listmsg = 0;
@@ -321,7 +322,7 @@ static int32_t NMEA_CheckListMsg(const char header[])
 static int32_t NMEA_CheckSaveparMsg(const char header[])
 {
   int32_t is_savevarmsg = 1;
-  
+
   if (strcmp(header, "$PSTMSAVEPAROK") == 0)
   {
     is_savevarmsg = 0;
@@ -340,7 +341,7 @@ static int32_t NMEA_CheckSaveparMsg(const char header[])
 static int32_t NMEA_CheckPassMsg(const char header[])
 {
   int32_t is_passmsg = 1;
-  
+
   if (strcmp(header, "$PSTMSTAGPS8PASSRTN") == 0)
   {
     is_passmsg = 0;
@@ -428,12 +429,12 @@ static int32_t NMEA_CheckAGPSMsg(const char header[])
  */
 static void scan_utc(uint8_t *pUTCStr, UTC_Info_t *pUTC)
 {
-  pUTC->utc = strtol((char *)pUTCStr,NULL,10);
-  
+  pUTC->utc = strtol((char *)pUTCStr, NULL, 10);
+
   pUTC->hh = (pUTC->utc / 10000);
   pUTC->mm = (pUTC->utc - (pUTC->hh * 10000)) / 100;
   pUTC->ss = pUTC->utc - ((pUTC->hh * 10000) + (pUTC->mm * 100));
-  
+
   return;
 }
 
@@ -455,35 +456,35 @@ static uint32_t digit2int(uint8_t buf[], int32_t offset, Decimal_t d)
 
   switch (d)
   {
-  case TENS:
-    hd = char2int(buf[offset]);
-    hu = char2int(buf[offset+1]);
-        
-    ret = (hd * (unsigned)10) + hu;
-    break;
-    
-  case HUNDREDS:
-    hc = char2int(buf[offset]);
-    hd = char2int(buf[offset+1]);
-    hu = char2int(buf[offset+2]);
-        
-    ret = (hc * (unsigned)100) + (hd * (unsigned)10) + hu;
-    break;
-    
-  case THOUSANDS:
-    hm = char2int(buf[offset]);
-    hc = char2int(buf[offset+1]);
-    hd = char2int(buf[offset+2]);
-    hu = char2int(buf[offset+3]);
-        
-    ret = (hm * (unsigned)1000) + (hc * (unsigned)100) + (hd * (unsigned)10) + hu;
-    break;
-    
-  default:
-    break;
- }
+    case TENS:
+      hd = char2int(buf[offset]);
+      hu = char2int(buf[offset + 1]);
 
- return ret;
+      ret = (hd * (unsigned)10) + hu;
+      break;
+
+    case HUNDREDS:
+      hc = char2int(buf[offset]);
+      hd = char2int(buf[offset + 1]);
+      hu = char2int(buf[offset + 2]);
+
+      ret = (hc * (unsigned)100) + (hd * (unsigned)10) + hu;
+      break;
+
+    case THOUSANDS:
+      hm = char2int(buf[offset]);
+      hc = char2int(buf[offset + 1]);
+      hd = char2int(buf[offset + 2]);
+      hu = char2int(buf[offset + 3]);
+
+      ret = (hm * (unsigned)1000) + (hc * (unsigned)100) + (hd * (unsigned)10) + hu;
+      break;
+
+    default:
+      break;
+  }
+
+  return ret;
 }
 
 /*
@@ -514,16 +515,17 @@ ParseStatus_t NMEA_ParseGPGGA(GPGGA_Info_t *pGPGGAInfo, uint8_t NMEA[])
   BOOL valid_msg = FALSE;
 
   ParseStatus_t status = PARSE_FAIL;
-  
-  if(NMEA != NULL) {
 
-    /* clear the app[][] buffer */ 
+  if (NMEA != NULL)
+  {
+
+    /* clear the app[][] buffer */
     for (int8_t i = 0; i < MAX_MSG_LEN; i++)
     {
       (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
     }
 
-    for(int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
+    for (int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
     {
       new_field = 0;
 
@@ -532,7 +534,8 @@ ParseStatus_t NMEA_ParseGPGGA(GPGGA_Info_t *pGPGGAInfo, uint8_t NMEA[])
         app[j][k] = (uint8_t)'\0';
         new_field = 1;
 
-        if (strcmp((char *)app[0], "$GPGGA") == 0 || strcmp((char *)app[0], "$GNGGA") == 0) {
+        if ((strcmp((char *)app[0], "$GPGGA") == 0) || (strcmp((char *)app[0], "$GNGGA") == 0))
+        {
           j++;
           k = 0;
           valid_msg = TRUE;
@@ -542,7 +545,7 @@ ParseStatus_t NMEA_ParseGPGGA(GPGGA_Info_t *pGPGGAInfo, uint8_t NMEA[])
           break;
         }
       }
-      if(new_field == 0)
+      if (new_field == 0)
       {
         app[j][k] = NMEA[i];
         k++;
@@ -552,26 +555,26 @@ ParseStatus_t NMEA_ParseGPGGA(GPGGA_Info_t *pGPGGAInfo, uint8_t NMEA[])
     if (valid_msg == TRUE)
     {
       int32_t valid = strtol((char *)app[6], NULL, BASE);
-      if(valid > INVALID)
+      if (valid > INVALID)
       {
         pGPGGAInfo->valid = (uint8_t)valid;
       }
 
       scan_utc(app[1], &pGPGGAInfo->utc);
       pGPGGAInfo->xyz.lat = strtod((char *)app[2], NULL);
-      pGPGGAInfo->xyz.ns = *((uint8_t*)app[3]);
+      pGPGGAInfo->xyz.ns = *((uint8_t *)app[3]);
       pGPGGAInfo->xyz.lon = strtod((char *)app[4], NULL);
-      pGPGGAInfo->xyz.ew = *((uint8_t*)app[5]);
+      pGPGGAInfo->xyz.ew = *((uint8_t *)app[5]);
       pGPGGAInfo->sats = strtol((char *)app[7], NULL, BASE);
       pGPGGAInfo->acc = strtof((char *)app[8], NULL);
       pGPGGAInfo->xyz.alt = strtof((char *)app[9], NULL);
-      pGPGGAInfo->xyz.mis = *((uint8_t*)app[10]);
+      pGPGGAInfo->xyz.mis = *((uint8_t *)app[10]);
       pGPGGAInfo->geoid.height = strtol((char *)app[11], NULL, BASE);
-      pGPGGAInfo->geoid.mis = *((uint8_t*)app[12]);
+      pGPGGAInfo->geoid.mis = *((uint8_t *)app[12]);
       // This field is reserved
       //pGPGGAInfo->update = strtol((char *)app[13], NULL, BASE);
       pGPGGAInfo->checksum = nmea_checksum(app[15]);
-      
+
       status = PARSE_SUCC;
     }
   }
@@ -583,12 +586,13 @@ ParseStatus_t NMEA_ParseGNS(GNS_Info_t *pGNSInfo, uint8_t NMEA[])
 {
   int32_t new_field;
   BOOL valid_msg = FALSE;
-  
-  ParseStatus_t status = PARSE_FAIL;
-  
-  if(NMEA != NULL) {
 
-    /* clear the app[][] buffer */ 
+  ParseStatus_t status = PARSE_FAIL;
+
+  if (NMEA != NULL)
+  {
+
+    /* clear the app[][] buffer */
     for (int8_t i = 0; i < MAX_MSG_LEN; i++)
     {
       (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
@@ -602,7 +606,7 @@ ParseStatus_t NMEA_ParseGNS(GNS_Info_t *pGNSInfo, uint8_t NMEA[])
       {
         app[j][k] = (uint8_t)'\0';
         new_field = 1;
-        
+
         if (NMEA_CheckGNSMsg((char *)app[0]) == 0)
         {
           j++;
@@ -614,28 +618,29 @@ ParseStatus_t NMEA_ParseGNS(GNS_Info_t *pGNSInfo, uint8_t NMEA[])
           break;
         }
       }
-      if(new_field == 0) {
+      if (new_field == 0)
+      {
         app[j][k] = NMEA[i];
         k++;
       }
     }
-    
+
     if (valid_msg == TRUE)
     {
       (void)strncpy((char *)pGNSInfo->constellation, (char *)app[0], MAX_STR_LEN);
       scan_utc(app[1], &pGNSInfo->utc);
       pGNSInfo->xyz.lat = strtod((char *)app[2], NULL);
-      pGNSInfo->xyz.ns = *((uint8_t*)app[3]);
+      pGNSInfo->xyz.ns = *((uint8_t *)app[3]);
       pGNSInfo->xyz.lon = strtod((char *)app[4], NULL);
-      pGNSInfo->xyz.ew = *((uint8_t*)app[5]);
-      pGNSInfo->gps_mode = *((uint8_t*)app[6]);
-      pGNSInfo->glonass_mode = *((uint8_t*)app[7]);
+      pGNSInfo->xyz.ew = *((uint8_t *)app[5]);
+      pGNSInfo->gps_mode = *((uint8_t *)app[6]);
+      pGNSInfo->glonass_mode = *((uint8_t *)app[7]);
       pGNSInfo->sats = strtol((char *)app[8], NULL, BASE);
       pGNSInfo->hdop = strtof((char *)app[9], NULL);
       pGNSInfo->xyz.alt = strtof((char *)app[10], NULL);
       pGNSInfo->geo_sep = strtof((char *)app[11], NULL);
-      pGNSInfo->dgnss_age = *((uint8_t*)app[12]);
-      pGNSInfo->dgnss_ref = *((uint8_t*)app[13]);
+      pGNSInfo->dgnss_age = *((uint8_t *)app[12]);
+      pGNSInfo->dgnss_ref = *((uint8_t *)app[13]);
       pGNSInfo->checksum = nmea_checksum(app[14]);
 
       status = PARSE_SUCC;
@@ -644,22 +649,23 @@ ParseStatus_t NMEA_ParseGNS(GNS_Info_t *pGNSInfo, uint8_t NMEA[])
 
   return status;
 }
-  
+
 ParseStatus_t NMEA_ParseGPGST(GPGST_Info_t *pGPGSTInfo, uint8_t NMEA[])
 {
   int32_t new_field;
   BOOL valid_msg = FALSE;
-  
+
   ParseStatus_t status = PARSE_FAIL;
-  
-  if(NMEA != NULL) {
-  
-    /* clear the app[][] buffer */ 
+
+  if (NMEA != NULL)
+  {
+
+    /* clear the app[][] buffer */
     for (int8_t i = 0; i < MAX_MSG_LEN; i++)
     {
       (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
     }
-    
+
     for (int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
     {
       new_field = 0;
@@ -668,8 +674,8 @@ ParseStatus_t NMEA_ParseGPGST(GPGST_Info_t *pGPGSTInfo, uint8_t NMEA[])
       {
         app[j][k] = (uint8_t)'\0';
         new_field = 1;
-        
-        if (strcmp((char *)app[0], "$GPGST") == 0 || strcmp((char *)app[0], "$GNGST"))
+
+        if ((strcmp((char *)app[0], "$GPGST") == 0) || (strcmp((char *)app[0], "$GNGST") == 0))
         {
           j++;
           k = 0;
@@ -680,15 +686,15 @@ ParseStatus_t NMEA_ParseGPGST(GPGST_Info_t *pGPGSTInfo, uint8_t NMEA[])
           break;
         }
       }
-      if(new_field == 0)
+      if (new_field == 0)
       {
         app[j][k] = NMEA[i];
         k++;
       }
-    }  
-    
+    }
+
     if (valid_msg == TRUE)
-    {         
+    {
       scan_utc(app[1], &pGPGSTInfo->utc);
       pGPGSTInfo->EHPE = strtof((char *)app[2], NULL);
       pGPGSTInfo->semi_major_dev = strtof((char *)app[3], NULL);
@@ -710,18 +716,18 @@ ParseStatus_t NMEA_ParseGPRMC(GPRMC_Info_t *pGPRMCInfo, uint8_t NMEA[])
 {
   int32_t new_field;
   BOOL valid_msg = FALSE;
-  
+
   ParseStatus_t status = PARSE_FAIL;
-  
-  if(NMEA != NULL)
+
+  if (NMEA != NULL)
   {
-  
-    /* clear the app[][] buffer */ 
+
+    /* clear the app[][] buffer */
     for (int8_t i = 0; i < MAX_MSG_LEN; i++)
     {
       (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
     }
-    
+
     for (int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
     {
       new_field = 0;
@@ -730,8 +736,8 @@ ParseStatus_t NMEA_ParseGPRMC(GPRMC_Info_t *pGPRMCInfo, uint8_t NMEA[])
       {
         app[j][k] = (uint8_t)'\0';
         new_field = 1;
-        
-        if (strcmp((char *)app[0], "$GPRMC") == 0 | strcmp((char *)app[0], "$GNRMC") == 0)
+
+        if ((strcmp((char *)app[0], "$GPRMC") == 0) || (strcmp((char *)app[0], "$GNRMC") == 0))
         {
           j++;
           k = 0;
@@ -742,26 +748,26 @@ ParseStatus_t NMEA_ParseGPRMC(GPRMC_Info_t *pGPRMCInfo, uint8_t NMEA[])
           break;
         }
       }
-      if(new_field == 0)
+      if (new_field == 0)
       {
         app[j][k] = NMEA[i];
         k++;
       }
-    }  
-    
+    }
+
     if (valid_msg == TRUE)
-    {      
+    {
       scan_utc(app[1],  &pGPRMCInfo->utc);
-      pGPRMCInfo->status = *((uint8_t*)app[2]);
+      pGPRMCInfo->status = *((uint8_t *)app[2]);
       pGPRMCInfo->xyz.lat = strtod((char *)app[3], NULL);
-      pGPRMCInfo->xyz.ns = *((uint8_t*)app[4]);
+      pGPRMCInfo->xyz.ns = *((uint8_t *)app[4]);
       pGPRMCInfo->xyz.lon = strtod((char *)app[5], NULL);
-      pGPRMCInfo->xyz.ew = *((uint8_t*)app[6]);
+      pGPRMCInfo->xyz.ew = *((uint8_t *)app[6]);
       pGPRMCInfo->speed = strtof((char *)app[7], NULL);
       pGPRMCInfo->trackgood = strtof((char *)app[8], NULL);
       pGPRMCInfo->date = strtol((char *)app[9], NULL, BASE);
       pGPRMCInfo->mag_var = strtof((char *)app[10], NULL);
-      pGPRMCInfo->mag_var_dir = *((uint8_t*)app[11]);
+      pGPRMCInfo->mag_var_dir = *((uint8_t *)app[11]);
       /* WARNING: from received msg, it seems there is another data (app[12]) before the checksum */
       pGPRMCInfo->checksum = nmea_checksum(app[13]);
 
@@ -771,32 +777,32 @@ ParseStatus_t NMEA_ParseGPRMC(GPRMC_Info_t *pGPRMCInfo, uint8_t NMEA[])
 
   return status;
 }
-         
+
 ParseStatus_t NMEA_ParseGSA(GSA_Info_t *pGSAInfo, uint8_t NMEA[])
 {
   int32_t new_field;
   BOOL valid_msg = FALSE;
-  
+
   ParseStatus_t status = PARSE_FAIL;
-  
-  if(NMEA != NULL)
+
+  if (NMEA != NULL)
   {
-  
-    /* clear the app[][] buffer */ 
+
+    /* clear the app[][] buffer */
     for (int8_t i = 0; i < MAX_MSG_LEN; i++)
     {
       (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
     }
-    
+
     for (int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
     {
       new_field = 0;
-      
+
       if ((NMEA[i] == (uint8_t)',') || (NMEA[i] == (uint8_t)'*'))
       {
         app[j][k] = (uint8_t)'\0';
         new_field = 1;
-        
+
         if (NMEA_CheckGSAMsg((char *)app[0]) == 0)
         {
           j++;
@@ -808,23 +814,23 @@ ParseStatus_t NMEA_ParseGSA(GSA_Info_t *pGSAInfo, uint8_t NMEA[])
           break;
         }
       }
-      if(new_field == 0)
+      if (new_field == 0)
       {
         app[j][k] = NMEA[i];
         k++;
       }
-    }  
-    
+    }
+
     if (valid_msg == TRUE)
     {
       (void)strncpy((char *)pGSAInfo->constellation, (char *)app[0], MAX_STR_LEN);
-      pGSAInfo->operating_mode = *((uint8_t*)app[1]);
+      pGSAInfo->operating_mode = *((uint8_t *)app[1]);
       pGSAInfo->current_mode = strtol((char *)app[2], NULL, BASE);
 
       int32_t *sat_prn = pGSAInfo->sat_prn;
       for (int8_t i = 0; i < MAX_SAT_NUM; i++)
       {
-        *(&sat_prn[i]) = strtol((char *)app[3+i], NULL, BASE);
+        *(&sat_prn[i]) = strtol((char *)app[3 + i], NULL, BASE);
       }
 
       pGSAInfo->pdop = strtof((char *)app[15], NULL);
@@ -845,18 +851,18 @@ ParseStatus_t NMEA_ParseGSV(GSV_Info_t *pGSVInfo, uint8_t NMEA[])
   int32_t gsv_idx = 0;
   int32_t new_field;
   BOOL valid_gsv_msg = FALSE;
-  
+
   ParseStatus_t status = PARSE_FAIL;
 
-  if(NMEA != NULL)
+  if (NMEA != NULL)
   {
 
-    /* clear the app[][] buffer */ 
+    /* clear the app[][] buffer */
     for (int8_t i = 0; i < MAX_MSG_LEN; i++)
     {
       (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
     }
-    
+
     for (int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
     {
       new_field = 0;
@@ -865,7 +871,7 @@ ParseStatus_t NMEA_ParseGSV(GSV_Info_t *pGSVInfo, uint8_t NMEA[])
       {
         app[j][k] = (uint8_t)'\0';
         new_field = 1;
-        
+
         if (NMEA_CheckGSVMsg((char *)app[0]) == 0)
         {
           j++;
@@ -877,7 +883,7 @@ ParseStatus_t NMEA_ParseGSV(GSV_Info_t *pGSVInfo, uint8_t NMEA[])
           break;
         }
       }
-      if(new_field == 0)
+      if (new_field == 0)
       {
         app[j][k] = NMEA[i];
         k++;
@@ -895,12 +901,12 @@ ParseStatus_t NMEA_ParseGSV(GSV_Info_t *pGSVInfo, uint8_t NMEA[])
       app_idx = 4;
       for (int8_t i = 1; i <= GSV_MSG_SATS; i++)
       {
-        pGSVInfo->gsv_sat_i[gsv_idx].prn = strtol((char *)app[app_idx*i], NULL, BASE);
-        pGSVInfo->gsv_sat_i[gsv_idx].elev = strtol((char *)app[(app_idx*i)+1], NULL, BASE);
-        pGSVInfo->gsv_sat_i[gsv_idx].azim = strtol((char *)app[(app_idx*i)+2], NULL, BASE);
-        pGSVInfo->gsv_sat_i[gsv_idx].cn0 = strtol((char *)app[(app_idx*i)+3], NULL, BASE);
+        pGSVInfo->gsv_sat_i[gsv_idx].prn = strtol((char *)app[app_idx * i], NULL, BASE);
+        pGSVInfo->gsv_sat_i[gsv_idx].elev = strtol((char *)app[(app_idx * i) + 1], NULL, BASE);
+        pGSVInfo->gsv_sat_i[gsv_idx].azim = strtol((char *)app[(app_idx * i) + 2], NULL, BASE);
+        pGSVInfo->gsv_sat_i[gsv_idx].cn0 = strtol((char *)app[(app_idx * i) + 3], NULL, BASE);
 
-        if(pGSVInfo->gsv_sat_i[gsv_idx].prn != 0)
+        if (pGSVInfo->gsv_sat_i[gsv_idx].prn != 0)
         {
           pGSVInfo->current_sats++;
         }
@@ -919,19 +925,19 @@ ParseStatus_t NMEA_ParsePSTMVER(PSTMVER_Info_t *pPSTMVER, uint8_t NMEA[])
 {
   int8_t new_field;
   BOOL valid_msg = FALSE;
-  
+
   ParseStatus_t status = PARSE_FAIL;
-  
-  if(NMEA != NULL)
+
+  if (NMEA != NULL)
   {
-  
-    /* clear the app[][] buffer */ 
+
+    /* clear the app[][] buffer */
     for (int8_t i = 0; i < MAX_MSG_LEN; i++)
     {
       (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
     }
-    
-    for(int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
+
+    for (int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
     {
       new_field = 0;
 
@@ -939,7 +945,7 @@ ParseStatus_t NMEA_ParsePSTMVER(PSTMVER_Info_t *pPSTMVER, uint8_t NMEA[])
       {
         app[j][k] = (uint8_t)'\0';
         new_field = 1;
-        
+
         if (strcmp((char *)app[0], "$PSTMVER") == 0)
         {
           j++;
@@ -951,13 +957,13 @@ ParseStatus_t NMEA_ParsePSTMVER(PSTMVER_Info_t *pPSTMVER, uint8_t NMEA[])
           break;
         }
       }
-      if(new_field == 0)
+      if (new_field == 0)
       {
         app[j][k] = NMEA[i];
         k++;
       }
     }
-    
+
     if (valid_msg == TRUE)
     {
       (void)strncpy((char *)pPSTMVER->pstmver_string, (char *)app[1], MAX_STR_LEN);
@@ -972,19 +978,19 @@ ParseStatus_t NMEA_ParsePSTMGeofence(Geofence_Info_t *pGeofence, uint8_t NMEA[])
 {
   int32_t new_field;
   BOOL valid_msg = FALSE;
-  
+
   ParseStatus_t status = PARSE_FAIL;
 
-  if(NMEA != NULL)
+  if (NMEA != NULL)
   {
 
-    /* clear the app[][] buffer */ 
+    /* clear the app[][] buffer */
     for (int8_t i = 0; i < MAX_MSG_LEN; i++)
     {
       (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
     }
-    
-    for(int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
+
+    for (int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
     {
       new_field = 0;
 
@@ -992,7 +998,7 @@ ParseStatus_t NMEA_ParsePSTMGeofence(Geofence_Info_t *pGeofence, uint8_t NMEA[])
       {
         app[j][k] = (uint8_t)'\0';
         new_field = 1;
-        
+
         if (NMEA_CheckGeofenceMsg((char *)app[0]) == 0)
         {
           j++;
@@ -1004,13 +1010,13 @@ ParseStatus_t NMEA_ParsePSTMGeofence(Geofence_Info_t *pGeofence, uint8_t NMEA[])
           break;
         }
       }
-      if(new_field == 0)
+      if (new_field == 0)
       {
         app[j][k] = NMEA[i];
         k++;
       }
     }
-    
+
     if (valid_msg == TRUE)
     {
       /* Enabling */
@@ -1043,9 +1049,9 @@ ParseStatus_t NMEA_ParsePSTMGeofence(Geofence_Info_t *pGeofence, uint8_t NMEA[])
         scan_timestamp_date(app[2], &pGeofence->timestamp);
 
         int32_t *geofence_status = pGeofence->status;
-        for(uint8_t i = 0; i < MAX_GEOFENCES_NUM; i++)
+        for (uint8_t i = 0; i < MAX_GEOFENCES_NUM; i++)
         {
-          *(&geofence_status[i]) = strtol((char *)app[3U+i], NULL, BASE);
+          *(&geofence_status[i]) = strtol((char *)app[3U + i], NULL, BASE);
         }
       }
       /* Alarm Msg */
@@ -1078,19 +1084,19 @@ ParseStatus_t NMEA_ParsePSTMOdo(Odometer_Info_t *pOdo, uint8_t NMEA[])
 {
   int32_t new_field;
   BOOL valid_msg = FALSE;
-  
+
   ParseStatus_t status = PARSE_FAIL;
 
-  if(NMEA != NULL)
+  if (NMEA != NULL)
   {
 
-    /* clear the app[][] buffer */ 
+    /* clear the app[][] buffer */
     for (int8_t i = 0; i < MAX_MSG_LEN; i++)
     {
       (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
     }
-    
-    for(int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
+
+    for (int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
     {
       new_field = 0;
 
@@ -1098,7 +1104,7 @@ ParseStatus_t NMEA_ParsePSTMOdo(Odometer_Info_t *pOdo, uint8_t NMEA[])
       {
         app[j][k] = (uint8_t)'\0';
         new_field = 1;
-        
+
         if (NMEA_CheckOdoMsg((char *)app[0]) == 0)
         {
           j++;
@@ -1110,13 +1116,13 @@ ParseStatus_t NMEA_ParsePSTMOdo(Odometer_Info_t *pOdo, uint8_t NMEA[])
           break;
         }
       }
-      if(new_field == 0)
+      if (new_field == 0)
       {
         app[j][k] = NMEA[i];
         k++;
       }
     }
-    
+
     if (valid_msg == TRUE)
     {
       /* Enabling */
@@ -1167,19 +1173,19 @@ ParseStatus_t NMEA_ParsePSTMDatalog(Datalog_Info_t *pDatalog, uint8_t NMEA[])
 {
   int32_t new_field;
   BOOL valid_msg = FALSE;
-  
+
   ParseStatus_t status = PARSE_FAIL;
 
-  if(NMEA != NULL)
+  if (NMEA != NULL)
   {
 
-    /* clear the app[][] buffer */ 
+    /* clear the app[][] buffer */
     for (int8_t i = 0; i < MAX_MSG_LEN; i++)
     {
       (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
     }
-    
-    for(int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
+
+    for (int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
     {
       new_field = 0;
 
@@ -1187,7 +1193,7 @@ ParseStatus_t NMEA_ParsePSTMDatalog(Datalog_Info_t *pDatalog, uint8_t NMEA[])
       {
         app[j][k] = (uint8_t)'\0';
         new_field = 1;
-        
+
         if (NMEA_CheckDatalogMsg((char *)app[0]) == 0)
         {
           j++;
@@ -1199,12 +1205,13 @@ ParseStatus_t NMEA_ParsePSTMDatalog(Datalog_Info_t *pDatalog, uint8_t NMEA[])
           break;
         }
       }
-      if(new_field == 0) {
+      if (new_field == 0)
+      {
         app[j][k] = NMEA[i];
         k++;
       }
     }
-    
+
     if (valid_msg == TRUE)
     {
       /* Enabling */
@@ -1277,19 +1284,19 @@ ParseStatus_t NMEA_ParsePSTMsgl(OpResult_t *pResult, uint8_t NMEA[])
 {
   int32_t new_field;
   BOOL valid_msg = FALSE;
-  
+
   ParseStatus_t status = PARSE_FAIL;
 
-  if(NMEA != NULL)
+  if (NMEA != NULL)
   {
 
-    /* clear the app[][] buffer */ 
+    /* clear the app[][] buffer */
     for (int8_t i = 0; i < MAX_MSG_LEN; i++)
     {
       (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
     }
-    
-    for(int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
+
+    for (int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
     {
       new_field = 0;
 
@@ -1297,7 +1304,7 @@ ParseStatus_t NMEA_ParsePSTMsgl(OpResult_t *pResult, uint8_t NMEA[])
       {
         app[j][k] = (uint8_t)'\0';
         new_field = 1;
-        
+
         if (NMEA_CheckListMsg((char *)app[0]) == 0)
         {
           j++;
@@ -1309,13 +1316,13 @@ ParseStatus_t NMEA_ParsePSTMsgl(OpResult_t *pResult, uint8_t NMEA[])
           break;
         }
       }
-      if(new_field == 0)
+      if (new_field == 0)
       {
         app[j][k] = NMEA[i];
         k++;
       }
     }
-    
+
     if (valid_msg == TRUE)
     {
       /* Enabling */
@@ -1343,19 +1350,19 @@ ParseStatus_t NMEA_ParsePSTMSavePar(OpResult_t *pResult, uint8_t NMEA[])
 {
   int32_t new_field;
   BOOL valid_msg = FALSE;
-  
+
   ParseStatus_t status = PARSE_FAIL;
 
-  if(NMEA != NULL)
+  if (NMEA != NULL)
   {
 
-    /* clear the app[][] buffer */ 
+    /* clear the app[][] buffer */
     for (int8_t i = 0; i < MAX_MSG_LEN; i++)
     {
       (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
     }
-    
-    for(int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
+
+    for (int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
     {
       new_field = 0;
 
@@ -1363,7 +1370,7 @@ ParseStatus_t NMEA_ParsePSTMSavePar(OpResult_t *pResult, uint8_t NMEA[])
       {
         app[j][k] = (uint8_t)'\0';
         new_field = 1;
-        
+
         if (NMEA_CheckSaveparMsg((char *)app[0]) == 0)
         {
           j++;
@@ -1375,12 +1382,13 @@ ParseStatus_t NMEA_ParsePSTMSavePar(OpResult_t *pResult, uint8_t NMEA[])
           break;
         }
       }
-      if(new_field == 0) {
+      if (new_field == 0)
+      {
         app[j][k] = NMEA[i];
         k++;
       }
     }
-    
+
     if (valid_msg == TRUE)
     {
       if (strcmp((char *)app[0], "$PSTMSAVEPAROK") == 0)
@@ -1402,6 +1410,150 @@ ParseStatus_t NMEA_ParsePSTMSavePar(OpResult_t *pResult, uint8_t NMEA[])
   return status;
 }
 
+ParseStatus_t NMEA_ParsePSTMSetPar(PSTMSETPAROK_Info_t *pPstmSetPar, uint8_t NMEA[])
+{
+  int32_t new_field;
+  BOOL valid_msg = FALSE;
+
+  ParseStatus_t status = PARSE_FAIL;
+
+  if (NMEA != NULL)
+  {
+
+    /* clear the app[][] buffer */
+    for (int8_t i = 0; i < MAX_MSG_LEN; i++)
+    {
+      (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
+    }
+    for (int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
+    {
+      new_field = 0;
+      if ((NMEA[i] == (uint8_t)',') || (NMEA[i] == (uint8_t)'*'))
+      {
+        app[j][k] = (uint8_t)'\0';
+        new_field = 1;
+        if (strcmp((char *)app[0], "$PSTMSETPAROK") == 0)
+        {
+          j++;
+          k = 0;
+          valid_msg = TRUE;
+        }
+        else
+        {
+          break;
+        }
+      }
+      if (new_field == 0)
+      {
+        app[j][k] = NMEA[i];
+        k++;
+      }
+    }
+    if (valid_msg == TRUE)
+    {
+      status = PARSE_SUCC;
+      strncpy((char *)pPstmSetPar->result, (char *)app[0], sizeof(pPstmSetPar->result) - 1);
+      pPstmSetPar->result[sizeof(pPstmSetPar->result) - 1] = '\0'; // Null terminate
+    }
+  }
+  return status;
+}
+
+ParseStatus_t NMEA_ParsePSTMRestorePar(OpResult_t *pResult, uint8_t NMEA[])
+{
+  BOOL valid_msg = FALSE;
+  ParseStatus_t status = PARSE_FAIL;
+
+  if (NMEA != NULL)
+  {
+    /* clear the app[][] buffer */
+    for (int8_t i = 0; i < MAX_MSG_LEN; i++)
+    {
+      (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
+    }
+    for (int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
+    {
+      int32_t new_field = 0;
+      if ((NMEA[i] == (uint8_t)',') || (NMEA[i] == (uint8_t)'*'))
+      {
+        app[j][k] = (uint8_t)'\0';
+        new_field = 1;
+        if (strcmp((char *)app[0], "$PSTMRESTOREPAROK") == 0)
+        {
+          j++;
+          k = 0;
+          valid_msg = TRUE;
+        }
+        else
+        {
+          break;
+        }
+      }
+
+      if (new_field == 0)
+      {
+        app[j][k] = NMEA[i];
+        k++;
+      }
+    }
+
+    if (valid_msg == TRUE)
+    {
+      status = PARSE_SUCC;
+    }
+  }
+  return status;
+}
+
+ParseStatus_t NMEA_ParsePSTMGetPar(PSTMGETPAR_Info_t *pPstmGetPar, uint8_t NMEA[])
+{
+  int32_t new_field;
+  BOOL valid_msg = FALSE;
+  ParseStatus_t status = PARSE_FAIL;
+  if (NMEA != NULL && pPstmGetPar != NULL)
+  {
+    /* clear the app[][] buffer */
+    for (int8_t i = 0; i < MAX_MSG_LEN; i++)
+    {
+      (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
+    }
+    for (int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
+    {
+      new_field = 0;
+      if ((NMEA[i] == (uint8_t)',') || (NMEA[i] == (uint8_t)'*'))
+      {
+        app[j][k] = (uint8_t)'\0';
+        new_field = 1;
+        if (strcmp((char *)app[0], "$PSTMSETPAR") == 0)
+        {
+          j++;
+          k = 0;
+          valid_msg = TRUE;
+        }
+        else
+        {
+          break;
+        }
+      }
+      if (new_field == 0)
+      {
+        app[j][k] = NMEA[i];
+        k++;
+      }
+    }
+    if (valid_msg == TRUE)
+    {
+      status = PARSE_SUCC;
+      for (int i = 0; i < MAX_FIELDS; i++)
+      {
+        strncpy((char *)pPstmGetPar->pstmgetpar_string[i], (char *)app[i], MAX_STR_LEN - 1);
+        pPstmGetPar->pstmgetpar_string[i][MAX_STR_LEN - 1] = '\0'; // Null terminate
+      }
+    }
+  }
+  return status;
+}
+
 ParseStatus_t NMEA_ParsePSTMPASSRTN(PSTMPASSRTN_Info_t *pPSTMPASSRTN, uint8_t NMEA[])
 {
   int8_t new_field;
@@ -1409,7 +1561,7 @@ ParseStatus_t NMEA_ParsePSTMPASSRTN(PSTMPASSRTN_Info_t *pPSTMPASSRTN, uint8_t NM
 
   ParseStatus_t status = PARSE_FAIL;
 
-  if(NMEA != NULL)
+  if (NMEA != NULL)
   {
 
     /* clear the app[][] buffer */
@@ -1418,7 +1570,7 @@ ParseStatus_t NMEA_ParsePSTMPASSRTN(PSTMPASSRTN_Info_t *pPSTMPASSRTN, uint8_t NM
       (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
     }
 
-    for(int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
+    for (int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
     {
       new_field = 0;
 
@@ -1438,7 +1590,7 @@ ParseStatus_t NMEA_ParsePSTMPASSRTN(PSTMPASSRTN_Info_t *pPSTMPASSRTN, uint8_t NM
           break;
         }
       }
-      if(new_field == 0)
+      if (new_field == 0)
       {
         app[j][k] = NMEA[i];
         k++;
@@ -1475,7 +1627,7 @@ ParseStatus_t NMEA_ParsePSTMAGPS(PSTMAGPS_Info_t *pPSTMAGPS, uint8_t NMEA[])
 
   ParseStatus_t status = PARSE_FAIL;
 
-  if(NMEA != NULL)
+  if (NMEA != NULL)
   {
     /* clear the app[][] buffer */
     for (int8_t i = 0; i < MAX_MSG_LEN; i++)
@@ -1483,7 +1635,7 @@ ParseStatus_t NMEA_ParsePSTMAGPS(PSTMAGPS_Info_t *pPSTMAGPS, uint8_t NMEA[])
       (void)memset(app[i], 0, (size_t)MAX_MSG_LEN);
     }
 
-    for(int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
+    for (int32_t i = 0, j = 0, k = 0; (NMEA[i] != (uint8_t)'\n'); i++)
     {
       new_field = 0;
 
@@ -1503,7 +1655,7 @@ ParseStatus_t NMEA_ParsePSTMAGPS(PSTMAGPS_Info_t *pPSTMAGPS, uint8_t NMEA[])
           break;
         }
       }
-      if(new_field == 0)
+      if (new_field == 0)
       {
         app[j][k] = NMEA[i];
         k++;
@@ -1617,25 +1769,25 @@ void NMEA_Copy_Data(GPGGA_Info_t *pInfo, GPGGA_Info_t GPGGAInfo)
 }
 
 /**
- * @brief  Function that converts a character to unsigned integer
- * @param  c        The character to convert
- * @retval The returned unsigned integer
- */
+  * @brief  Function that converts a character to unsigned integer
+  * @param  c        The character to convert
+  * @retval The returned unsigned integer
+  */
 uint32_t char2int(uint8_t c)
 {
   uint32_t ret = (unsigned char)0;
 
-  if((c >= (uint8_t)'0') && (c <= (uint8_t)'9'))
+  if ((c >= (uint8_t)'0') && (c <= (uint8_t)'9'))
   {
     ret = (unsigned char)(c - (uint8_t)'0');
   }
 
-  if((c >= (uint8_t)'A') && (c <= (uint8_t)'F'))
+  if ((c >= (uint8_t)'A') && (c <= (uint8_t)'F'))
   {
     ret = (unsigned char)(c - (uint8_t)'A') + (unsigned)10;
   }
 
-  if((c >= (uint8_t)'a') && (c <= (uint8_t)'f'))
+  if ((c >= (uint8_t)'a') && (c <= (uint8_t)'f'))
   {
     ret = (unsigned char)(c - (uint8_t)'a') + (unsigned)10;
   }

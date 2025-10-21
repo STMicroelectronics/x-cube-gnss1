@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -24,16 +24,16 @@ extern "C" {
 #endif
 
 /** @addtogroup PROJECTS
- * @{
- */
- 
+  * @{
+  */
+
 /** @addtogroup APPLICATIONS
- * @{
- */
+  * @{
+  */
 
 /** @addtogroup A_GetPos
- * @{
- */
+  * @{
+  */
 
 /* Includes ------------------------------------------------------------------*/
 #include "gnss_parser.h"
@@ -46,60 +46,60 @@ extern "C" {
 /* Exported functions --------------------------------------------------------*/
 
 /** @addtogroup A_GetPos_PUBLIC_FUNCTIONS PUBLIC FUNCTIONS
- * @{
- */
+  * @{
+  */
 
 /**
- * @brief  Parse command option for constellationspecificied by the user;
- * @param  cmd The command to be parsed
- * @retval Constellation mask
- */
+  * @brief  Parse command option for constellationspecificied by the user;
+  * @param  cmd The command to be parsed
+  * @retval Constellation mask
+  */
 int AppAGNSS_ParseSeedOp(char *cmd);
 
 /**
- * @brief  Prepare the Password generation process
- * @retval None
- */
+  * @brief  Prepare the Password generation process
+  * @retval None
+  */
 void AppAGNSS_PassGen(void);
 
 /**
- * @brief  Request the seed to the remote provider
- * @param  pGNSSParser_Data Handler of the GNSS data
- * @param  seedMask Constellation mask
- * @param  seedReq Type of Assisted GNSS (PR/RT)
- * @retval 0 on success -1 otherwise
- */
+  * @brief  Request the seed to the remote provider
+  * @param  pGNSSParser_Data Handler of the GNSS data
+  * @param  seedMask Constellation mask
+  * @param  seedReq Type of Assisted GNSS (PR/RT)
+  * @retval 0 on success -1 otherwise
+  */
 int AppAGNSS_DownloadSeed(GNSSParser_Data_t *pGNSSParser_Data, int seedMask, seed_req_t seedReq);
 
 /**
- * @brief  Start process for seed conversion (PR case)
- * @param  seedMask Constellation mask
- * @retval None
- */
+  * @brief  Start process for seed conversion (PR case)
+  * @param  seedMask Constellation mask
+  * @retval None
+  */
 void AppAGNSS_ConvertPRSeed(int seedMask);
 
 /**
- * @brief  Start process for seed conversion (RT case)
- * @param  seedMask Constellation mask
- * @retval None
- */
+  * @brief  Start process for seed conversion (RT case)
+  * @param  seedMask Constellation mask
+  * @retval None
+  */
 void AppAGNSS_ConvertRTSeed(int seedMask);
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
-  
+  * @}
+  */
+
 /**
- * @}
- */
-  
+  * @}
+  */
+
 /**
- * @}
- */
+  * @}
+  */
 
 #ifdef __cplusplus
 }

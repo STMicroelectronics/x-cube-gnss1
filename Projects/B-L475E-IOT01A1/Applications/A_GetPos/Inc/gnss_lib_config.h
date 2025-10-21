@@ -7,7 +7,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -28,64 +28,64 @@ extern "C" {
 #include <stdint.h>
 
 /** @addtogroup MIDDLEWARES
- *  @{
- */
+  *  @{
+  */
 
 /** @addtogroup ST
- *  @{
- */
+  *  @{
+  */
 
 /** @addtogroup LIB_GNSS
- *  @{
- */
- 
+  *  @{
+  */
+
 /** @addtogroup LibGNSS
- *  @{
- */
+  *  @{
+  */
 
 #ifdef USE_FREE_RTOS
 #include "cmsis_os.h"
-#define OS_Delay osDelay
+#define OS_DELAY osDelay
 #else
-#define OS_Delay GNSS_Wrapper_Delay
+#define OS_DELAY GNSS_Wrapper_Delay
 #endif /* USE_FREE_RTOS */
 
 /** @defgroup GNSS_DATA_FUNCTIONS GNSS DATA FUNCTIONS
- *  @brief Prototypes of the API allowing the application to interface the driver
- *  and interact with GNSS module (sending commands, retrieving parsed NMEA info, etc.).
- *  The implementation is up to the application according to specific needs.
- *  @{
- */
+  *  @brief Prototypes of the API allowing the application to interface the driver
+  *  and interact with GNSS module (sending commands, retrieving parsed NMEA info, etc.).
+  *  The implementation is up to the application according to specific needs.
+  *  @{
+  */
 
 /* Exported functions prototypes ---------------------------------------------*/
-/**	
- * @brief  This function puts a string on the console (via UART).
- * @param  pBuffer The string that contains the data to be written on the console
- * @retval None
- */
+/**
+  * @brief  This function puts a string on the console (via UART).
+  * @param  pBuffer The string that contains the data to be written on the console
+  * @retval None
+  */
 int32_t GNSS_Wrapper_Send(uint8_t *buffer, uint16_t length);
 int32_t GNSS_Wrapper_Reset(void);
 void    GNSS_Wrapper_Delay(uint32_t Delay);
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
-  
-/**
- * @}
- */
-  
-/**
- * @}
- */ 
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 #ifdef __cplusplus
 }

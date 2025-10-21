@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -152,78 +152,32 @@ TESEO_LIV3F_Queue_t *teseo_queue_init(void);
 void teseo_queue_deinit(TESEO_LIV3F_Queue_t * queue);
 
 /**
- * @brief This function checks the Teseo queue to see the first buffer slot
- * that contains NMEA data.
- *
- * Once this buffer slot is identified, the address of the buffer slot is 
- * returned from which the message is read by the application.
- *
- * @pre Teseo object should be initialized.
- *
- * @param pTeseoQueue Pointer to the Teseo queue.
- * 
- * @return Address of the empty buffer in Teseo object.
- *
- * @remarks This API is internally managed by GNSS library and should not be called
- *          by the application.
+ * @brief  Low level driver function to get a new buffer (queue message) to be written.
+ * @param  pTeseoQueue The message queue
+ * @retval The message retrieved
  */
 TESEO_LIV3F_Msg_t *teseo_queue_claim_wr_buffer(TESEO_LIV3F_Queue_t *pTeseoQueue);
 
 /**
- * @brief This function compares the message against the message that is in the 
- * queue.
- *
- * If a match is obtained, then the particular buffer index is marked
- * as writable. This allows a new NMEA incoming message to be written into
- * the buffer.
- *
- * @pre Teseo object should be initialized.
- *
- * @param pTeseoQueue Address of queue as part of Teseo object.
- * @param pTeseoMsg Address of the buffer in which incoming NMEA message is stored.
- * 
- * @return None
- *
- * @remarks This API is internally managed by GNSS library and should not be called
- *          by the application.
+ * @brief  Low level driver function to release a new buffer (queue message) to be written.
+ * @param  pTeseoQueue The message queue
+ * @param  pMsg        The message to be released for a new write
+ * @retval None
  */
 void teseo_queue_release_wr_buffer(TESEO_LIV3F_Queue_t *pTeseoQueue, TESEO_LIV3F_Msg_t *pMsg);
 
 /**
- * @brief This function claims the read buffer from the Teseo queue.
- *
- * This function checks the Teseo queue to see the first buffer slot
- * that contains NMEA data. Once this buffer slot is identified, the address 
- * of the buffer slot is returned from which the message is read by the application.
- *
- * @pre Teseo object should be initialized.
- *
- * @param pTeseoQueue Address of queue as part of Teseo object.
- * 
- * @return Address of the buffer containing NMEA message.
- *
- * @remarks This API is internally managed by GNSS library and should not be called
- *          by the application.
+ * @brief  Low level driver function to get a new buffer (queue message) to be read.
+ * @param  pTeseoQueue The message queue
+ * @retval The message retrieved
  */
 const TESEO_LIV3F_Msg_t *teseo_queue_claim_rd_buffer(TESEO_LIV3F_Queue_t *pTeseoQueue);
 
 /**
- * @brief This function releases the read buffer in the Teseo queue.
- *
- * This function compares the message against the message that is in the 
- * queue. If a match is obtained, then the particular buffer index is marked
- * as writable. This allows a new NMEA incoming message to be written into
- * the buffer.
- *
- * @pre Teseo object should be initialized.
- *
- * @param pTeseoQueue Address of queue as part of Teseo object.
- * @param pTeseoMsg Address of the buffer in which incoming NMEA message is stored.
- * 
- * @return None
- *
- * @remarks This API is internally managed by GNSS library and should not be called
- *          by the application.
+ * @brief  Low level driver function to release a new buffer (queue message) to be read.
+ * @param  pTeseoQueue The message queue
+ * @param  pMsg        The message to be released for a new read
+ * @retval None
  */
 void teseo_queue_release_rd_buffer(TESEO_LIV3F_Queue_t *pTeseoQueue, const TESEO_LIV3F_Msg_t *pMsg);
 

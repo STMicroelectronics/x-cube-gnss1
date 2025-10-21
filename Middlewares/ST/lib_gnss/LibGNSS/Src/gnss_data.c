@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -42,16 +42,7 @@ static uint8_t gnssCmd[CMD_SZ];
 /* Private functions ---------------------------------------------------------*/
 
 /* Public functions ----------------------------------------------------------*/
-int16_t minute_part(float64_t mod){
-	int16_t minute_whole_part;
-	minute_whole_part = (int16_t) mod;
-	return minute_whole_part;
-}
-float64_t seconds(float64_t mod, int16_t minute){
-	float64_t seconds;
-	seconds = (mod-minute)*60.0;
-	return seconds;
-}
+
 /* Sends a command to the GNSS module. */
 void GNSS_DATA_SendCommand(uint8_t *pCommand)
 {
@@ -67,8 +58,7 @@ void GNSS_DATA_SendCommand(uint8_t *pCommand)
     do
     {
       status = GNSS_Wrapper_Send(gnssCmd, (uint16_t)(strlen((char *)gnssCmd)));
-    }
-    while(status != 0);
+    } while (status != 0);
   }
 }
 
@@ -76,7 +66,7 @@ void GNSS_DATA_SendCommand(uint8_t *pCommand)
 void GNSS_DATA_GetValidInfo(GNSSParser_Data_t *pGNSSParser_Data)
 {
 
-  if(pGNSSParser_Data->gpgga_data.valid > INVALID)
+  if (pGNSSParser_Data->gpgga_data.valid > INVALID)
   {
     float64_t lat_mod = fmod(pGNSSParser_Data->gpgga_data.xyz.lat, 100.0);
     float64_t lon_mod = fmod(pGNSSParser_Data->gpgga_data.xyz.lon, 100.0);
@@ -87,17 +77,15 @@ void GNSS_DATA_GetValidInfo(GNSSParser_Data_t *pGNSSParser_Data)
                    pGNSSParser_Data->gpgga_data.utc.ss);
     PRINT_INFO((char *)msg);
 
-    (void)snprintf((char *)msg, MSG_SZ, "Latitude:\t\t[ %.0f' %d'' %f\" %c ]\n\r",
+    (void)snprintf((char *)msg, MSG_SZ, "Latitude:\t\t[ %.0f' %d'' %c ]\n\r",
                    (pGNSSParser_Data->gpgga_data.xyz.lat - lat_mod) / 100.0,
-                   minute_part(lat_mod),
-				   seconds(lat_mod,minute_part(lat_mod)),
+                   (int16_t)lat_mod,
                    pGNSSParser_Data->gpgga_data.xyz.ns);
     PRINT_INFO((char *)msg);
 
-    (void)snprintf((char *)msg, MSG_SZ, "Longitude:\t\t[ %.0f' %d'' %f\" %c ]\n\r",
+    (void)snprintf((char *)msg, MSG_SZ, "Longitude:\t\t[ %.0f' %d'' %c ]\n\r",
                    (pGNSSParser_Data->gpgga_data.xyz.lon - lon_mod) / 100.0,
-				   minute_part(lon_mod),
-				   seconds(lon_mod,minute_part(lon_mod)),
+                   (int16_t)lon_mod,
                    pGNSSParser_Data->gpgga_data.xyz.ew);
     PRINT_INFO((char *)msg);
 
@@ -108,7 +96,6 @@ void GNSS_DATA_GetValidInfo(GNSSParser_Data_t *pGNSSParser_Data)
     (void)snprintf((char *)msg, MSG_SZ, "HDOP:\t\t\t[ %.1f ]\n\r",
                    pGNSSParser_Data->gpgga_data.acc);
     PRINT_INFO((char *)msg);
-    
 
     (void)snprintf((char *)msg, MSG_SZ, "Altitude:\t\t[ %.2f%c ]\n\r",
                    pGNSSParser_Data->gpgga_data.xyz.alt,
@@ -138,9 +125,9 @@ void GNSS_DATA_GetValidInfo(GNSSParser_Data_t *pGNSSParser_Data)
 int32_t GNSS_DATA_TrackGotPos(GNSSParser_Data_t *pGNSSParser_Data, uint32_t how_many, uint32_t time)
 {
   int32_t tracked = 0;
-  for(uint16_t i = 0; i < (uint16_t)how_many; i++)
+  for (uint16_t i = 0; i < (uint16_t)how_many; i++)
   {
-    if(pGNSSParser_Data->gpgga_data.valid == INVALID)
+    if (pGNSSParser_Data->gpgga_data.valid == INVALID)
     {
       break;
     }
@@ -150,7 +137,7 @@ int32_t GNSS_DATA_TrackGotPos(GNSSParser_Data_t *pGNSSParser_Data, uint32_t how_
     (void)snprintf((char *)msg, MSG_SZ,  "Position %d just get.\r\n", i + 1U);
 
     PRINT_INFO((char *)msg);
-    if(pGNSSParser_Data->debug == DEBUG_ON)
+    if (pGNSSParser_Data->debug == DEBUG_ON)
     {
       float64_t lat_mod = fmod(pGNSSParser_Data->gpgga_data.xyz.lat, 100.0);
       float64_t lon_mod = fmod(pGNSSParser_Data->gpgga_data.xyz.lon, 100.0);
@@ -166,7 +153,7 @@ int32_t GNSS_DATA_TrackGotPos(GNSSParser_Data_t *pGNSSParser_Data, uint32_t how_
       (void)snprintf((char *)msg, MSG_SZ, "Latitude:\t\t[ %.0f' %d'' %c ]\n\r",
                      (pGNSSParser_Data->gpgga_data.xyz.lat - lat_mod) / 100.0,
                      (int16_t)lat_mod,
-                     pGNSSParser_Data->gpgga_data.xyz.ns);       
+                     pGNSSParser_Data->gpgga_data.xyz.ns);
       PRINT_INFO((char *)msg);
 
       (void)snprintf((char *)msg, MSG_SZ, "Longitude:\t\t[ %.0f' %d'' %c ]\n\r",
@@ -193,16 +180,16 @@ int32_t GNSS_DATA_TrackGotPos(GNSSParser_Data_t *pGNSSParser_Data, uint32_t how_
                      pGNSSParser_Data->gpgga_data.geoid.mis);
       PRINT_INFO((char *)msg);
 
-      (void)snprintf((char*)msg, MSG_SZ, "Diff update:\t\t[ %d ]\n\r",
+      (void)snprintf((char *)msg, MSG_SZ, "Diff update:\t\t[ %d ]\n\r",
                      pGNSSParser_Data->gpgga_data.update);
       PRINT_INFO((char *)msg);
 
       PRINT_INFO("\n\n\r");
     }
     NMEA_Copy_Data(&stored_positions[i], pGNSSParser_Data->gpgga_data);
-    if(time != 0U)
+    if (time != 0U)
     {
-      (void)OS_Delay(time * 1000U);
+      (void)OS_DELAY(time * 1000U);
     }
   }
   return tracked;
@@ -211,7 +198,7 @@ int32_t GNSS_DATA_TrackGotPos(GNSSParser_Data_t *pGNSSParser_Data, uint32_t how_
 /*  Puts to console all the position got by a tracking position process */
 void GNSS_DATA_PrintTrackedPositions(uint32_t how_many)
 {
-  for(uint16_t i = 0; i < (uint16_t)how_many; i++)
+  for (uint16_t i = 0; i < (uint16_t)how_many; i++)
   {
     float64_t lat_mod = fmod(stored_positions[i].xyz.lat, 100.0);
     float64_t lon_mod = fmod(stored_positions[i].xyz.lon, 100.0);
@@ -239,7 +226,7 @@ void GNSS_DATA_PrintTrackedPositions(uint32_t how_many)
                    stored_positions[i].sats);
     PRINT_INFO((char *)msg);
 
-    (void)snprintf((char *)msg, MSG_SZ,  "HDOP:\t\t\t[ %.1f ]\n\r",
+    (void)snprintf((char *)msg, MSG_SZ,  "Position accuracy:\t[ %.1f ]\n\r",
                    stored_positions[i].acc);
     PRINT_INFO((char *)msg);
 
@@ -270,29 +257,29 @@ void GNSS_DATA_GetGNSInfo(GNSSParser_Data_t *pGNSSParser_Data)
                  pGNSSParser_Data->gns_data.constellation);
   PRINT_INFO((char *)msg);
 
-  if (strcmp((char*)pGNSSParser_Data->gns_data.constellation, "$GPGNS") == 0)
+  if (strcmp((char *)pGNSSParser_Data->gns_data.constellation, "$GPGNS") == 0)
   {
-    PRINT_INFO("-- only GPS constellation is enabled\n\r");  
+    PRINT_INFO("-- only GPS constellation is enabled\n\r");
   }
-  else if (strcmp((char*)pGNSSParser_Data->gns_data.constellation, "$GLGNS") == 0)
+  else if (strcmp((char *)pGNSSParser_Data->gns_data.constellation, "$GLGNS") == 0)
   {
     PRINT_INFO("-- only GLONASS constellation is enabled\n\r");
   }
-  else if (strcmp((char*)pGNSSParser_Data->gns_data.constellation, "$GAGNS") == 0)
+  else if (strcmp((char *)pGNSSParser_Data->gns_data.constellation, "$GAGNS") == 0)
   {
     PRINT_INFO("-- only GALILEO constellation is enabled\n\r");
   }
-  else if (strcmp((char*)pGNSSParser_Data->gns_data.constellation, "$BDGNS") == 0)
+  else if (strcmp((char *)pGNSSParser_Data->gns_data.constellation, "$BDGNS") == 0)
   {
-    PRINT_INFO("-- only BEIDOU constellation is enabled\n\r");    
+    PRINT_INFO("-- only BEIDOU constellation is enabled\n\r");
   }
-  else if (strcmp((char*)pGNSSParser_Data->gns_data.constellation, "$QZGNS") == 0)
+  else if (strcmp((char *)pGNSSParser_Data->gns_data.constellation, "$QZGNS") == 0)
   {
     PRINT_INFO("-- only QZSS constellation is enabled\n\r");
   }
-  else if (strcmp((char*)pGNSSParser_Data->gns_data.constellation, "$GNGSV") == 0)
+  else if (strcmp((char *)pGNSSParser_Data->gns_data.constellation, "$GNGSV") == 0)
   {
-    PRINT_INFO("-- message to report all satellites for all enabled constellations\n\r");   
+    PRINT_INFO("-- message to report all satellites for all enabled constellations\n\r");
   }
   else
   {
@@ -306,17 +293,16 @@ void GNSS_DATA_GetGNSInfo(GNSSParser_Data_t *pGNSSParser_Data)
                  pGNSSParser_Data->gns_data.utc.mm,
                  pGNSSParser_Data->gns_data.utc.ss);
   PRINT_INFO((char *)msg);
-  (void)snprintf((char *)msg, MSG_SZ, "Latitude:\t\t[ %.0f' %d'' %f\" %c ]\n\r",
-                 (pGNSSParser_Data->gns_data.xyz.lat - lat_mod) / 100.0,
-                 minute_part(lat_mod),
-				 seconds(lat_mod,minute_part(lat_mod)),
-                 pGNSSParser_Data->gns_data.xyz.ns);
 
+  (void)snprintf((char *)msg, MSG_SZ, "Latitude:\t\t[ %.0f' %d'' %c ]\n\r",
+                 (pGNSSParser_Data->gns_data.xyz.lat - lat_mod) / 100.0,
+                 (int16_t)lat_mod,
+                 pGNSSParser_Data->gns_data.xyz.ns);
   PRINT_INFO((char *)msg);
-  (void)snprintf((char *)msg, MSG_SZ, "Longitude:\t\t[ %.0f' %d'' %f\" %c ]\n\r",
+
+  (void)snprintf((char *)msg, MSG_SZ, "Longitude:\t\t[ %.0f' %d'' %c ]\n\r",
                  (pGNSSParser_Data->gns_data.xyz.lon - lon_mod) / 100.0,
-                 minute_part(lon_mod),
-				 seconds(lon_mod,minute_part(lon_mod)),
+                 (int16_t)lon_mod,
                  pGNSSParser_Data->gns_data.xyz.ew);
   PRINT_INFO((char *)msg);
 
@@ -335,14 +321,14 @@ void GNSS_DATA_GetGNSInfo(GNSSParser_Data_t *pGNSSParser_Data)
   (void)snprintf((char *)msg, MSG_SZ, "Geoid infos:\t\t[ %.01f ]\n\r",
                  pGNSSParser_Data->gns_data.geo_sep);
   PRINT_INFO((char *)msg);
-    
+
   PRINT_INFO("\n\n\r>");
 }
 
 
 /* Puts to console the info about GPS Pseudorange Noise Statistics */
 void GNSS_DATA_GetGPGSTInfo(GNSSParser_Data_t *pGNSSParser_Data)
-{  
+{
   PRINT_INFO("\r\n");
 
   (void)snprintf((char *)msg, MSG_SZ,  "UTC:\t\t\t[ %02d:%02d:%02d ]\n\r",
@@ -414,17 +400,15 @@ void GNSS_DATA_GetGPRMCInfo(GNSSParser_Data_t *pGNSSParser_Data)
   float64_t lat_mod = fmod(pGNSSParser_Data->gprmc_data.xyz.lat, 100.0);
   float64_t lon_mod = fmod(pGNSSParser_Data->gprmc_data.xyz.lon, 100.0);
 
-  (void)snprintf((char *)msg, MSG_SZ, "Latitude:\t\t\t[ %.0f' %02d'' %f\" %c ]\n\r",
+  (void)snprintf((char *)msg, MSG_SZ, "Latitude:\t\t\t[ %.0f' %02d'' %c ]\n\r",
                  (pGNSSParser_Data->gprmc_data.xyz.lat - lat_mod) / 100.0,
-                 minute_part(lat_mod),
-				 seconds(lat_mod,minute_part(lat_mod)),
+                 (int16_t)lat_mod,
                  pGNSSParser_Data->gprmc_data.xyz.ns);
   PRINT_INFO((char *)msg);
 
-  (void)snprintf((char *)msg, MSG_SZ, "Longitude:\t\t\t[ %.0f' %02d'' %f\" %c ]\n\r",
+  (void)snprintf((char *)msg, MSG_SZ, "Longitude:\t\t\t[ %.0f' %02d'' %c ]\n\r",
                  (pGNSSParser_Data->gprmc_data.xyz.lon - lon_mod) / 100.0,
-                 minute_part(lon_mod),
-				 seconds(lon_mod,minute_part(lon_mod)),
+                 (int16_t)lon_mod,
                  pGNSSParser_Data->gprmc_data.xyz.ew);
   PRINT_INFO((char *)msg);
 
@@ -436,14 +420,14 @@ void GNSS_DATA_GetGPRMCInfo(GNSSParser_Data_t *pGNSSParser_Data)
                  pGNSSParser_Data->gprmc_data.trackgood);
   PRINT_INFO((char *)msg);
 
-/*
-  (void)snprintf((char *)msg, MSG_SZ, "Date (ddmmyy):\t\t\t[ %ld ]\n\r",
-                 pGNSSParser_Data->gprmc_data.date);
-*/ /* Replaced by the following implementation for compatibility with AC6 and gcc compilers */
+  /*
+    (void)snprintf((char *)msg, MSG_SZ, "Date (ddmmyy):\t\t\t[ %ld ]\n\r",
+                   pGNSSParser_Data->gprmc_data.date);
+  */ /* Replaced by the following implementation for compatibility with AC6 and gcc compilers */
   (void)snprintf((char *)msg, MSG_SZ, "Date (ddmmyy):\t\t\t[ %02d%02d%02d ]\n\r",
-                 (int16_t)((pGNSSParser_Data->gprmc_data.date/10000)),
-                 (int16_t)((pGNSSParser_Data->gprmc_data.date/100) - (100*(pGNSSParser_Data->gprmc_data.date/10000))),
-                 (int16_t)(pGNSSParser_Data->gprmc_data.date - (100*(pGNSSParser_Data->gprmc_data.date/100))));
+                 (int16_t)((pGNSSParser_Data->gprmc_data.date / 10000)),
+                 (int16_t)((pGNSSParser_Data->gprmc_data.date / 100) - (100 * (pGNSSParser_Data->gprmc_data.date / 10000))),
+                 (int16_t)(pGNSSParser_Data->gprmc_data.date - (100 * (pGNSSParser_Data->gprmc_data.date / 100))));
   PRINT_INFO((char *)msg);
 
   (void)snprintf((char *)msg, MSG_SZ, "Magnetic Variation:\t\t[ %.01f ]\n\r",
@@ -451,10 +435,12 @@ void GNSS_DATA_GetGPRMCInfo(GNSSParser_Data_t *pGNSSParser_Data)
   PRINT_INFO((char *)msg);
 
   if ((pGNSSParser_Data->gprmc_data.mag_var_dir != (uint8_t)'E') &&
-      (pGNSSParser_Data->gprmc_data.mag_var_dir != (uint8_t)'W')) {
+      (pGNSSParser_Data->gprmc_data.mag_var_dir != (uint8_t)'W'))
+  {
     (void)snprintf((char *)msg, MSG_SZ, "Magnetic Var. Direction:\t[ - ]\n\r");
   }
-  else {
+  else
+  {
     (void)snprintf((char *)msg, MSG_SZ, "Magnetic Var. Direction:\t[ %c ]\n\r",
                    pGNSSParser_Data->gprmc_data.mag_var_dir);
   }
@@ -474,25 +460,25 @@ void GNSS_DATA_GetGSAInfo(GNSSParser_Data_t *pGNSSParser_Data)
                  pGNSSParser_Data->gsa_data.constellation);
   PRINT_INFO((char *)msg);
 
-  if (strcmp((char*)pGNSSParser_Data->gsa_data.constellation, "$GPGSA") == 0)
+  if (strcmp((char *)pGNSSParser_Data->gsa_data.constellation, "$GPGSA") == 0)
   {
-    PRINT_INFO("-- only GPS constellation is enabled\n\r");    
+    PRINT_INFO("-- only GPS constellation is enabled\n\r");
   }
-  else if (strcmp((char*)pGNSSParser_Data->gsa_data.constellation, "$GLGSA") == 0)
+  else if (strcmp((char *)pGNSSParser_Data->gsa_data.constellation, "$GLGSA") == 0)
   {
     PRINT_INFO("-- only GLONASS constellation is enabled\n\r");
   }
-  else if (strcmp((char*)pGNSSParser_Data->gsa_data.constellation, "$GAGSA") == 0)
+  else if (strcmp((char *)pGNSSParser_Data->gsa_data.constellation, "$GAGSA") == 0)
   {
     PRINT_INFO("-- only GALILEO constellation is enabled\n\r");
   }
-  else if (strcmp((char*)pGNSSParser_Data->gsa_data.constellation, "$BDGSA") == 0)
+  else if (strcmp((char *)pGNSSParser_Data->gsa_data.constellation, "$BDGSA") == 0)
   {
     PRINT_INFO("-- only BEIDOU constellation is enabled\n\r");
   }
-  else if (strcmp((char*)pGNSSParser_Data->gsa_data.constellation, "$GNGSA") == 0)
+  else if (strcmp((char *)pGNSSParser_Data->gsa_data.constellation, "$GNGSA") == 0)
   {
-     PRINT_INFO("-- more than one constellation is enabled\n\r");   
+    PRINT_INFO("-- more than one constellation is enabled\n\r");
   }
   else
   {
@@ -537,10 +523,10 @@ void GNSS_DATA_GetGSAInfo(GNSSParser_Data_t *pGNSSParser_Data)
     /* nothing to do */
   }
 
-  int16_t *sat_prn = (int16_t*)(pGNSSParser_Data->gsa_data.sat_prn);
-  for (uint8_t i=0; i<12U; i++)
-  {  
-    (void)snprintf((char *)msg, MSG_SZ, "SatPRN%02d:\t\t[ %d ]\n\r", i+1U,
+  int16_t *sat_prn = (int16_t *)(pGNSSParser_Data->gsa_data.sat_prn);
+  for (uint8_t i = 0; i < 12U; i++)
+  {
+    (void)snprintf((char *)msg, MSG_SZ, "SatPRN%02d:\t\t[ %d ]\n\r", i + 1U,
                    (*(&sat_prn[i])));
     PRINT_INFO((char *)msg);
   }
@@ -570,38 +556,38 @@ void GNSS_DATA_GetGSVInfo(GNSSParser_Data_t *pGNSSParser_Data)
   int16_t current_sats = pGNSSParser_Data->gsv_data.current_sats;
   int16_t amount = pGNSSParser_Data->gsv_data.amount;
   int16_t number = pGNSSParser_Data->gsv_data.number;
-  
+
   uint8_t degree_ext_ASCII_char = 248;
-  
+
   PRINT_INFO("\r\n");
-  
+
   (void)snprintf((char *)msg, MSG_SZ,  "Constellation:\t\t[ %s ]\t",
                  pGNSSParser_Data->gsv_data.constellation);
   PRINT_INFO((char *)msg);
-  
-  if (strcmp((char*)pGNSSParser_Data->gsv_data.constellation, "$GPGSV") == 0)
+
+  if (strcmp((char *)pGNSSParser_Data->gsv_data.constellation, "$GPGSV") == 0)
   {
-    PRINT_INFO("-- message to report all GPS satellites\n\r");    
+    PRINT_INFO("-- message to report all GPS satellites\n\r");
   }
-  else if (strcmp((char*)pGNSSParser_Data->gsv_data.constellation, "$GLGSV") == 0)
+  else if (strcmp((char *)pGNSSParser_Data->gsv_data.constellation, "$GLGSV") == 0)
   {
     PRINT_INFO("-- message to report all GLONASS satellites\n\r");
   }
-  else if (strcmp((char*)pGNSSParser_Data->gsv_data.constellation, "$GAGSV") == 0)
+  else if (strcmp((char *)pGNSSParser_Data->gsv_data.constellation, "$GAGSV") == 0)
   {
     PRINT_INFO("-- message to report all GALILEO satellites\n\r");
   }
-  else if (strcmp((char*)pGNSSParser_Data->gsv_data.constellation, "$BDGSV") == 0)
+  else if (strcmp((char *)pGNSSParser_Data->gsv_data.constellation, "$BDGSV") == 0)
   {
     PRINT_INFO("-- message to report all BEIDOU satellites\n\r");
   }
-  else if (strcmp((char*)pGNSSParser_Data->gsv_data.constellation, "$QZGSV") == 0)
+  else if (strcmp((char *)pGNSSParser_Data->gsv_data.constellation, "$QZGSV") == 0)
   {
     PRINT_INFO("-- message to report all QZSS satellites\n\r");
   }
-  else if (strcmp((char*)pGNSSParser_Data->gsv_data.constellation, "$GNGSV") == 0)
+  else if (strcmp((char *)pGNSSParser_Data->gsv_data.constellation, "$GNGSV") == 0)
   {
-     PRINT_INFO("-- message to report all satellites for all enabled constellations\n\r");   
+    PRINT_INFO("-- message to report all satellites for all enabled constellations\n\r");
   }
   else
   {
@@ -611,26 +597,29 @@ void GNSS_DATA_GetGSVInfo(GNSSParser_Data_t *pGNSSParser_Data)
   (void)snprintf((char *)msg, MSG_SZ, "GSV message:\t\t[ %d of %d ]\n\r", number, amount);
   PRINT_INFO((char *)msg);
 
-  (void)snprintf((char *)msg, MSG_SZ, "Num of Satellites:\t[ %d of %d ]\n\r", pGNSSParser_Data->gsv_data.current_sats, tot_sats);
+  (void)snprintf((char *)msg, MSG_SZ, "Num of Satellites:\t[ %d of %d ]\n\r", pGNSSParser_Data->gsv_data.current_sats,
+                 tot_sats);
   PRINT_INFO((char *)msg);
 
   PRINT_INFO("\n\r");
 
-  for (i=0; i<current_sats; i++)
+  for (i = 0; i < current_sats; i++)
   {
-    (void)snprintf((char *)msg, MSG_SZ, "Sat%02dPRN:\t\t[ %03d ]\n\r", i+1+((number-1)*GSV_MSG_SATS),
+    (void)snprintf((char *)msg, MSG_SZ, "Sat%02dPRN:\t\t[ %03d ]\n\r", i + 1 + ((number - 1)*GSV_MSG_SATS),
                    pGNSSParser_Data->gsv_data.gsv_sat_i[i].prn);
     PRINT_INFO((char *)msg);
 
-    (void)snprintf((char *)msg, MSG_SZ, "Sat%02dElev (%c):\t\t[ %03d ]\n\r", i+1+((number-1)*GSV_MSG_SATS), degree_ext_ASCII_char,
+    (void)snprintf((char *)msg, MSG_SZ, "Sat%02dElev (%c):\t\t[ %03d ]\n\r", i + 1 + ((number - 1)*GSV_MSG_SATS),
+                   degree_ext_ASCII_char,
                    pGNSSParser_Data->gsv_data.gsv_sat_i[i].elev);
     PRINT_INFO((char *)msg);
 
-    (void)snprintf((char *)msg, MSG_SZ, "Sat%02dAzim (%c):\t\t[ %03d ]\n\r", i+1+((number-1)*GSV_MSG_SATS), degree_ext_ASCII_char,
+    (void)snprintf((char *)msg, MSG_SZ, "Sat%02dAzim (%c):\t\t[ %03d ]\n\r", i + 1 + ((number - 1)*GSV_MSG_SATS),
+                   degree_ext_ASCII_char,
                    pGNSSParser_Data->gsv_data.gsv_sat_i[i].azim);
     PRINT_INFO((char *)msg);
 
-    (void)snprintf((char *)msg, MSG_SZ, "Sat%02dCN0 (dB):\t\t[ %03d ]\n\r", i+1+((number-1)*GSV_MSG_SATS),
+    (void)snprintf((char *)msg, MSG_SZ, "Sat%02dCN0 (dB):\t\t[ %03d ]\n\r", i + 1 + ((number - 1)*GSV_MSG_SATS),
                    pGNSSParser_Data->gsv_data.gsv_sat_i[i].cn0);
     PRINT_INFO((char *)msg);
 
@@ -644,7 +633,7 @@ void GNSS_DATA_GetGSVInfo(GNSSParser_Data_t *pGNSSParser_Data)
 /* Puts to console the info about FW version. */
 void GNSS_DATA_GetPSTMVerInfo(GNSSParser_Data_t *pGNSSParser_Data)
 {
-  if(strlen((char *)pGNSSParser_Data->pstmver_data.pstmver_string) != 0U )
+  if (strlen((char *)pGNSSParser_Data->pstmver_data.pstmver_string) != 0U)
   {
     PRINT_INFO("\r\n");
     (void)snprintf((char *)msg, MSG_SZ,  "Version Info:\t\t[ %s ]\t",
@@ -661,25 +650,88 @@ void GNSS_DATA_GetPSTMVerInfo(GNSSParser_Data_t *pGNSSParser_Data)
 
   PRINT_INFO("\n\r>");
 }
+/* Puts to console the info about PSTMSETPAR result. */
+void GNSS_DATA_GetPSTMSetParInfo(GNSSParser_Data_t *pGNSSParser_Data)
+{
+  if (strlen((char *)pGNSSParser_Data->pstmsetparok_data.result) != 0U)
+  {
+    PRINT_INFO("\r\n");
+    (void)snprintf((char *)msg, MSG_SZ, "\r Result:[ %s ]\t",
+                   pGNSSParser_Data->pstmsetparok_data.result);
+    PRINT_INFO((char *)msg);
+
+    PRINT_INFO("\n\n\r");
+  }
+  else
+  {
+    (void)snprintf((char *)msg, MSG_SZ, "No SetPar result available.\n\n\r");
+    PRINT_INFO((char *)msg);
+  }
+
+  PRINT_INFO("\n\r>");
+}
+
+/* Puts to console the info about $PSTMGETPAR command. */
+void GNSS_DATA_GetPSTMGetParInfo(GNSSParser_Data_t *pGNSSParser_Data)
+{
+  BOOL has_data = FALSE;
+  size_t offset = 0;
+
+  memset(msg, 0, MSG_SZ);
+  PRINT_INFO("\n\r Result:\r\n");
+
+  for (int i = 0; i < MAX_FIELDS; i++)
+  {
+    const char *field = (char *)pGNSSParser_Data->pstmgetpar_data.pstmgetpar_string[i];
+    if (strlen(field) != 0U)
+    {
+      has_data = TRUE;
+      int written = snprintf((char *)msg + offset, MSG_SZ - offset, " [%s] ", field);
+      if ((written < 0) || ((size_t)written >= (MSG_SZ - offset)))
+      {
+        break; /* buffer full or error */
+      }
+      offset += (size_t)written;
+    }
+  }
+  const char *result = (char *)pGNSSParser_Data->pstmsetparok_data.result;
+  if (strlen(result) != 0U)
+  {
+    int written = snprintf((char *)msg + offset, MSG_SZ - offset, "[%s]", result);
+    if ((written > 0) && ((size_t)written < (MSG_SZ - offset)))
+    {
+      offset += (size_t)written;
+    }
+  }
+
+  if ((!has_data) && (strlen(result) == 0))
+  {
+    snprintf((char *)msg, MSG_SZ, "No parameter info or result available.");
+  }
+
+  PRINT_INFO((char *)msg);
+  PRINT_INFO("\r\n>");
+}
 
 /* Puts to console the geofence infos each time an alarm is received. */
 void GNSS_DATA_GetGeofenceInfo(GNSSParser_Data_t *pGNSSParser_Data)
 {
-  uint8_t *geofenceCirclePosition[] = {
+  uint8_t *geofenceCirclePosition[] =
+  {
     (uint8_t *)"Unknown",
     (uint8_t *)"Outside",
     (uint8_t *)"Boundary",
     (uint8_t *)"Inside"
   };
 
-  if(pGNSSParser_Data->geofence_data.op == GNSS_FEATURE_EN_MSG)
+  if (pGNSSParser_Data->geofence_data.op == GNSS_FEATURE_EN_MSG)
   {
-    if(pGNSSParser_Data->geofence_data.result == GNSS_OP_OK)
+    if (pGNSSParser_Data->geofence_data.result == GNSS_OP_OK)
     {
       (void)snprintf((char *)msg, MSG_SZ,  "Geofence sub-system reply:\t[ %s ] (Saving params...)\t",
                      "GEOFENCE SUB-SYSTEM OK");
 
-      OS_Delay(500); /* Seems to mitigate error events in case of I2C channel */
+      OS_DELAY(500); /* Seems to mitigate error events in case of I2C channel */
       GNSS_DATA_SendCommand((uint8_t *)"$PSTMSAVEPAR");
     }
     else
@@ -689,9 +741,9 @@ void GNSS_DATA_GetGeofenceInfo(GNSSParser_Data_t *pGNSSParser_Data)
     }
     PRINT_INFO((char *)msg);
   }
-  else if(pGNSSParser_Data->geofence_data.op == GNSS_GEOFENCE_CFG_MSG)
+  else if (pGNSSParser_Data->geofence_data.op == GNSS_GEOFENCE_CFG_MSG)
   {
-    if(pGNSSParser_Data->geofence_data.result == GNSS_OP_OK)
+    if (pGNSSParser_Data->geofence_data.result == GNSS_OP_OK)
     {
       (void)snprintf((char *)msg, MSG_SZ,  "Geofence Configuration:\t[ %s ]\t",
                      "GEOFENCE CFG OK");
@@ -703,7 +755,7 @@ void GNSS_DATA_GetGeofenceInfo(GNSSParser_Data_t *pGNSSParser_Data)
     }
     PRINT_INFO((char *)msg);
   }
-  else if(pGNSSParser_Data->geofence_data.op == GNSS_GEOFENCE_STATUS_MSG)
+  else if (pGNSSParser_Data->geofence_data.op == GNSS_GEOFENCE_STATUS_MSG)
   {
     PRINT_INFO("\r\n");
     (void)snprintf((char *)msg, MSG_SZ,  "Time/Date:\t\t%02d:%02d:%02d %02d/%02d/%04d\n",
@@ -716,14 +768,14 @@ void GNSS_DATA_GetGeofenceInfo(GNSSParser_Data_t *pGNSSParser_Data)
     PRINT_INFO((char *)msg);
 
     int32_t *geofence_status = pGNSSParser_Data->geofence_data.status;
-    for(uint8_t i = 0; i<MAX_GEOFENCES_NUM; i++)
+    for (uint8_t i = 0; i < MAX_GEOFENCES_NUM; i++)
     {
       (void)snprintf((char *)msg, MSG_SZ,  "Position circle[%d]:\t%s\n",
                      i, geofenceCirclePosition[*(&geofence_status[i])]);
       PRINT_INFO((char *)msg);
     }
   }
-  else if(pGNSSParser_Data->geofence_data.op == GNSS_GEOFENCE_ALARM_MSG)
+  else if (pGNSSParser_Data->geofence_data.op == GNSS_GEOFENCE_ALARM_MSG)
   {
     PRINT_INFO("\r\nGeofence status:\r\n");
     // Print ID - Status
@@ -752,10 +804,10 @@ void GNSS_DATA_GetGeofenceInfo(GNSSParser_Data_t *pGNSSParser_Data)
 
 /* Puts to console the info about Odometer. */
 void GNSS_DATA_GetOdometerInfo(const GNSSParser_Data_t *pGNSSParser_Data)
-{ 
-  if(pGNSSParser_Data->odo_data.op == GNSS_FEATURE_EN_MSG)
+{
+  if (pGNSSParser_Data->odo_data.op == GNSS_FEATURE_EN_MSG)
   {
-    if(pGNSSParser_Data->odo_data.result == GNSS_OP_OK)
+    if (pGNSSParser_Data->odo_data.result == GNSS_OP_OK)
     {
       (void)snprintf((char *)msg, MSG_SZ,  "Odometer sub-system reply:\t[ %s ] (Saving params...)\t",
                      "ODOMETER SUB-SYSTEM OK");
@@ -768,9 +820,9 @@ void GNSS_DATA_GetOdometerInfo(const GNSSParser_Data_t *pGNSSParser_Data)
     }
     PRINT_INFO((char *)msg);
   }
-  else if(pGNSSParser_Data->odo_data.op == GNSS_ODO_START_MSG)
+  else if (pGNSSParser_Data->odo_data.op == GNSS_ODO_START_MSG)
   {
-    if(pGNSSParser_Data->odo_data.result == GNSS_OP_OK)
+    if (pGNSSParser_Data->odo_data.result == GNSS_OP_OK)
     {
       (void)snprintf((char *)msg, MSG_SZ,  "Odometer Operation:\t[ %s ]\t",
                      "START ODOMETER OK");
@@ -782,9 +834,9 @@ void GNSS_DATA_GetOdometerInfo(const GNSSParser_Data_t *pGNSSParser_Data)
     }
     PRINT_INFO((char *)msg);
   }
-  else if(pGNSSParser_Data->odo_data.op == GNSS_ODO_STOP_MSG)
+  else if (pGNSSParser_Data->odo_data.op == GNSS_ODO_STOP_MSG)
   {
-    if(pGNSSParser_Data->odo_data.result == GNSS_OP_OK)
+    if (pGNSSParser_Data->odo_data.result == GNSS_OP_OK)
     {
       (void)snprintf((char *)msg, MSG_SZ,  "Odometer Operation:\t[ %s ]\t",
                      "STOP ODOMETER OK");
@@ -808,10 +860,10 @@ void GNSS_DATA_GetOdometerInfo(const GNSSParser_Data_t *pGNSSParser_Data)
 
 /* Puts to console the info about Datalog. */
 void GNSS_DATA_GetDatalogInfo(const GNSSParser_Data_t *pGNSSParser_Data)
-{ 
-  if(pGNSSParser_Data->datalog_data.op == GNSS_FEATURE_EN_MSG)
+{
+  if (pGNSSParser_Data->datalog_data.op == GNSS_FEATURE_EN_MSG)
   {
-    if(pGNSSParser_Data->datalog_data.result == GNSS_OP_OK)
+    if (pGNSSParser_Data->datalog_data.result == GNSS_OP_OK)
     {
       (void)snprintf((char *)msg, MSG_SZ,  "Datalog sub-system reply:\t[ %s ] (Saving params...)\t",
                      "DATALOG SUB-SYSTEM OK");
@@ -824,9 +876,9 @@ void GNSS_DATA_GetDatalogInfo(const GNSSParser_Data_t *pGNSSParser_Data)
     }
     PRINT_INFO((char *)msg);
   }
-  else if(pGNSSParser_Data->datalog_data.op == GNSS_DATALOG_CFG_MSG)
+  else if (pGNSSParser_Data->datalog_data.op == GNSS_DATALOG_CFG_MSG)
   {
-    if(pGNSSParser_Data->datalog_data.result == GNSS_OP_OK)
+    if (pGNSSParser_Data->datalog_data.result == GNSS_OP_OK)
     {
       (void)snprintf((char *)msg, MSG_SZ,  "Datalog Configuring:\t\t[ %s ]\t",
                      "DATALOG CFG OK");
@@ -838,9 +890,9 @@ void GNSS_DATA_GetDatalogInfo(const GNSSParser_Data_t *pGNSSParser_Data)
     }
     PRINT_INFO((char *)msg);
   }
-  else if(pGNSSParser_Data->datalog_data.op == GNSS_DATALOG_START_MSG)
+  else if (pGNSSParser_Data->datalog_data.op == GNSS_DATALOG_START_MSG)
   {
-    if(pGNSSParser_Data->datalog_data.result == GNSS_OP_OK)
+    if (pGNSSParser_Data->datalog_data.result == GNSS_OP_OK)
     {
       (void)snprintf((char *)msg, MSG_SZ,  "Datalog Start:\t\t[ %s ]\t",
                      "DATALOG START OK");
@@ -852,9 +904,9 @@ void GNSS_DATA_GetDatalogInfo(const GNSSParser_Data_t *pGNSSParser_Data)
     }
     PRINT_INFO((char *)msg);
   }
-  else if(pGNSSParser_Data->datalog_data.op == GNSS_DATALOG_STOP_MSG)
+  else if (pGNSSParser_Data->datalog_data.op == GNSS_DATALOG_STOP_MSG)
   {
-    if(pGNSSParser_Data->datalog_data.result == GNSS_OP_OK)
+    if (pGNSSParser_Data->datalog_data.result == GNSS_OP_OK)
     {
       (void)snprintf((char *)msg, MSG_SZ,  "Datalog Stop:\t\t[ %s ]\t",
                      "DATALOG STOP OK");
@@ -866,9 +918,9 @@ void GNSS_DATA_GetDatalogInfo(const GNSSParser_Data_t *pGNSSParser_Data)
     }
     PRINT_INFO((char *)msg);
   }
-  else if(pGNSSParser_Data->datalog_data.op == GNSS_DATALOG_ERASE_MSG)
+  else if (pGNSSParser_Data->datalog_data.op == GNSS_DATALOG_ERASE_MSG)
   {
-    if(pGNSSParser_Data->datalog_data.result == GNSS_OP_OK)
+    if (pGNSSParser_Data->datalog_data.result == GNSS_OP_OK)
     {
       (void)snprintf((char *)msg, MSG_SZ,  "Datalog Erase:\t\t[ %s ]\t",
                      "DATALOG ERASE OK");
@@ -886,15 +938,15 @@ void GNSS_DATA_GetDatalogInfo(const GNSSParser_Data_t *pGNSSParser_Data)
   }
 
   PRINT_INFO("\n\r>");
-  
+
 }
 
- /* Puts to console the confirmation of an updated message list. */
+/* Puts to console the confirmation of an updated message list. */
 void GNSS_DATA_GetMsglistAck(const GNSSParser_Data_t *pGNSSParser_Data)
-{ 
-  if(pGNSSParser_Data->result == GNSS_OP_OK)
+{
+  if (pGNSSParser_Data->result == GNSS_OP_OK)
   {
-    OS_Delay(500); /* Seems to mitigate error events in case of I2C */
+    OS_DELAY(500); /* Seems to mitigate error events in case of I2C */
     GNSS_DATA_SendCommand((uint8_t *)"$PSTMSAVEPAR");
     (void)snprintf((char *)msg, MSG_SZ,  "Saving NMEA msg configuration...\t");
     PRINT_INFO((char *)msg);
@@ -906,13 +958,13 @@ void GNSS_DATA_GetMsglistAck(const GNSSParser_Data_t *pGNSSParser_Data)
    NOTE: GNSS must be reset for the new saved params to have effect.
 */
 void GNSS_DATA_GetGNSSAck(const GNSSParser_Data_t *pGNSSParser_Data)
-{ 
-  if(pGNSSParser_Data->result == GNSS_OP_OK)
+{
+  if (pGNSSParser_Data->result == GNSS_OP_OK)
   {
     (void)GNSS_Wrapper_Reset();
     (void)snprintf((char *)msg, MSG_SZ,  " Resetting...\t");
     PRINT_INFO((char *)msg);
-    PRINT_INFO("\n\r>");    
+    PRINT_INFO("\n\r>");
   }
 }
 
@@ -943,22 +995,22 @@ void GNSS_DATA_CfgMessageList(int lowMask, int highMask)
 void GNSS_DATA_EnableGeofence(int toggle)
 {
   //$PSTMCFGGEOFENCE,<en>,<tol>*<checksum><cr><lf>
-  (void)snprintf((char *)gnssCmd, CMD_SZ, "$PSTMCFGGEOFENCE,%d,%d",toggle,1);
-  
+  (void)snprintf((char *)gnssCmd, CMD_SZ, "$PSTMCFGGEOFENCE,%d,%d", toggle, 1);
+
   GNSS_DATA_SendCommand(gnssCmd);
 }
 
 /* Configures Geofence */
-void GNSS_DATA_ConfigGeofence(void* gnss_geofence)
+void GNSS_DATA_ConfigGeofence(void *gnss_geofence)
 {
   (void)snprintf((char *)gnssCmd, CMD_SZ, "$PSTMGEOFENCECFG,%d,%d,%d,%lf,%lf,%lf",
-                 ((GNSSGeofence_t*)gnss_geofence)->id,
-                 ((GNSSGeofence_t*)gnss_geofence)->enabled,
-                 ((GNSSGeofence_t*)gnss_geofence)->tolerance,
-                 ((GNSSGeofence_t*)gnss_geofence)->lat,
-                 ((GNSSGeofence_t*)gnss_geofence)->lon,
-                 ((GNSSGeofence_t*)gnss_geofence)->radius);
-  
+                 ((GNSSGeofence_t *)gnss_geofence)->id,
+                 ((GNSSGeofence_t *)gnss_geofence)->enabled,
+                 ((GNSSGeofence_t *)gnss_geofence)->tolerance,
+                 ((GNSSGeofence_t *)gnss_geofence)->lat,
+                 ((GNSSGeofence_t *)gnss_geofence)->lon,
+                 ((GNSSGeofence_t *)gnss_geofence)->radius);
+
   GNSS_DATA_SendCommand(gnssCmd);
 }
 
@@ -966,8 +1018,8 @@ void GNSS_DATA_ConfigGeofence(void* gnss_geofence)
 void GNSS_DATA_EnableOdo(int toggle)
 {
   //$PSTMCFGODO,<en>,<enmsg>,<alarm>*<checksum><cr><lf>
-  (void)snprintf((char *)gnssCmd, CMD_SZ, "$PSTMCFGODO,%d,1,1",toggle);
-  
+  (void)snprintf((char *)gnssCmd, CMD_SZ, "$PSTMCFGODO,%d,1,1", toggle);
+
   GNSS_DATA_SendCommand(gnssCmd);
 }
 
@@ -975,7 +1027,7 @@ void GNSS_DATA_EnableOdo(int toggle)
 void GNSS_DATA_StartOdo(unsigned alarmDistance)
 {
   (void)snprintf((char *)gnssCmd, CMD_SZ, "$PSTMODOSTART,%08x", alarmDistance);
-  
+
   GNSS_DATA_SendCommand(gnssCmd);
 }
 
@@ -983,7 +1035,7 @@ void GNSS_DATA_StartOdo(unsigned alarmDistance)
 void GNSS_DATA_StopOdo(void)
 {
   (void)snprintf((char *)gnssCmd, CMD_SZ, "$PSTMODOSTOP");
-  
+
   GNSS_DATA_SendCommand(gnssCmd);
 }
 
@@ -999,8 +1051,8 @@ void GNSS_DATA_EnableDatalog(int toggle)
                  5, //time interval in seconds between two consecutive logged records
                  0, //minimum speed threshold
                  0  //distance threshold
-                   );
-  
+                );
+
   GNSS_DATA_SendCommand(gnssCmd);
 }
 
@@ -1009,13 +1061,13 @@ void GNSS_DATA_ConfigDatalog(void *gnss_datalog)
 {
   //$PSTMLOGCREATE,<cfg>,<min-rate>,<min-speed>,<min-position>,<logmask>*<checksum><cr><lf>
   (void)snprintf((char *)gnssCmd, CMD_SZ, "$PSTMLOGCREATE,%03x,%u,%u,%u,%d",
-                 ((((GNSSDatalog_t*)gnss_datalog)->enableBufferFullAlarm)<<1)|(((GNSSDatalog_t*)gnss_datalog)->enableCircularBuffer),
-                 ((GNSSDatalog_t*)gnss_datalog)->minRate,
-                 ((GNSSDatalog_t*)gnss_datalog)->minSpeed,
-                 ((GNSSDatalog_t*)gnss_datalog)->minPosition,
-                 ((GNSSDatalog_t*)gnss_datalog)->logMask
-                   );
-  
+                 ((((GNSSDatalog_t *)gnss_datalog)->enableBufferFullAlarm) << 1) | (((GNSSDatalog_t *)gnss_datalog)->enableCircularBuffer),
+                 ((GNSSDatalog_t *)gnss_datalog)->minRate,
+                 ((GNSSDatalog_t *)gnss_datalog)->minSpeed,
+                 ((GNSSDatalog_t *)gnss_datalog)->minPosition,
+                 ((GNSSDatalog_t *)gnss_datalog)->logMask
+                );
+
   GNSS_DATA_SendCommand(gnssCmd);
 }
 
@@ -1023,7 +1075,7 @@ void GNSS_DATA_ConfigDatalog(void *gnss_datalog)
 void GNSS_DATA_StartDatalog(void)
 {
   (void)snprintf((char *)gnssCmd, CMD_SZ, "$PSTMLOGSTART");
-  
+
   GNSS_DATA_SendCommand(gnssCmd);
 }
 
@@ -1031,7 +1083,7 @@ void GNSS_DATA_StartDatalog(void)
 void GNSS_DATA_StopDatalog(void)
 {
   (void)snprintf((char *)gnssCmd, CMD_SZ, "$PSTMLOGSTOP");
-  
+
   GNSS_DATA_SendCommand(gnssCmd);
 }
 
@@ -1039,7 +1091,7 @@ void GNSS_DATA_StopDatalog(void)
 void GNSS_DATA_EraseDatalog(void)
 {
   (void)snprintf((char *)gnssCmd, CMD_SZ, "$PSTMLOGERASE");
-  
+
   GNSS_DATA_SendCommand(gnssCmd);
 }
 
@@ -1048,7 +1100,7 @@ void GNSS_DATA_EraseDatalog(void)
 /* Requests the generation of a password to access the A-GNSS server */
 void GNSS_DATA_PassGen(uint32_t gpsTime)
 {
-  (void)snprintf((char *)gnssCmd, CMD_SZ, "$PSTMSTAGPS8PASSGEN,%ld,%s,%s",gpsTime,vendorId,modelId);
+  (void)snprintf((char *)gnssCmd, CMD_SZ, "$PSTMSTAGPS8PASSGEN,%ld,%s,%s", gpsTime, vendorId, modelId);
 
   GNSS_DATA_SendCommand(gnssCmd);
 }
@@ -1056,7 +1108,7 @@ void GNSS_DATA_PassGen(uint32_t gpsTime)
 /* Puts to console the info about Password generation for A-GNSS. */
 void GNSS_DATA_GetPSTMPassInfo(GNSSParser_Data_t *pGNSSParser_Data)
 {
-  if(pGNSSParser_Data->pstmpass_data.result == GNSS_OP_OK)
+  if (pGNSSParser_Data->pstmpass_data.result == GNSS_OP_OK)
   {
     (void)snprintf((char *)msg, MSG_SZ, "Password Generation:\t[ %s ]\t",
                    "PASS GEN OK");
@@ -1065,15 +1117,15 @@ void GNSS_DATA_GetPSTMPassInfo(GNSSParser_Data_t *pGNSSParser_Data)
     /* DeviceId */
     PRINT_INFO("\r\n");
     (void)snprintf((char *)msg, MSG_SZ, "Device Id:\t[ %s ]\t",
-             pGNSSParser_Data->pstmpass_data.deviceId);
+                   pGNSSParser_Data->pstmpass_data.deviceId);
     PRINT_INFO((char *)msg);
 
     /* Password */
     PRINT_INFO("\r\n");
     (void)snprintf((char *)msg, MSG_SZ, "Password:\t[ %s ]\t",
-             pGNSSParser_Data->pstmpass_data.pwd);
+                   pGNSSParser_Data->pstmpass_data.pwd);
     PRINT_INFO((char *)msg);
-    
+
     PRINT_INFO("\n\n\r");
   }
   else
@@ -1082,7 +1134,7 @@ void GNSS_DATA_GetPSTMPassInfo(GNSSParser_Data_t *pGNSSParser_Data)
                    "PASS GEN ERROR");
     PRINT_INFO((char *)msg);
   }
-  
+
   PRINT_INFO("\n\r>");
 
   return;
@@ -1092,9 +1144,9 @@ void GNSS_DATA_GetPSTMPassInfo(GNSSParser_Data_t *pGNSSParser_Data)
 void GNSS_DATA_GetPSTMAGPSInfo(const GNSSParser_Data_t *pGNSSParser_Data)
 {
   /* Status */
-  if(pGNSSParser_Data->pstmagps_data.op == GNSS_AGPS_STATUS_MSG)
+  if (pGNSSParser_Data->pstmagps_data.op == GNSS_AGPS_STATUS_MSG)
   {
-    if(pGNSSParser_Data->pstmagps_data.status != 0)
+    if (pGNSSParser_Data->pstmagps_data.status != 0)
     {
       (void)snprintf((char *)msg, MSG_SZ, "STAGPS processing is still ongoing");
       PRINT_INFO((char *)msg);
@@ -1106,9 +1158,9 @@ void GNSS_DATA_GetPSTMAGPSInfo(const GNSSParser_Data_t *pGNSSParser_Data)
     }
   }
   /* Begin */
-  else if(pGNSSParser_Data->pstmagps_data.op == GNSS_AGPS_BEGIN_MSG)
+  else if (pGNSSParser_Data->pstmagps_data.op == GNSS_AGPS_BEGIN_MSG)
   {
-    if(pGNSSParser_Data->pstmagps_data.result == GNSS_OP_OK)
+    if (pGNSSParser_Data->pstmagps_data.result == GNSS_OP_OK)
     {
       (void)snprintf((char *)msg, MSG_SZ, "SEED BEGIN OK");
     }
@@ -1119,9 +1171,9 @@ void GNSS_DATA_GetPSTMAGPSInfo(const GNSSParser_Data_t *pGNSSParser_Data)
     PRINT_INFO((char *)msg);
   }
   /* Block type */
-  else if(pGNSSParser_Data->pstmagps_data.op == GNSS_AGPS_BLKTYPE_MSG)
+  else if (pGNSSParser_Data->pstmagps_data.op == GNSS_AGPS_BLKTYPE_MSG)
   {
-    if(pGNSSParser_Data->pstmagps_data.result == GNSS_OP_OK)
+    if (pGNSSParser_Data->pstmagps_data.result == GNSS_OP_OK)
     {
       (void)snprintf((char *)msg, MSG_SZ, "BLOCK TYPE OK");
     }
@@ -1132,9 +1184,9 @@ void GNSS_DATA_GetPSTMAGPSInfo(const GNSSParser_Data_t *pGNSSParser_Data)
     PRINT_INFO((char *)msg);
   }
   /* Slot freq */
-  else if(pGNSSParser_Data->pstmagps_data.op == GNSS_AGPS_SLOTFRQ_MSG)
+  else if (pGNSSParser_Data->pstmagps_data.op == GNSS_AGPS_SLOTFRQ_MSG)
   {
-    if(pGNSSParser_Data->pstmagps_data.result == GNSS_OP_OK)
+    if (pGNSSParser_Data->pstmagps_data.result == GNSS_OP_OK)
     {
       (void)snprintf((char *)msg, MSG_SZ, "SLOT FREQ OK");
     }
@@ -1145,9 +1197,9 @@ void GNSS_DATA_GetPSTMAGPSInfo(const GNSSParser_Data_t *pGNSSParser_Data)
     PRINT_INFO((char *)msg);
   }
   /* Seed pkt */
-  else if(pGNSSParser_Data->pstmagps_data.op == GNSS_AGPS_SEEDPKT_MSG)
+  else if (pGNSSParser_Data->pstmagps_data.op == GNSS_AGPS_SEEDPKT_MSG)
   {
-    if(pGNSSParser_Data->pstmagps_data.result == GNSS_OP_OK)
+    if (pGNSSParser_Data->pstmagps_data.result == GNSS_OP_OK)
     {
       (void)snprintf((char *)msg, MSG_SZ, "SEED PKT OK");
     }
@@ -1158,9 +1210,9 @@ void GNSS_DATA_GetPSTMAGPSInfo(const GNSSParser_Data_t *pGNSSParser_Data)
     PRINT_INFO((char *)msg);
   }
   /* Prop */
-  else if(pGNSSParser_Data->pstmagps_data.op == GNSS_AGPS_PROP_MSG)
+  else if (pGNSSParser_Data->pstmagps_data.op == GNSS_AGPS_PROP_MSG)
   {
-    if(pGNSSParser_Data->pstmagps_data.result == GNSS_OP_OK)
+    if (pGNSSParser_Data->pstmagps_data.result == GNSS_OP_OK)
     {
       (void)snprintf((char *)msg, MSG_SZ, "SEED PROPAGATION OK");
     }
@@ -1171,9 +1223,9 @@ void GNSS_DATA_GetPSTMAGPSInfo(const GNSSParser_Data_t *pGNSSParser_Data)
     PRINT_INFO((char *)msg);
   }
   /* Init time */
-  else if(pGNSSParser_Data->pstmagps_data.op == GNSS_AGPS_INITTIME_MSG)
+  else if (pGNSSParser_Data->pstmagps_data.op == GNSS_AGPS_INITTIME_MSG)
   {
-    if(pGNSSParser_Data->pstmagps_data.result == GNSS_OP_OK)
+    if (pGNSSParser_Data->pstmagps_data.result == GNSS_OP_OK)
     {
       (void)snprintf((char *)msg, MSG_SZ, "INIT TIME OK");
     }
@@ -1187,14 +1239,14 @@ void GNSS_DATA_GetPSTMAGPSInfo(const GNSSParser_Data_t *pGNSSParser_Data)
   {
     /* do nothing */
   }
-    
+
   PRINT_INFO("\n\r>");
 
   return;
 }
 #endif /* ASSISTED_GNSS */
 
-__weak int GNSS_PRINT(char *pBuffer)
+__weak uint8_t GNSS_PRINT(char *pBuffer)
 {
   /* Implement this function at application level */
 
