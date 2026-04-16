@@ -300,7 +300,7 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>11111110</state>
+          <state>00000000</state>
         </option>
         <option>
           <name>CCDebugInfo</name>
@@ -386,7 +386,7 @@
         </option>
         <option>
           <name>CCOptLevel</name>
-          <state>3</state>
+          <state>0</state>
         </option>
         <option>
           <name>CCOptStrategy</name>
@@ -395,7 +395,7 @@
         </option>
         <option>
           <name>CCOptLevelSlave</name>
-          <state>3</state>
+          <state>0</state>
         </option>
         <option>
           <name>CCPosIndRopi</name>
@@ -1219,6 +1219,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_ll_exti.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$/../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_pwr.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_tim.c</name>

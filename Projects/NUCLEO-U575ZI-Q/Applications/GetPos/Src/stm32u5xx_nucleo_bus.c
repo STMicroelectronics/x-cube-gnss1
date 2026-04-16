@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2025 STMicroelectronics.
+  * Copyright (c) 2026 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -255,6 +255,7 @@ __weak HAL_StatusTypeDef MX_LPUART1_UART_Init(UART_HandleTypeDef* hlpuart)
   hlpuart->Init.Mode = UART_MODE_TX_RX;
   hlpuart->Init.HwFlowCtl = UART_HWCONTROL_NONE;
   hlpuart->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  hlpuart->Init.ClockPrescaler = UART_PRESCALER_DIV1;
   hlpuart->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
   hlpuart->FifoMode = UART_FIFOMODE_DISABLE;
   if (HAL_UART_Init(hlpuart) != HAL_OK)

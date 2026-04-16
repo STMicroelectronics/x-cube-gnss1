@@ -20,7 +20,7 @@
 
 int32_t GNSS_Wrapper_Send(uint8_t *buffer, uint16_t length)
 {
-  int32_t status=0;
+  int32_t status = 0;
 
   GNSS1A1_GNSS_Msg_t gnssMsg;
 
@@ -33,7 +33,7 @@ int32_t GNSS_Wrapper_Send(uint8_t *buffer, uint16_t length)
 
 int32_t GNSS_Wrapper_Reset(void)
 {
-  int32_t status=0;
+  int32_t status = 0;
 
   status = GNSS1A1_GNSS_Reset(GNSS1A1_TESEO_LIV3F);
 

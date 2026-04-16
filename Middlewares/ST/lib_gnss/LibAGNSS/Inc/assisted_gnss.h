@@ -39,26 +39,26 @@ extern "C" {
 #endif
 
 /** @addtogroup MIDDLEWARES
- *  @{
- */
+  *  @{
+  */
 
 /** @addtogroup ST
- *  @{
- */
+  *  @{
+  */
 
 /** @addtogroup LIB_GNSS
- *  @{
- */
- 
+  *  @{
+  */
+
 /** @addtogroup LibAGNSS
- *  @{
- */
+  *  @{
+  */
 
 
 /** @defgroup ASSISTED_GNSS_CONSTANTS_DEFINITIONS AGNSS CONSTANTS DEFINITIONS
- *  @brief Constants related to Assisted GNSS
- *  @{
- */
+  *  @brief Constants related to Assisted GNSS
+  *  @{
+  */
 
 /* Defines -------------------------------------------------------------------*/
 #define AGNSS_OK        0
@@ -85,9 +85,9 @@ extern "C" {
 #define GAL_CONSTELLATION (0x04U)
 #define BEI_CONSTELLATION (0x08U)
 #define DEFAULT_CONSTELLATION \
-   (GPS_CONSTELLATION | \
-     GLO_CONSTELLATION | \
-       GAL_CONSTELLATION)
+  (GPS_CONSTELLATION | \
+   GLO_CONSTELLATION | \
+   GAL_CONSTELLATION)
 
 #define MAX_BLOCK_TYPE_SIZE     (128U)
 #define MAX_SLOT_FREQ_SIZE      (128U)
@@ -131,9 +131,9 @@ extern uint8_t prn2slot[MAX_NUM_GLO_PRNS];
 extern uint32_t N4;
 
 /** @defgroup ASSISTED_GNSS_EXPORTED_TYPES AGNSS EXPORTED TYPES
- *  @brief Types related to Assisted GNSS
- *  @{
- */
+  *  @brief Types related to Assisted GNSS
+  *  @{
+  */
 
 /* Exported types ------------------------------------------------------------*/
 
@@ -144,8 +144,8 @@ typedef uint16_t UINT2;
 typedef uint32_t UINT4;
 
 /**
- * @brief Current time date
- */
+  * @brief Current time date
+  */
 typedef struct
 {
   uint32_t Day;
@@ -157,8 +157,8 @@ typedef struct
 } current_timedate_t;
 
 /**
- * @brief Seed request type (Predictive/Real-time)
- */
+  * @brief Seed request type (Predictive/Real-time)
+  */
 typedef enum
 {
   PR_SEED,
@@ -166,8 +166,8 @@ typedef enum
 } seed_req_t;
 
 /**
- * @brief Seed type
- */
+  * @brief Seed type
+  */
 typedef enum
 {
   GPS_SEED = 1,
@@ -177,8 +177,8 @@ typedef enum
 } seed_type_t;
 
 /**
- * @brief Data structure that contains all of the information about Seed
- */
+  * @brief Data structure that contains all of the information about Seed
+  */
 typedef struct
 {
   uint8_t *jsonBuffer;
@@ -213,8 +213,8 @@ typedef struct
 } seed_info_t;
 
 /**
- * @brief Data structure that contains the information about GLONASS Slot Frequency
- */
+  * @brief Data structure that contains the information about GLONASS Slot Frequency
+  */
 typedef struct
 {
   uint8_t SV_ID;  //slot_num;
@@ -223,8 +223,8 @@ typedef struct
 } glo_slot_freq_t;
 
 /**
- * @brief Data structure that contains the information about Block Type
- */
+  * @brief Data structure that contains the information about Block Type
+  */
 typedef struct
 {
   uint8_t SV_ID;
@@ -232,83 +232,83 @@ typedef struct
 } block_type_t;
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup ASSISTED_GNSS_FUNCTIONS ASSISTED GNSS FUNCTIONS
- *  @brief Prototypes of the API for Assisted GNSS support.
- *  @{
- */
+  *  @brief Prototypes of the API for Assisted GNSS support.
+  *  @{
+  */
 
 /**
- * @brief  Utility for Ephemeris and Almanac.
- * @param  val
- * @param  width
- * @retval Value converted
- */
+  * @brief  Utility for Ephemeris and Almanac.
+  * @param  val
+  * @param  width
+  * @retval Value converted
+  */
 int32_t sign_extend_1c(const uint32_t val, const uint32_t width);
 
 /**
- * @brief  This function calculates number day of year.
- * @param  utc_time current UTC time
- * @retval Day number
- */
+  * @brief  This function calculates number day of year.
+  * @param  utc_time current UTC time
+  * @retval Day number
+  */
 uint32_t day_of_year(current_timedate_t *utc_time);
 
 /**
- * @brief  This function converts timedate structure to GPS time.
- * @param  cur_time current UTC time
- * @retval GPS time
- */
+  * @brief  This function converts timedate structure to GPS time.
+  * @param  cur_time current UTC time
+  * @retval GPS time
+  */
 uint32_t UTC_ToGPS(current_timedate_t *utc_time);
 
 /**
- * @brief  This function extracts a byte from a byte array at specified position,
- *         where the position is expressed in bit.
- * @param  byte The byte extracted
- * @param  buffer The byte array
- * @param  pos Position within the buffer
- * @retval None
- */
+  * @brief  This function extracts a byte from a byte array at specified position,
+  *         where the position is expressed in bit.
+  * @param  byte The byte extracted
+  * @param  buffer The byte array
+  * @param  pos Position within the buffer
+  * @retval None
+  */
 void extract_byte(uint8_t *byte, uint8_t *buffer, uint32_t pos);
 
 /**
- * @brief  This function extracts a 16-bit word from a byte array at specified position,
- *         where the position is expressed in bit.
- * @param  dword 16-bit word
- * @param  buffer The byte array
- * @param  pos Position within the buffer
- * @retval None
- */
+  * @brief  This function extracts a 16-bit word from a byte array at specified position,
+  *         where the position is expressed in bit.
+  * @param  dword 16-bit word
+  * @param  buffer The byte array
+  * @param  pos Position within the buffer
+  * @retval None
+  */
 void extract_hword(uint16_t *dword, uint8_t *buffer, uint32_t pos);
 
 /**
- * @brief  This function extracts a 32-bit word from a byte array at specified position,
- *         where the position is expressed in bit.
- * @param  dword 32-bit word
- * @param  buffer The byte array
- * @param  pos Position within the buffer
- * @retval None
- */
+  * @brief  This function extracts a 32-bit word from a byte array at specified position,
+  *         where the position is expressed in bit.
+  * @param  dword 32-bit word
+  * @param  buffer The byte array
+  * @param  pos Position within the buffer
+  * @retval None
+  */
 void extract_dword(uint32_t *dword, uint8_t *buffer, uint32_t pos);
 
 // Calculates NMEA checksum
 /**
- * @brief  This function calculates NMEA checksum.
- * @param  string NMEA string
- * @retval Checksum
- */
+  * @brief  This function calculates NMEA checksum.
+  * @param  string NMEA string
+  * @retval Checksum
+  */
 uint32_t A_GNSS_NMEA_Checksum(const uint8_t *string);
 
 /**
- * @brief  This function builds the Json request for RXN server.
- * @param  jsonData The string that will contain the request in json format
- * @param  seedMask Constellation mask
- * @param  seedSize Size of the expected seed
- * @param  reqLen Length of the json request
- * @param  seedReq Type of the json request (Predictive/Real-time)
- * @retval AGNSS_OK on success AGNSS_ERR on error
- */
+  * @brief  This function builds the Json request for RXN server.
+  * @param  jsonData The string that will contain the request in json format
+  * @param  seedMask Constellation mask
+  * @param  seedSize Size of the expected seed
+  * @param  reqLen Length of the json request
+  * @param  seedReq Type of the json request (Predictive/Real-time)
+  * @retval AGNSS_OK on success AGNSS_ERR on error
+  */
 int32_t A_GNSS_BuildJsonReq(uint8_t *jsonData,
                             uint8_t seedMask,
                             int16_t *seedSize,
@@ -316,48 +316,48 @@ int32_t A_GNSS_BuildJsonReq(uint8_t *jsonData,
                             seed_req_t seedReq);
 
 /**
- * @brief  This function builds the authorization HTTP header for RXN server.
- * @param  pGNSSParser_Data Handler of the GNSS data
- * @param  auth_string The string that will contain the auth header
- * @retval AGNSS_OK on success AGNSS_ERR on error
- */
+  * @brief  This function builds the authorization HTTP header for RXN server.
+  * @param  pGNSSParser_Data Handler of the GNSS data
+  * @param  auth_string The string that will contain the auth header
+  * @retval AGNSS_OK on success AGNSS_ERR on error
+  */
 int32_t A_GNSS_BuildAuthHeader(GNSSParser_Data_t *pGNSSParser_Data, uint8_t *auth_string);
- 
+
 /**
- * @brief  This function completes decoding and send seed.
- * @param  constellation The seed constellation
- * @param  seed_info Pointer to seed related info
- * @retval None
- */
+  * @brief  This function completes decoding and send seed.
+  * @param  constellation The seed constellation
+  * @param  seed_info Pointer to seed related info
+  * @retval None
+  */
 void A_GNSS_SendSeed(uint8_t constellation,
                      seed_info_t *seed_info);
 
 /**
- * @brief  This function builds and send the inittime command.
- * @param  utc_time UTC time
- * @retval None
- */
+  * @brief  This function builds and send the inittime command.
+  * @param  utc_time UTC time
+  * @retval None
+  */
 void A_GNSS_SendCurrentTime(current_timedate_t *utc_time);
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
-  
-/**
- * @}
- */
-  
-/**
- * @}
- */ 
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 #ifdef __cplusplus
 }

@@ -22,7 +22,7 @@ int32_t GNSS_Wrapper_Send(uint8_t *buffer, uint16_t length)
   int32_t status = 0;
 
   /* USER CODE BEGIN NDEF_Wrapper_ReadData */
-  
+
   /* USER CODE END NDEF_Wrapper_ReadData */
 
   return status;
@@ -33,7 +33,7 @@ int32_t GNSS_Wrapper_Reset(void)
   int32_t status = 0;
 
   /* USER CODE BEGIN NDEF_Wrapper_ReadData */
-  
+
   /* USER CODE END NDEF_Wrapper_ReadData */
 
   return status;
@@ -42,7 +42,7 @@ int32_t GNSS_Wrapper_Reset(void)
 void GNSS_Wrapper_Delay(uint32_t Delay)
 {
   /* USER CODE BEGIN NDEF_Wrapper_ReadData */
-  
+
   /* USER CODE END NDEF_Wrapper_ReadData */
 }
 

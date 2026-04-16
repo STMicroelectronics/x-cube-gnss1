@@ -1690,7 +1690,6 @@ typedef struct
   * @brief Universal Synchronous Asynchronous Receiver Transmitter
   */
 
-#if defined (STM32L4P5xx) || defined (STM32L4Q5xx)
 typedef struct
 {
   __IO uint32_t CR1;         /*!< USART Control register 1,                    Address offset: 0x00 */
@@ -1704,31 +1703,10 @@ typedef struct
   __IO uint32_t ICR;         /*!< USART Interrupt flag Clear register,         Address offset: 0x20 */
   __IO uint32_t RDR;         /*!< USART Receive Data register,                 Address offset: 0x24 */
   __IO uint32_t TDR;         /*!< USART Transmit Data register,                Address offset: 0x28 */
+#if defined (STM32L4R5xx) || defined (STM32L4R7xx) || defined (STM32L4R9xx) || defined (STM32L4S5xx) || defined (STM32L4S7xx) || defined (STM32L4S9xx) || defined (STM32L4P5xx) || defined (STM32L4Q5xx)
   __IO uint32_t PRESC;       /*!< USART Prescaler register,                    Address offset: 0x2C */
+#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx || STM32L4P5xx || STM32L4Q5xx */
 } USART_TypeDef;
-#else
-typedef struct
-{
-  __IO uint32_t CR1;         /*!< USART Control register 1,                 Address offset: 0x00 */
-  __IO uint32_t CR2;         /*!< USART Control register 2,                 Address offset: 0x04 */
-  __IO uint32_t CR3;         /*!< USART Control register 3,                 Address offset: 0x08 */
-  __IO uint32_t BRR;         /*!< USART Baud rate register,                 Address offset: 0x0C */
-  __IO uint16_t GTPR;        /*!< USART Guard time and prescaler register,  Address offset: 0x10 */
-  uint16_t  RESERVED2;       /*!< Reserved, 0x12                                                 */
-  __IO uint32_t RTOR;        /*!< USART Receiver Time Out register,         Address offset: 0x14 */
-  __IO uint16_t RQR;         /*!< USART Request register,                   Address offset: 0x18 */
-  uint16_t  RESERVED3;       /*!< Reserved, 0x1A                                                 */
-  __IO uint32_t ISR;         /*!< USART Interrupt and status register,      Address offset: 0x1C */
-  __IO uint32_t ICR;         /*!< USART Interrupt flag Clear register,      Address offset: 0x20 */
-  __IO uint16_t RDR;         /*!< USART Receive Data register,              Address offset: 0x24 */
-  uint16_t  RESERVED4;       /*!< Reserved, 0x26                                                 */
-  __IO uint16_t TDR;         /*!< USART Transmit Data register,             Address offset: 0x28 */
-  uint16_t  RESERVED5;       /*!< Reserved, 0x2A                                                 */
-#if defined (STM32L4R5xx) || defined (STM32L4R7xx) || defined (STM32L4R9xx) || defined (STM32L4S5xx) || defined (STM32L4S7xx) || defined (STM32L4S9xx)
-  __IO uint32_t PRESC;       /*!< USART Prescaler register,                 Address offset: 0x2C */
-#endif /* STM32L4R5xx || STM32L4R7xx || STM32L4R9xx || STM32L4S5xx || STM32L4S7xx || STM32L4S9xx */
-} USART_TypeDef;
-#endif /* STM32L4P5xx || STM32L4Q5xx */
 
 #if defined (STM32L412xx) || defined (STM32L422xx) || defined (STM32L432xx) || defined (STM32L433xx) || defined (STM32L442xx) || defined (STM32L443xx) || defined (STM32L452xx) || defined (STM32L462xx)
 /**
@@ -24913,7 +24891,7 @@ typedef struct
 
 /*******************  Bit definition for TIM_CCR5 register  *******************/
 #define TIM_CCR5_CCR5_Pos         (0U)
-#define TIM_CCR5_CCR5_Msk         (0xFFFFFFFFUL << TIM_CCR5_CCR5_Pos)          /*!< 0xFFFFFFFF */
+#define TIM_CCR5_CCR5_Msk         (0xFFFFUL << TIM_CCR5_CCR5_Pos)              /*!< 0x0000FFFF */
 #define TIM_CCR5_CCR5             TIM_CCR5_CCR5_Msk                            /*!<Capture/Compare 5 Value */
 #define TIM_CCR5_GC5C1_Pos        (29U)
 #define TIM_CCR5_GC5C1_Msk        (0x1UL << TIM_CCR5_GC5C1_Pos)                /*!< 0x20000000 */
@@ -27588,6 +27566,9 @@ typedef struct
 #define USB_OTG_FRMNUM_1                         (0x2UL << USB_OTG_FRMNUM_Pos) /*!< 0x00400000 */
 #define USB_OTG_FRMNUM_2                         (0x4UL << USB_OTG_FRMNUM_Pos) /*!< 0x00800000 */
 #define USB_OTG_FRMNUM_3                         (0x8UL << USB_OTG_FRMNUM_Pos) /*!< 0x01000000 */
+#define USB_OTG_STSPHST_Pos                      (27U)
+#define USB_OTG_STSPHST_Msk                      (0x1UL << USB_OTG_STSPHST_Pos) /*!< 0x08000000 */
+#define USB_OTG_STSPHST                          USB_OTG_STSPHST_Msk            /*!< Status phase start */
 /* Host/Device mode */
 #define USB_OTG_BCNT_Pos                         (4U)
 #define USB_OTG_BCNT_Msk                         (0x7FFUL << USB_OTG_BCNT_Pos) /*!< 0x00007FF0 */

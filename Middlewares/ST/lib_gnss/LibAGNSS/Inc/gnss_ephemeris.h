@@ -26,29 +26,29 @@ extern "C" {
 #include "assisted_gnss.h"
 
 /** @addtogroup MIDDLEWARES
- *  @{
- */
+  *  @{
+  */
 
 /** @addtogroup ST
- *  @{
- */
+  *  @{
+  */
 
 /** @addtogroup LIB_GNSS
- *  @{
- */
- 
+  *  @{
+  */
+
 /** @addtogroup LibAGNSS
- *  @{
- */
+  *  @{
+  */
 
 /** @defgroup GNSS_EPHEMERIS_EXPORTED_TYPES GNSS EPHEMERIS EXPORTED TYPES
- *  @brief Types related to Ephemeris
- *  @{
- */
+  *  @brief Types related to Ephemeris
+  *  @{
+  */
 
 /**
- * @brief gps_ephemeris_raw_tag
- */
+  * @brief gps_ephemeris_raw_tag
+  */
 typedef struct gps_ephemeris_raw_tag
 {
   UINT4 week                 : 16;
@@ -102,8 +102,8 @@ typedef struct gps_ephemeris_raw_tag
 } gps_ephemeris_raw_t;
 
 /**
- * @brief glo_ephemeris_raw_tag
- */
+  * @brief glo_ephemeris_raw_tag
+  */
 typedef struct glonass_ephemris_raw_tag
 {
   UINT4 week                  : 16;
@@ -134,15 +134,15 @@ typedef struct glonass_ephemris_raw_tag
   INT4 zn                    : 27;
   INT4 zn_dot_dot            : 5;
   INT4 zn_dot                : 24;
-  UINT4 ephems_n             : 2; //not required for RT-Data 
+  UINT4 ephems_n             : 2; //not required for RT-Data
   UINT4 time_distance_h      : 6; //not required for RT-Data
   INT4 gamma_n               : 11;
   UINT4 E_n                  : 5;
-  UINT4 freq_id              : 4; //not present in RT-Data 
+  UINT4 freq_id              : 4; //not present in RT-Data
   UINT4 spare3               : 12;
 
   INT4 tau_n                 : 22;
-  UINT4 age_h                : 10; //not required for RT-Data 
+  UINT4 age_h                : 10; //not required for RT-Data
 
   UINT4 tau_c                : 32; //not present in RT-Data provided by RXN server
 
@@ -162,14 +162,14 @@ typedef struct glonass_ephemris_raw_tag
 
   UINT4 spare9               : 25;
   UINT4 available            : 1;
-  UINT4 health               : 1; 
+  UINT4 health               : 1;
   UINT4 predicted            : 1;
   UINT4 spare10              : 4;
 } glonass_ephemeris_raw_t;
 
 /**
- * @brief bei_ephemeris_raw_tag
- */
+  * @brief bei_ephemeris_raw_tag
+  */
 typedef struct compass_ephemeris_raw_tag
 {
   UINT4 inclination       : 32;
@@ -235,8 +235,8 @@ typedef struct compass_ephemeris_raw_tag
 } compass_ephemeris_raw_t;
 
 /**
- * @brief gal_ephemeris_raw_tag
- */
+  * @brief gal_ephemeris_raw_tag
+  */
 typedef struct galileo_ephemeris_raw_tag
 {
   UINT4 week : 16;
@@ -280,8 +280,8 @@ typedef struct galileo_ephemeris_raw_tag
 } galileo_ephemeris_raw_t;
 
 /**
- * @brief ephemeris_raw_tag
- */
+  * @brief ephemeris_raw_tag
+  */
 typedef union ephemris_raw_tag
 {
   gps_ephemeris_raw_t       gps;
@@ -291,8 +291,8 @@ typedef union ephemris_raw_tag
 } ephemeris_raw_t;
 
 /**
- * @brief ephemeris header
- */
+  * @brief ephemeris header
+  */
 typedef struct assist_hdr_s
 {
   BYTE  num_sats;
@@ -300,52 +300,52 @@ typedef struct assist_hdr_s
 } assist_hdr_t;
 
 /**
- * @}
- */
- 
+  * @}
+  */
+
 /** @defgroup GNSS_EPHEMERIS_FUNCTIONS GNSS EPHEMERIS FUNCTIONS
- *  @brief Prototypes of the API for RT Assisted GNSS support.
- *  @{
- */
+  *  @brief Prototypes of the API for RT Assisted GNSS support.
+  *  @{
+  */
 
 /**
- * @brief  This function decodes EPH seed.
- * @param  seed_type Constellation
- * @param  seed_info Downloaded seed info
- * @param  cur_time current UTC time
- * @retval The week number
- */
+  * @brief  This function decodes EPH seed.
+  * @param  seed_type Constellation
+  * @param  seed_info Downloaded seed info
+  * @param  cur_time current UTC time
+  * @retval The week number
+  */
 uint16_t A_GNSS_DecodeEphemRT(seed_type_t seed_type,
                               seed_info_t *seed_info,
                               current_timedate_t *utc_time);
 
 /**
- * @brief  This function sends EPH seed.
- * @param  seed_type Constellation
- * @param  seed_info Downloaded seed info
- * @retval None
- */
+  * @brief  This function sends EPH seed.
+  * @param  seed_type Constellation
+  * @param  seed_info Downloaded seed info
+  * @retval None
+  */
 void A_GNSS_SendEphemRT(seed_type_t seed_type,
                         seed_info_t *seed_info);
 /**
- * @}
- */
-   
-/**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
-  
+  * @}
+  */
+
 /**
- * @}
- */
-  
+  * @}
+  */
+
 /**
- * @}
- */ 
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 #ifdef __cplusplus
 }

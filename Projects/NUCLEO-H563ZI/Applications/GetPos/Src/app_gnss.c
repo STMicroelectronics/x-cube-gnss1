@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2025 STMicroelectronics.
+  * Copyright (c) 2026 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -533,23 +533,28 @@ static void AppCmdProcess(char *com)
     memset(com, 0, MAX_STR_LEN);
 
 #ifdef TESEO_LIV3F_DEVICE
+    PRINT_OUT("\"TESEO_LIV3F_DEVICE\" \r\n");
     PRINT_OUT("Type \"$PSTMGETSWVER\"     to get the GNSSLIB version \r\n");
     PRINT_OUT("Type \"$PSTMGETSWVER,1\"   to get the OS20LIB version \r\n");
     PRINT_OUT("Type \"$PSTMGETSWVER,2\"   to get the GPSAPP version \r\n");
-    PRINT_OUT("Type \"$PSTMGETSWVER,4\"   to get the WAASLIB version \r\n");
     PRINT_OUT("Type \"$PSTMGETSWVER,6\"   to get the BINIMG version \r\n");
     PRINT_OUT("Type \"$PSTMGETSWVER,7\"   to get the board version \r\n");
-    PRINT_OUT("Type \"$PSTMGETSWVER,8\"   to get the STAGPSLIB version \r\n");
+    PRINT_OUT("Type \"$PSTMGETSWVER,11\"  to get the SWCFG version \r\n");
+    PRINT_OUT("Type \"$PSTMGETSWVER,12\"  to get the PID version \r\n");
+    PRINT_OUT("Type \"$PSTMGETSWVER,255\" to get all versions \r\n");
+    PRINT_OUT("\"TESEO_LIV4F_DEVICE\" \r\n");
+    PRINT_OUT("Type \"$PSTMGETSWVER,1\"   to get the OS20LIB version \r\n");
+    PRINT_OUT("Type \"$PSTMGETSWVER,2\"   to get the GPSAPP version \r\n");
+    PRINT_OUT("Type \"$PSTMGETSWVER,11\"  to get the SWCFG version \r\n");
     PRINT_OUT("Type \"$PSTMGETSWVER,255\" to get all versions \r\n");
 #endif /* TESEO_LIV3F_DEVICE */
 #ifdef TESEO_VIC3DA_DEVICE
+    PRINT_OUT("\"TESEO_VIC3DA_DEVICE\" \r\n");
     PRINT_OUT("Type \"$PSTMGETSWVER\"     to get the GNSSLIB version \r\n");
     PRINT_OUT("Type \"$PSTMGETSWVER,1\"   to get the OS20LIB version \r\n");
     PRINT_OUT("Type \"$PSTMGETSWVER,2\"   to get the GPSAPP version \r\n");
     PRINT_OUT("Type \"$PSTMGETSWVER,6\"   to get the BINIMG version \r\n");
     PRINT_OUT("Type \"$PSTMGETSWVER,7\"   to get the board version \r\n");
-    PRINT_OUT("Type \"$PSTMGETSWVER,8\"   to get the STAGPSLIB version \r\n");
-    PRINT_OUT("Type \"$PSTMGETSWVER,10\"  to get the DRLIB version \r\n");
     PRINT_OUT("Type \"$PSTMGETSWVER,11\"  to get the SWCFG version \r\n");
     PRINT_OUT("Type \"$PSTMGETSWVER,12\"  to get the PID version \r\n");
     PRINT_OUT("Type \"$PSTMGETSWVER,255\" to get all versions \r\n");
@@ -913,7 +918,9 @@ static uint8_t GetSWVerCmdIsAllowed(char *com)
   if ((com[13] == '\0') ||
       (((com[14] == '1') || (com[14] == '2') || (com[14] == '4') ||
         (com[14] == '6') || (com[14] == '7') || (com[14] == '8')) && (com[15] == '\0')) ||
-      ((com[14] == '2') && (com[15] == '5') && (com[16] == '5') && (com[17] == '\0'))
+      ((com[14] == '2') && (com[15] == '5') && (com[16] == '5') && (com[17] == '\0')) ||
+      ((com[14] == '2') && (com[15] == '5') && (com[16] == '4') && (com[17] == '\0')) ||
+      ((com[14] == '1') && ((com[15] == '2') || (com[15] == '1')) && (com[16] == '\0'))
      )
   {
     ret = 1;

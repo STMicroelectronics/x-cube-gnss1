@@ -29,57 +29,57 @@ extern "C" {
 #define OS_DELAY GNSS_Wrapper_Delay
 
 /** @addtogroup MIDDLEWARES
- *  @{
- */
+  *  @{
+  */
 
 /** @addtogroup ST
- *  @{
- */
+  *  @{
+  */
 
 /** @addtogroup LIB_GNSS
- *  @{
- */
- 
+  *  @{
+  */
+
 /** @addtogroup LibGNSS
- *  @{
- */
+  *  @{
+  */
 
 /** @defgroup GNSS_DATA_FUNCTIONS GNSS DATA FUNCTIONS
- *  @brief Prototypes of the API allowing the application to interface the driver
- *  and interact with GNSS module (sending commands, retrieving parsed NMEA info, etc.).
- *  The implementation is up to the application according to specific needs.
- *  @{
- */
- 
+  *  @brief Prototypes of the API allowing the application to interface the driver
+  *  and interact with GNSS module (sending commands, retrieving parsed NMEA info, etc.).
+  *  The implementation is up to the application according to specific needs.
+  *  @{
+  */
+
 /* Exported functions prototypes ---------------------------------------------*/
-/**	
- * @brief  This function puts a string on the console (via UART).
- * @param  pBuffer The string that contains the data to be written on the console
- * @retval None
- */
+/**
+  * @brief  This function puts a string on the console (via UART).
+  * @param  pBuffer The string that contains the data to be written on the console
+  * @retval None
+  */
 int32_t GNSS_Wrapper_Send(uint8_t *buffer, uint16_t length);
 int32_t GNSS_Wrapper_Reset(void);
 void    GNSS_Wrapper_Delay(uint32_t Delay);
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
-  
-/**
- * @}
- */
-  
-/**
- * @}
- */ 
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 #ifdef __cplusplus
 }

@@ -21,8 +21,10 @@
 | GNSS1A1 BSP                             | STMicroelectronics                 | BSD-3-Clause |
 | lib_gnss Middleware                     | STMicroelectronics                 | SLA0055 |
 | Azure RTOS ThreadX                      | Microsoft Corporation              | Microsoft Software License for Azure RTOS |
-| cJSON Middleware                        | Dave Gamble and cJSON contributors | cJSON license terms |
-| FreeRTOS Middleware                     | STMicroelectronics                 | BSD-3-Clause |
+| cJSON Middleware                        | Dave Gamble and cJSON contributors | MIT |
+| cJSON - cmock files                     | ARM Limited, STMicroelectronics    | Custom License – cJSON |
+| FreeRTOS Middleware                     | Amazon.com, Inc. or its affiliates | MIT |
+| FreeRTOS Modified Files                 | Real Time Engineers Ltd, STMicroelectronics | BSD-3-Clause |
 | mbedTLS Middleware                      | ARM Limited                        | Apache-2.0 |
 | B-L475E-IOT01A1 Application Projects    | STMicroelectronics                 | SLA0055 |
 | NUCLEO-F401RE Application Projects      | STMicroelectronics                 | SLA0055 |

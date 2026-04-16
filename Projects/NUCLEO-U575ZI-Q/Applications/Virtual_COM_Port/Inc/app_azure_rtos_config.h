@@ -8,7 +8,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2025 STMicroelectronics.
+  * Copyright (c) 2026 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -46,7 +46,7 @@ extern "C" {
 #define TX_APP_MEM_POOL_SIZE                     1024
 
 /* Minimum stack size per thread  */
-#define GNSS_THREAD_MINIMUM_STACK                (1024)
+#define GNSS_THREAD_MINIMUM_STACK                (2048)
 
 #define GNSS_NUM_OF_THREADS                      (4)
 #define GNSS_APP_MEM_POOL_SIZE                   (GNSS_NUM_OF_THREADS * GNSS_THREAD_MINIMUM_STACK)

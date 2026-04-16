@@ -48,11 +48,10 @@ GNSS, UART
     and can be easily tailored to any other supported device and development board.
 
 ADDITIONAL_BOARD : X-NUCLEO-GNSS1A1 https://www.st.com/en/ecosystems/x-nucleo-gnss1a1.html
-ADDITIONAL_BOARD : X-NUCLEO-GNSS2A1 https://www.st.com/en/ecosystems/x-nucleo-gnss2a1.html
-ADDITIONAL_BOARD : X-NUCLEO-LIV4A1 https://www.st.com/en/ecosystems/x-nucleo-liv4a1.html
-
 ADDITIONAL_COMP : Teseo-LIV3F https://www.st.com/en/positioning/teseo-liv3f.html
+ADDITIONAL_BOARD : X-NUCLEO-GNSS2A1 https://www.st.com/en/ecosystems/x-nucleo-gnss2a1.html
 ADDITIONAL_COMP : Teseo-VIC3DA https://www.st.com/en/positioning/teseo-vic3da.html
+ADDITIONAL_BOARD : X-NUCLEO-LIV4A1 https://www.st.com/en/ecosystems/x-nucleo-liv4a1.html
 ADDITIONAL_COMP : Teseo-LIV4F https://www.st.com/en/positioning/teseo-liv4f.html
   
 ### <b>How to use it?</b>

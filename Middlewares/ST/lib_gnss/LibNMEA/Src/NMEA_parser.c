@@ -633,15 +633,15 @@ ParseStatus_t NMEA_ParseGNS(GNS_Info_t *pGNSInfo, uint8_t NMEA[])
       pGNSInfo->xyz.ns = *((uint8_t *)app[3]);
       pGNSInfo->xyz.lon = strtod((char *)app[4], NULL);
       pGNSInfo->xyz.ew = *((uint8_t *)app[5]);
-      pGNSInfo->gps_mode = *((uint8_t *)app[6]);
-      pGNSInfo->glonass_mode = *((uint8_t *)app[7]);
-      pGNSInfo->sats = strtol((char *)app[8], NULL, BASE);
-      pGNSInfo->hdop = strtof((char *)app[9], NULL);
-      pGNSInfo->xyz.alt = strtof((char *)app[10], NULL);
-      pGNSInfo->geo_sep = strtof((char *)app[11], NULL);
-      pGNSInfo->dgnss_age = *((uint8_t *)app[12]);
-      pGNSInfo->dgnss_ref = *((uint8_t *)app[13]);
-      pGNSInfo->checksum = nmea_checksum(app[14]);
+      pGNSInfo->gps_mode = app[6][0];
+      pGNSInfo->glonass_mode = app[6][1];
+      pGNSInfo->sats = strtol((char *)app[7], NULL, BASE);
+      pGNSInfo->hdop = strtof((char *)app[8], NULL);
+      pGNSInfo->xyz.alt = strtof((char *)app[9], NULL);
+      pGNSInfo->geo_sep = strtof((char *)app[10], NULL);
+      pGNSInfo->dgnss_age = *((uint8_t *)app[11]);
+      pGNSInfo->dgnss_ref = *((uint8_t *)app[12]);
+      pGNSInfo->checksum = nmea_checksum(app[13]);
 
       status = PARSE_SUCC;
     }

@@ -31,7 +31,7 @@
 <center>
 <h1 id="release-notes-for-x-cube-gnss1-projects">Release Notes for
 <mark>X-CUBE-GNSS1</mark> Projects</h1>
-<p>Copyright © 2025 STMicroelectronics<br />
+<p>Copyright © 2026 STMicroelectronics<br />
 </p>
 <a href="https://www.st.com" class="logo"><img
 src="../_htmresc/st_logo_2020.png" alt="ST logo" /></a>
@@ -46,6 +46,193 @@ middlewares configuration.</p>
 </div>
 <section id="update-history" class="col-sm-12 col-lg-8">
 <h1>Update History</h1>
+<div class="collapse">
+<input type="checkbox" id="collapse-section16" checked aria-hidden="true">
+<label for="collapse-section16" aria-hidden="true">V7.1.1 /
+09-Apr-2026</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<h3 id="product-update">Product update</h3>
+<ul>
+<li>Fixed Latitude and Longitude information format</li>
+</ul>
+<ul>
+<li>Fixed $GETGNSMSG output and updated firmware version helper menu in GetPos application</li>
+</ul>
+<ul>
+<li>GetPos application on FreeRTOS now builds only on FreeRTOS API CMSIS V2</li>
+</ul>
+<ul>
+<li>Updated FreeRTOS API to CMSIS v2 for GetPos and Virtual_COM_Port application on NUCLEO-F401RE and NUCLEO-L476RG</li>
+</ul>
+<h2 id="contents">Contents</h2>
+<p>Projects</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Board/Device</th>
+<th style="text-align: left;">Category</th>
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">B-L475E-IOT01A1</td>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;"><a
+href="B-L475E-IOT01A1\Applications\A_GetPos">A_GetPos</a></td>
+<td style="text-align: left;"><a
+href="B-L475E-IOT01A1\Applications\A_GetPos\readme.html">readme</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NUCLEO-F401RE</td>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;"><a
+href="NUCLEO-F401RE\Applications\FW_Updater">FW_Updater</a></td>
+<td style="text-align: left;"><a
+href="NUCLEO-F401RE\Applications\FW_Updater\readme.html">readme</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NUCLEO-F401RE</td>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;"><a
+href="NUCLEO-F401RE\Applications\GetPos">GetPos</a></td>
+<td style="text-align: left;"><a
+href="NUCLEO-F401RE\Applications\GetPos\readme.html">readme</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NUCLEO-F401RE</td>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;"><a
+href="NUCLEO-F401RE\Applications\SimOSGetPos">SimOSGetPos</a></td>
+<td style="text-align: left;"><a
+href="NUCLEO-F401RE\Applications\SimOSGetPos\readme.html">readme</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NUCLEO-F401RE</td>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;"><a
+href="NUCLEO-F401RE\Applications\Virtual_COM_Port">Virtual_COM_Port</a></td>
+<td style="text-align: left;"><a
+href="NUCLEO-F401RE\Applications\Virtual_COM_Port\readme.html">readme</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NUCLEO-L073RZ</td>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;"><a
+href="NUCLEO-L073RZ\Applications\SimOSGetPos">SimOSGetPos</a></td>
+<td style="text-align: left;"><a
+href="NUCLEO-L073RZ\Applications\SimOSGetPos\readme.html">readme</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NUCLEO-L073RZ</td>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;"><a
+href="NUCLEO-L073RZ\Applications\Virtual_COM_Port">Virtual_COM_Port</a></td>
+<td style="text-align: left;"><a
+href="NUCLEO-L073RZ\Applications\Virtual_COM_Port\readme.html">readme</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NUCLEO-L476RG</td>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;"><a
+href="NUCLEO-L476RG\Applications\GetPos">GetPos</a></td>
+<td style="text-align: left;"><a
+href="NUCLEO-L476RG\Applications\GetPos\readme.html">readme</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NUCLEO-L476RG</td>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;"><a
+href="NUCLEO-L476RG\Applications\SimOSGetPos">SimOSGetPos</a></td>
+<td style="text-align: left;"><a
+href="NUCLEO-L476RG\Applications\SimOSGetPos\readme.html">readme</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NUCLEO-L476RG</td>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;"><a
+href="NUCLEO-L476RG\Applications\Virtual_COM_Port">Virtual_COM_Port</a></td>
+<td style="text-align: left;"><a
+href="NUCLEO-L476RG\Applications\Virtual_COM_Port\readme.html">readme</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NUCLEO-U575ZI-Q</td>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;"><a
+href="NUCLEO-U575ZI-Q\Applications\GetPos">GetPos</a></td>
+<td style="text-align: left;"><a
+href="NUCLEO-U575ZI-Q\Applications\GetPos\readme.html">readme</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NUCLEO-U575ZI-Q</td>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;"><a
+href="NUCLEO-U575ZI-Q\Applications\Virtual_COM_Port">Virtual_COM_Port</a></td>
+<td style="text-align: left;"><a
+href="NUCLEO-U575ZI-Q\Applications\Virtual_COM_Port\readme.html">readme</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NUCLEO-U575ZI-Q</td>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;"><a
+href="NUCLEO-U575ZI-Q\Applications\SimOSGetPos">SimOSGetPos</a></td>
+<td style="text-align: left;"><a
+href="NUCLEO-U575ZI-Q\Applications\SimOSGetPos\readme.html">readme</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NUCLEO-H563ZI</td>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;"><a
+href="NUCLEO-H563ZI\Applications\GetPos">GetPos</a></td>
+<td style="text-align: left;"><a
+href="NUCLEO-H563ZI\Applications\GetPos\readme.html">readme</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NUCLEO-H563ZI</td>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;"><a
+href="NUCLEO-H563ZI\Applications\Virtual_COM_Port">Virtual_COM_Port</a></td>
+<td style="text-align: left;"><a
+href="NUCLEO-H563ZI\Applications\Virtual_COM_Port\readme.html">readme</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NUCLEO-H563ZI</td>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;"><a
+href="NUCLEO-H563ZI\Applications\SimOSGetPos">SimOSGetPos</a></td>
+<td style="text-align: left;"><a
+href="NUCLEO-H563ZI\Applications\SimOSGetPos\readme.html">readme</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="development-toolchains-and-compilers">Development Toolchains and
+Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V9.60.3</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain
+V5.38.0</li>
+<li>STM32CubeIDE V2.1.0</li>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and Boards</h2>
+<ul>
+<li>B-L475E-IOT01 Board</li>
+<li>STM32F401RE devices and STM32F401RE-Nucleo board RevC</li>
+<li>STM32L073RZ devices and STM32L073RZ-Nucleo board RevC</li>
+<li>STM32L476RG devices and STM32L476RG-Nucleo board RevC</li>
+<li>STM32U575ZI devices and NUCLEO-U575ZI-Q board</li>
+<li>STM32H563ZI devices and NUCLEO-H563ZI board</li>
+<li>Teseo-LIV3F device and X-NUCLEO-GNSS1A1 board</li>
+<li>Teseo-VIC3DA device and X-NUCLEO-GNSS2A1 board</li>
+<li>Teseo-LIV4F device and X-NUCLEO-LIV4A1 board</li>
+</ul>
+<h2 id="known-issues">Known Issues</h2>
+<ul>
+<li>Compiler warning "A_GetPos.elf has a LOAD segment with RWX permissions" is generated with STM32CubeIDE. It does not affect application performances.</li>
+</ul>
+</div>
+</div>
 <div class="collapse">
 <input type="checkbox" id="collapse-section15" checked aria-hidden="true">
 <label for="collapse-section15" aria-hidden="true">V7.1.0 /
